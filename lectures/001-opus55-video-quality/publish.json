@@ -1,16 +1,16 @@
 {
  "base": "https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/",
- "note": "유튜브 4편은 2026-09-26 '바이브코더' 채널에 private 로 업로드됨(uploaded). 확인 후 스튜디오에서 공개로. 인스타·Threads 미디어는 base 버킷에 먼저 올려야 한다.",
+ "note": "유튜브 4편은 2026-09-26 '바이브코더' 채널에 업로드, 같은 날 공개 전환(sync youtube). 인스타·Threads 미디어는 base 버킷에 먼저 올려야 한다.",
  "items": [
   {
    "id": "longform",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/longform.mp4",
    "thumbnail": "scenes/out/thumbnail.png",
    "captions": "scenes/out/longform.srt",
-   "title": "영상 AI 없이, 코드로 만든 영상 — 퀄리티 어디까지 될까? (Claude Opus 5.5)",
-   "description": "Claude Opus 5.5가 \"영상을 잘 만든다\"는데, 실제로는 영상을 그리는 코드를 짜는 방식이에요.\n직접 8가지 스타일과 실제 앱 홍보 영상 3편을 만들어 보고, 잘하는 것과 약한 것을 정리했어요.\n\n📂 코드 전부 공개: https://github.com/hyperitycorp-jkh/tech-lectures\n\n00:00 영상 AI 없이, 코드로 만든 영상\n00:30 계기: 출시 당일 공개된 뮤직비디오\n00:53 원리: 영상 = 그림 N장\n01:35 파이프라인: HTML → 헤드리스 Chrome → ffmpeg\n02:31 8가지 스타일\n03:48 실제 앱 홍보 영상 3편\n05:15 퀄리티 평가: 잘하는 것 / 약한 것\n06:16 에러 없이 돌았는데 틀린 실수 3개\n07:06 직접 해보려면 (GitHub)\n\n도구(전부 무료): Node.js · playwright-core · Chrome · ffmpeg · p5.js · Three.js · D3 · React · Qwen3-TTS",
+   "title": "클로드 코드로 영상 만들기 — 퀄리티 어디까지 될까? (Opus 5.5)",
+   "description": "Claude Opus 5.5가 \"영상을 잘 만든다\"는데, 실제로는 영상을 그리는 코드를 짜는 방식이에요.\n직접 8가지 스타일과 실제 앱 홍보 영상 3편을 만들어 보고, 잘하는 것과 약한 것을 정리했어요.\n\n📂 코드 전부 공개: https://github.com/hyperitycorp-jkh/tech-lectures\n\n00:00 클로드 코드로 만든 영상들\n00:30 계기: 출시 당일 공개된 뮤직비디오\n00:53 원리: 영상 = 그림 N장\n01:35 파이프라인: HTML → 헤드리스 Chrome → ffmpeg\n02:31 8가지 스타일\n03:48 실제 앱 홍보 영상 3편\n05:15 퀄리티 평가: 잘하는 것 / 약한 것\n06:16 에러 없이 돌았는데 틀린 실수 3개\n07:06 직접 해보려면 (GitHub)\n\n도구(전부 무료): Node.js · playwright-core · Chrome · ffmpeg · p5.js · Three.js · D3 · React · Qwen3-TTS",
    "tags": [
     "Claude",
     "Opus 5.5",
@@ -28,7 +28,7 @@
   {
    "id": "shorts-1",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-1.mp4",
    "captions": "scenes/out/shorts-1.srt",
    "title": "이거 전부 코드로 만든 영상 8종 #Shorts",
@@ -44,7 +44,7 @@
   {
    "id": "shorts-2",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "얼굴이 점점 선명해지는 광고, 코드로 만들었어요 #Shorts",
@@ -60,7 +60,7 @@
   {
    "id": "shorts-3",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-3.mp4",
    "captions": "scenes/out/shorts-3.srt",
    "title": "에러 없이 돌아도 영상은 틀릴 수 있어요 #Shorts",

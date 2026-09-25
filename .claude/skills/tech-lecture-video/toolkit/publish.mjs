@@ -3,6 +3,7 @@
 //   node toolkit/publish.mjs lectures/NNN/publish.json --go [--only id,id]   ← 실제 업로드 (공개 게시물이므로 사용자 확인 후에만)
 //   node toolkit/publish.mjs auth youtube        ← 강의 채널로 로그인해 refresh token 저장 (브라우저)
 //   node toolkit/publish.mjs whoami youtube      ← 로그인된 유튜브 채널 확인 (업로드 전에)
+//   node toolkit/publish.mjs sync youtube <publish.json>  ← 올린 영상(uploaded)의 제목·설명·공개 여부·썸네일을 json 에 맞춤
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
@@ -103,6 +104,24 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
   mkdirSync(CFG, { recursive: true });
   writeFileSync(join(CFG, 'youtube.json'), JSON.stringify({ refresh_token: j.refresh_token }), { mode: 0o600 });
   console.log(`저장 → ${join(CFG, 'youtube.json')}`);
+} else if (args[0] === 'sync' && args[1] === 'youtube') {
+  // 이미 올린 영상(uploaded)의 제목·설명·태그·공개 여부·썸네일을 publish.json 에 맞춘다
+  const path = resolve(args[2] || ''), dir = dirname(path), pub = JSON.parse(readFileSync(path, 'utf8')), tok = await youtubeToken();
+  for (const it of pub.items.filter(x => x.target === 'youtube' && x.uploaded)) {
+    const id = it.uploaded.split('/').pop();
+    const r = await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,status', { method: 'PUT',
+      headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, snippet: { title: it.title, description: it.description || '', tags: it.tags || [], categoryId: it.category || '27', defaultLanguage: 'ko' },
+        status: { privacyStatus: it.privacy || 'private', selfDeclaredMadeForKids: false } }) });
+    const j = await r.json();
+    let thumb = '';
+    if (it.thumbnail) {
+      const t = await fetch(`https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=${id}`, {
+        method: 'POST', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'image/png' }, body: readFileSync(resolve(dir, it.thumbnail)) });
+      thumb = t.ok ? ' · 썸네일 ✓' : ` · 썸네일 ✗ ${t.status}`;
+    }
+    console.log(j.id ? `✓ ${it.id} ${j.status.privacyStatus} "${j.snippet.title}"${thumb}` : `✗ ${it.id} ${JSON.stringify(j.error?.message || j)}`);
+  }
 } else if (args[0] === 'whoami' && args[1] === 'youtube') {
   // 로그인된 채널 확인 (조회만). 업로드 전에 강의 채널이 맞는지 본다
   const tok = await youtubeToken();
