@@ -21,10 +21,15 @@ description: 새 기술을 직접 테스트하고 응용한 결과를 유튜브 
    - 모바일 앱: iOS 시뮬레이터 스크린샷
    - 터미널·코드: 실제 출력을 복사해 템플릿의 `code` 챕터로 (가짜 출력 금지)
 6. **장면 작성** — `toolkit/templates/*.html`을 `lectures/NNN/scenes/`로 복사하고 `CONTENT`만 고친다.
-   - `longform.html` 16:9 강의. 챕터 종류 cover·points·code·image·clip·**compare(왼쪽 강의 화면 + 오른쪽 실제 결과)**
+   - `longform.html` 16:9 강의. 챕터 종류 cover·points·code·image·clip·**compare(왼쪽 강의 화면 + 오른쪽 실제 결과)** (001 롱폼은 montage·side·trio·endcard 추가판)
    - `shorts.html` 9:16 60초 이하 (유튜브 쇼츠 = 인스타 릴스 같은 파일)
    - `thumbnail.html` 1280×720 · `carousel.html` 1080×1350 장별
    - 나레이션은 `CONTENT.narration` — macOS `say`(Yuna)로 초안 + SRT 자동. 본인 녹음이 있으면 `META.VOICE_FILE`
+   - **목소리는 Qwen3-TTS(로컬·무료) 권장** (엔진 기본값은 say라 META에 지정해야 함) — `META.VOICE_ENGINE: 'qwen'`, `VOICE: 'Sohee'`, `VOICE_INSTRUCT: '밝고 귀엽고 에너지 넘치는 톤, 살짝 웃으면서 말하듯이'`, `VOICE_SPEED: 1.15`. 처음 한 번 `sh toolkit/tts/setup.sh` (실행환경 0.4GB + 모델 2.9GB, 레포 밖). macOS `say`는 지루하다는 피드백으로 초안용만
+   - 음성은 `<scene>/tts-cache/`에 문장별로 캐시된다(Qwen은 매번 조금씩 다르게 읽음). 긴 강의는 대본에서 줄 길이를 먼저 재고(`toolkit/tts.mjs`의 `voice()`) 챕터 시각을 계산한다 — 예: `lectures/001-*/scenes/timing.mjs`
+   - 대본은 말하듯 "~해요" 말투, 영문 용어는 `say` 필드에 한글 발음으로 (자막은 원래 표기)
+   - **말하는 캐릭터 아바타**: 오른쪽 아래 SVG 캐릭터, 입 = `envelope()` 음량(프레임당 0~9), 눈 깜빡임은 프레임 번호로 — 예: `lectures/001-*/scenes/longform.html`. 본문·자막 오른쪽 끝을 1680px 안으로
+   - **구성(리텐션)**: 0~15초 결과 몽타주 + 훅 한 줄 → 약속 + 궁금증 걸기("마지막에 ○○") → 본론(화면은 5~10초마다 바뀌게) → 가치를 준 뒤 구독 한 줄 → 걸어 둔 궁금증 회수 → 따라 하기 → 다음 영상 예고 + 엔드스크린 20초. 썸네일 제목 = 첫 장면 훅과 같은 약속
 7. **렌더 → 프레임 검수 → 수정 반복** (가장 중요)
    - `node toolkit/render.mjs lectures/NNN/scenes/longform.html` → `scenes/out/longform.mp4` + `.srt`
    - `--still` (썸네일), `--still --query slide=N` (캐러셀 장별)

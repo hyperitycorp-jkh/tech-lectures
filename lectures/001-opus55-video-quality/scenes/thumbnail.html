@@ -1,0 +1,70 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 001 유튜브 썸네일 후보 3안 (1280×720). 첫 장면 훅과 같은 약속: "영상 AI 없이, 코드로 만든 영상"
+     렌더: node toolkit/render.mjs lectures/001-opus55-video-quality/scenes/thumbnail.html --still --query v=1   (v=1|2|3)
+     원칙: 제목 3~6단어, 320px로 줄여도 읽혀야 한다 -->
+<style>
+:root{--acc:#d97757}
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0e0e10;font-family:"Pretendard",sans-serif;color:#fff}
+.abs{position:absolute}
+.v{display:none;position:absolute;inset:0}
+h1{margin:0;font-weight:900;letter-spacing:-4px;line-height:1.02;text-shadow:0 6px 24px rgba(0,0,0,.55)}
+h1 em{font-style:normal;color:var(--acc)}
+.badge{padding:10px 22px;border-radius:14px;background:var(--acc);font-size:30px;font-weight:900;color:#fff}
+.phone{position:absolute;width:250px;height:444px;border-radius:30px;border:6px solid #fff;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);background:#000}
+.phone img{width:100%;height:100%;object-fit:cover}
+.tile{position:absolute;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+/* v1: 홍보 영상 3컷 + 큰 제목 */
+#v1 h1{position:absolute;left:60px;top:150px;font-size:118px}
+#v1 .badge{position:absolute;left:60px;top:60px}
+#v1 .sub{position:absolute;left:64px;bottom:58px;font-size:34px;font-weight:800;color:#e9e2d6}
+/* v2: 코드 → 결과 대비 */
+#v2 .code{position:absolute;left:50px;top:250px;width:470px;height:360px;border-radius:22px;background:#17161a;border:2px solid #2a2930;padding:30px;box-sizing:border-box;font:600 26px/1.6 Menlo,monospace;color:#cfc8bd;white-space:pre}
+#v2 .code b{color:var(--acc);font-weight:700}
+#v2 .arrow{position:absolute;left:530px;top:370px;font-size:110px;font-weight:900;color:var(--acc)}
+#v2 h1{position:absolute;left:50px;top:52px;font-size:132px}
+/* v3: 캐릭터 + 스타일 그리드 */
+#v3 h1{position:absolute;left:56px;top:70px;font-size:128px}
+#v3 .av{position:absolute;left:40px;bottom:-10px;width:380px;height:380px}
+#v3 .bubble{position:absolute;left:350px;bottom:250px;padding:14px 24px;border-radius:24px;background:#fff;color:#1f1e1d;font-size:36px;font-weight:900}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="v" id="v1">
+  <div class="badge">Claude Opus 5.5</div>
+  <h1>영상 AI 없이<br><em>코드로</em><br>만든 영상</h1>
+  <div class="phone" style="left:640px;top:170px;transform:rotate(-8deg)"><img src="/lectures/001-opus55-video-quality/clips/blurry/00345.png"></div>
+  <div class="phone" style="left:810px;top:120px;transform:rotate(0deg);z-index:2"><img src="/lectures/001-opus55-video-quality/clips/morning/00181.png"></div>
+  <div class="phone" style="left:980px;top:170px;transform:rotate(8deg)"><img src="/lectures/001-opus55-video-quality/clips/runner/00151.png"></div>
+  <div class="sub">실제 앱 홍보 영상까지</div>
+</div>
+<div class="v" id="v2">
+  <h1><em>코드</em>가 영상이 된다</h1>
+  <div class="code">renderFrame(f) {
+  t = f / 30
+  <b>draw</b>(t)
+}
+<b>× 360장</b> → ffmpeg</div>
+  <div class="arrow">→</div>
+  <div class="tile" style="left:640px;top:250px;width:600px;height:338px"><img src="/lectures/001-opus55-video-quality/clips/reel/00451.png"></div>
+  <img class="abs" src="avatar.svg" style="right:20px;bottom:0;width:170px">
+</div>
+<div class="v" id="v3">
+  <h1>영상 AI<br><em>없이?!</em></h1>
+  <div class="tile" style="left:600px;top:60px;width:320px;height:180px;transform:rotate(-3deg)"><img src="/lectures/001-opus55-video-quality/clips/reel/00451.png"></div>
+  <div class="tile" style="left:935px;top:80px;width:320px;height:180px;transform:rotate(2deg)"><img src="/lectures/001-opus55-video-quality/clips/reel/00631.png"></div>
+  <div class="tile" style="left:620px;top:270px;width:320px;height:180px;transform:rotate(2deg)"><img src="/lectures/001-opus55-video-quality/clips/reel/00991.png"></div>
+  <div class="tile" style="left:950px;top:290px;width:300px;height:169px;transform:rotate(-2deg)"><img src="/lectures/001-opus55-video-quality/clips/reel/01351.png"></div>
+  <div class="phone" style="left:830px;top:420px;width:170px;height:302px;border-width:5px;transform:rotate(6deg)"><img src="/lectures/001-opus55-video-quality/clips/blurry/00345.png"></div>
+  <img class="av" src="avatar.svg">
+  <div class="bubble">전부 코드예요!</div>
+</div>
+<script>
+const V = new URLSearchParams(location.search).get('v') || '1';
+$('v' + V).style.display = 'block';
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1, AUDIO: 'none' };
+window.renderFrame = () => {};
+ready(['900 118px Pretendard', '600 26px Menlo']);
+</script>
+</body></html>

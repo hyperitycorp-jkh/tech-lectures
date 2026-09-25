@@ -11,7 +11,7 @@ Opus 5.5 출시 직후 "Claude로 영상을 잘 만든다"는 이야기가 돌�
 | 2 | 8가지 스타일 쇼릴 (모션그래픽·수채화·3D·셰이더·키네틱 타이포·React UI·D3·픽셀아트) | 16:9 · 48초 | [영상](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/opus55-style-reel.mp4) |
 | 3 | 실제 앱 홍보 영상 3편 (브랜드 에셋·스토어 문구 사용) | 9:16 · 20초 | [블러리](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/promo/blurry.mp4) · [모닝콜](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/promo/morning.mp4) · [모두의 러너](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/promo/runner.mp4) |
 | 4 | 강의 요약 영상 (쇼릴·홍보 영상을 화면 안에서 재생) | 16:9 · 60초 | [영상](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/promo/lecture.mp4) |
-| 5 | **롱폼 강의** (원리 → 파이프라인 → 8가지 스타일 → 홍보 영상 → 평가 → 따라 하기, 나레이션·자막) | 16:9 · 7분 39초 | [영상](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/longform.mp4) · [자막 SRT](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/longform.srt) |
+| 5 | **롱폼 강의** (결과 몽타주 → 원리 → 파이프라인 → 8가지 스타일 → 홍보 영상 → 평가·실수 3개 → 따라 하기, Qwen3-TTS 나레이션 + 말하는 캐릭터 아바타) | 16:9 · 8분 14초 | [영상](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/longform.mp4) · [자막 SRT](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/longform.srt) · [썸네일](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/thumbnail.png) |
 
 노션 강좌: 📚 강의 → 🎬 Opus 5.5 영상 — 코드로 영상 만들기 (1장 기술편 / 2장 활용편)
 
@@ -44,7 +44,7 @@ HTML 장면(renderFrame(f)) → 헤드리스 Chrome이 프레임마다 스크린
 | 러너 | 단어 중간 줄바꿈, 출처에 없는 도시별 프로그램 표기 | 줄 나눔, **원문 대조 후 삭제** |
 
 ## 파일
-- `scenes/longform.html`, `longform.script.js` — 롱폼 장면·대본. 대본을 고치면 `node lectures/001-opus55-video-quality/scenes/timing.mjs`로 나레이션 길이를 다시 잰 뒤 `node toolkit/render.mjs lectures/001-opus55-video-quality/scenes/longform.html` (영상 소스는 버킷에서 받아 `toolkit/clip.mjs`로 `clips/`에 풀어야 함)
+- `scenes/longform.html`, `longform.script.js` — 롱폼 장면·대본. 대본을 고치면 `node lectures/001-opus55-video-quality/scenes/timing.mjs`로 나레이션 음성(Qwen3-TTS, 처음 한 번 `sh toolkit/tts/setup.sh`)·길이·입 모양을 다시 만든 뒤 `node toolkit/render.mjs lectures/001-opus55-video-quality/scenes/longform.html` (영상 소스는 버킷에서 받아 `toolkit/clip.mjs`로 `clips/`에 풀어야 함)
 - `scenes/scene.html`, `scenes/render.mjs` — 12초 설명 영상
 - `scenes/styles/01~08.html`, `scenes/reel.mjs` — 8가지 스타일 쇼릴 (원본 스크립트 그대로 보관)
   - 다시 렌더: `cd scenes && npm i playwright-core three p5 d3 react@18 react-dom@18 htm && node reel.mjs`

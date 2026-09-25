@@ -1,6 +1,7 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
-<!-- 001 롱폼 (16:9 1920×1080). 대본·구성은 longform.script.js, 나레이션 길이는 longform.timing.js(timing.mjs 가 생성).
+<!-- 001 롱폼 (16:9 1920×1080). 대본·구성·음성 설정은 longform.script.js,
+     나레이션 길이·입 모양은 longform.timing.js (timing.mjs 가 생성).
      렌더: node toolkit/render.mjs lectures/001-opus55-video-quality/scenes/longform.html
      특정 프레임 확인: --still --query f=1234 -->
 <style>
@@ -10,29 +11,42 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--b
 #bg{inset:0;background:#000}
 #bg img{width:100%;height:100%;object-fit:cover;filter:blur(6px) brightness(.35) saturate(.8)}
 #kicker{left:120px;top:84px;font:600 30px "SF Mono",Menlo,monospace;color:var(--acc)}
-#title{left:120px;top:126px;right:120px;font-size:62px;font-weight:800;letter-spacing:-1.5px}
-#cover{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 140px}
+#title{left:120px;top:126px;right:300px;font-size:62px;font-weight:800;letter-spacing:-1.5px}
+#cover{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 200px}
 #cover h1{font-size:100px;font-weight:900;letter-spacing:-3px;margin:0;line-height:1.15;white-space:pre-line}
 #cover p{font-size:38px;color:#c9c3ba;margin-top:30px}
-#points{left:120px;top:290px;right:120px}
+#points{left:120px;top:290px;right:300px}
 #points div{font-size:52px;font-weight:700;margin-bottom:42px;display:flex;gap:28px}
 #points i{font-style:normal;color:var(--acc);width:56px;flex:none}
-#code{left:120px;top:270px;width:1680px;height:600px;border-radius:24px;background:var(--panel);padding:48px 56px;box-sizing:border-box;font:500 30px/1.65 "SF Mono",Menlo,monospace;white-space:pre;overflow:hidden}
+#code{left:120px;top:270px;width:1560px;height:600px;border-radius:24px;background:var(--panel);padding:44px 40px;box-sizing:border-box;font:500 25px/1.7 "SF Mono",Menlo,monospace;white-space:pre;overflow:hidden}
 .media{border-radius:22px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
 .media img{max-width:100%;max-height:100%;object-fit:contain}
-#mediaFull{left:120px;top:260px;width:1680px;height:620px}
-#mediaFull.big{left:240px;top:236px;width:1440px;height:700px;background:transparent}
-#source{right:120px;top:892px;font-size:24px;color:var(--dim)}
-#sidePts{left:120px;top:330px;width:1000px}
+#mediaFull{left:120px;top:260px;width:1560px;height:620px}
+#mediaFull.big{left:300px;top:236px;width:1200px;height:675px;background:transparent}
+#source{right:300px;top:892px;font-size:24px;color:var(--dim)}
+#sidePts{left:120px;top:330px;width:980px}
 #sidePts div{font-size:42px;font-weight:700;margin-bottom:40px;display:flex;gap:24px}
 #sidePts i{font-style:normal;color:var(--acc);width:48px;flex:none}
-#phone{left:1330px;top:236px;width:400px;height:711px;border-radius:40px;border:6px solid #2a2930;background:#000}
+#phone{left:1160px;top:236px;width:400px;height:711px;border-radius:40px;border:6px solid #2a2930;background:#000}
 #phone img{width:100%;height:100%;object-fit:cover}
 .trio{top:250px;width:370px;height:658px;border-radius:32px;border:5px solid #2a2930;background:#000}
 .trio img{width:100%;height:100%;object-fit:cover}
 .tlabel{top:916px;width:380px;text-align:center;font-size:30px;font-weight:700;color:#c9c3ba}
-#caption{left:0;right:0;top:962px;text-align:center}
-#caption span{display:inline-block;max-width:1500px;text-wrap:balance;padding:10px 26px;border-radius:12px;background:rgba(0,0,0,.78);font-size:36px;font-weight:600;line-height:1.35}
+/* 몽타주: 결과 컷을 빠르게, 큰 훅 문구 */
+#mont{inset:0;background:#000;overflow:hidden}
+#mont img{position:absolute}
+#montFull{inset:0;width:100%;height:100%;object-fit:cover}
+#montBg{inset:0;width:100%;height:100%;object-fit:cover;filter:blur(24px) brightness(.45)}
+#montPhone{left:1180px;top:90px;width:400px;height:711px;border-radius:36px;object-fit:cover;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#hook{left:0;right:0;bottom:0;height:520px;background:linear-gradient(transparent,rgba(0,0,0,.85) 55%);display:flex;align-items:flex-end;padding:0 120px 150px;box-sizing:border-box}
+#hook h1{margin:0;font-size:112px;font-weight:900;letter-spacing:-4px;line-height:1.08;white-space:pre-line;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+#hook h1 b{color:var(--acc)}
+#endcard{inset:0;display:flex;flex-direction:column;align-items:center;padding-top:130px;text-align:center}
+#endcard h1{font-size:88px;font-weight:900;letter-spacing:-3px;margin:0}
+#endcard p{font:500 30px "SF Mono",Menlo,monospace;color:#c9c3ba;margin-top:22px}
+#caption{left:0;right:280px;top:962px;text-align:center}
+#caption span{display:inline-block;max-width:1400px;text-wrap:balance;padding:10px 26px;border-radius:12px;background:rgba(0,0,0,.78);font-size:36px;font-weight:600;line-height:1.35}
+#avatar{left:1650px;top:808px;width:250px;height:250px}
 #bar{left:0;right:0;bottom:0;height:8px;background:#222}
 #barFill{height:100%;background:var(--acc)}
 </style>
@@ -41,7 +55,10 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--b
 <script src="longform.timing.js"></script>
 </head><body>
 <div class="abs" id="bg"><img id="bgImg"></div>
+<div class="abs" id="mont"><img id="montFull"><img id="montBg"><img id="montPhone"></div>
+<div class="abs" id="hook"><h1 id="hookText"></h1></div>
 <div class="abs" id="cover"><h1 id="coverTitle"></h1><p id="coverSub"></p></div>
+<div class="abs" id="endcard"><h1 id="endTitle"></h1><p id="endSub"></p></div>
 <div class="abs" id="kicker"></div><div class="abs" id="title"></div>
 <div class="abs" id="points"></div>
 <div class="abs" id="code"></div>
@@ -49,29 +66,53 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--b
 <div class="abs" id="sidePts"></div>
 <div class="abs media" id="phone"><img id="imgPhone"></div>
 <div class="abs media trio" id="trio0" style="left:305px"><img id="imgT0"></div>
-<div class="abs media trio" id="trio1" style="left:775px"><img id="imgT1"></div>
-<div class="abs media trio" id="trio2" style="left:1245px"><img id="imgT2"></div>
-<div class="abs tlabel" id="tl0" style="left:300px"></div><div class="abs tlabel" id="tl1" style="left:770px"></div><div class="abs tlabel" id="tl2" style="left:1240px"></div>
+<div class="abs media trio" id="trio1" style="left:715px"><img id="imgT1"></div>
+<div class="abs media trio" id="trio2" style="left:1125px"><img id="imgT2"></div>
+<div class="abs tlabel" id="tl0" style="left:300px"></div><div class="abs tlabel" id="tl1" style="left:710px"></div><div class="abs tlabel" id="tl2" style="left:1120px"></div>
 <div class="abs" id="source"></div>
 <div class="abs" id="caption"><span id="capText"></span></div>
+<!-- 캐릭터 아바타: 입 = 나레이션 음량, 눈 깜빡임·들썩임은 프레임 번호로 결정 -->
+<svg class="abs" id="avatar" viewBox="0 0 260 260">
+  <ellipse cx="130" cy="248" rx="72" ry="9" fill="rgba(0,0,0,.45)"/>
+  <g id="avBody">
+    <line x1="130" y1="44" x2="130" y2="20" stroke="#2a2930" stroke-width="5" stroke-linecap="round"/>
+    <path d="M130 2 L136 14 L148 20 L136 26 L130 38 L124 26 L112 20 L124 14 Z" fill="#d97757"/>
+    <path d="M130 42 C203 42 230 102 230 152 C230 212 186 242 130 242 C74 242 30 212 30 152 C30 102 57 42 130 42 Z" fill="#ffb38a"/>
+    <ellipse cx="130" cy="196" rx="62" ry="36" fill="#ffc7a6"/>
+    <path d="M50 132 C50 60 210 60 210 132" stroke="#2a2930" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <rect x="30" y="114" width="28" height="50" rx="13" fill="#2a2930"/>
+    <rect x="202" y="114" width="28" height="50" rx="13" fill="#2a2930"/>
+    <path d="M46 162 C54 200 80 210 100 208" stroke="#2a2930" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <circle cx="102" cy="208" r="7" fill="#d97757"/>
+    <g id="eyeL" transform="translate(100 140)"><ellipse rx="17" ry="20" fill="#fff"/><ellipse cy="3" rx="11" ry="13" fill="#1f1e1d"/><circle cx="-4" cy="-3" r="4.5" fill="#fff"/></g>
+    <g id="eyeR" transform="translate(160 140)"><ellipse rx="17" ry="20" fill="#fff"/><ellipse cy="3" rx="11" ry="13" fill="#1f1e1d"/><circle cx="-4" cy="-3" r="4.5" fill="#fff"/></g>
+    <ellipse cx="78" cy="174" rx="15" ry="8" fill="#ff7a7a" opacity=".45"/>
+    <ellipse cx="182" cy="174" rx="15" ry="8" fill="#ff7a7a" opacity=".45"/>
+    <g transform="translate(130 180)">
+      <path id="mouthClosed" d="M-14 0 Q0 13 14 0" stroke="#3a2320" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <g id="mouthOpen"><ellipse id="mo" rx="13" ry="8" fill="#3a2320"/><ellipse id="tongue" rx="8" ry="4" fill="#ff8a8a"/></g>
+    </g>
+  </g>
+</svg>
 <div class="abs" id="bar"><div id="barFill"></div></div>
 <script>
 const FPS = 30, LEAD = .5, GAP = .3, TAIL = .7;
-// 나레이션 길이로 챕터 시작 시각과 줄 시각을 계산한다
+// 나레이션 길이로 챕터 시작 시각과 줄 시각을 계산한다 (hold: 말이 끝난 뒤 남길 시간)
 const CH = [], NARR = [];
 let T = 0;
 SCRIPT.chapters.forEach((c, ci) => {
   const ch = { ...c, t: T };
   let x = T + LEAD;
   c.say.forEach((text, li) => {
-    NARR.push({ t: +x.toFixed(2), end: x + TIMING[ci][li] + .25, ci, text, say: SCRIPT.toSay(text) });
+    NARR.push({ t: +x.toFixed(2), end: x + TIMING[ci][li] + .25, ci, li, text, say: SCRIPT.toSay(text) });
     x += TIMING[ci][li] + GAP;
   });
-  T = x - GAP + TAIL;
+  T = x - GAP + (c.hold ?? TAIL);
   CH.push(ch);
 });
 const DURATION = Math.ceil(T);
-window.META = { W: 1920, H: 1080, FPS, DURATION, AUDIO: 'calm', STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
+window.META = { W: 1920, H: 1080, FPS, DURATION, AUDIO: 'calm', ...SCRIPT.voice,
+  STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
 window.NARRATION = NARR;
 window.CHAPTERS = CH.map(c => ({ t: c.t, title: c.title }));  // publish.md 타임스탬프용
 const chEnd = i => (CH[i + 1]?.t ?? DURATION);
@@ -88,7 +129,28 @@ const list = (items, s, t, a) => items.map((p, k) => {
   const pa = Math.min(ease(prog(t, s + .4 + k * .5, s + .9 + k * .5)), a);
   return `<div style="opacity:${pa};transform:translateX(${(1 - pa) * -40}px)"><i>${String(k + 1).padStart(2, '0')}</i>${p}</div>`;
 }).join('');
-const ALL = ['bg', 'cover', 'kicker', 'title', 'points', 'code', 'mediaFull', 'sidePts', 'phone', 'trio0', 'trio1', 'trio2', 'tl0', 'tl1', 'tl2', 'source'];
+const ALL = ['bg', 'mont', 'hook', 'cover', 'endcard', 'kicker', 'title', 'points', 'code', 'mediaFull', 'sidePts', 'phone',
+  'trio0', 'trio1', 'trio2', 'tl0', 'tl1', 'tl2', 'source'];
+
+// 아바타: 현재 줄의 음량(0~9)으로 입, 결정적 깜빡임
+function avatar(t, line) {
+  let a = 0;
+  if (line && t < line.end) {
+    const env = ENV[line.ci][line.li], k = Math.round((t - line.t) * FPS);
+    const v = i => (+env[i] || 0) / 9;
+    a = (v(k) + v(k - 1)) / 2;
+  }
+  const open = a > .12;
+  $('mouthClosed').style.display = open ? 'none' : '';
+  $('mouthOpen').style.display = open ? '' : 'none';
+  $('mo').setAttribute('rx', 12 + a * 5); $('mo').setAttribute('ry', 3 + a * 15);
+  $('tongue').setAttribute('cy', 1 + a * 8); $('tongue').setAttribute('ry', 2 + a * 5);
+  const cyc = t % 3.7, blink = cyc > 3.55 || (Math.floor(t / 3.7) % 3 === 1 && cyc > 3.3 && cyc < 3.42);
+  ['eyeL', 'eyeR'].forEach((id, k) => $(id).setAttribute('transform', `translate(${k ? 160 : 100} 140) scale(1 ${blink ? .1 : 1})`));
+  const talk = line && t < line.end ? 1 : 0;
+  $('avBody').setAttribute('transform',
+    `translate(0 ${(-7 * a - 2 * Math.sin(t * 2.4)).toFixed(2)}) rotate(${(talk * 2.5 * Math.sin(t * 3.1)).toFixed(2)} 130 240)`);
+}
 
 window.renderFrame = async f => {
   const t = f / FPS, i = CH.indexOf(at(CH, t)), c = CH[i], s = c.t, e = chEnd(i);
@@ -97,10 +159,26 @@ window.renderFrame = async f => {
   const rise = (1 - ease(prog(t, s, s + .6))) * 30;
   ALL.forEach(id => show($(id), 0));
 
-  if (c.type === 'cover') {
+  if (c.type === 'montage') {
+    const k = Math.floor((t - s) / c.cutLen), cut = c.cuts[k % c.cuts.length];
+    const inCut = Math.round(((t - s) % c.cutLen) * FPS);
+    if (cut.v) {
+      await clip($('montPhone'), cut, inCut); await clip($('montBg'), cut, inCut);
+      $('montFull').style.display = 'none'; $('montBg').style.display = $('montPhone').style.display = '';
+    } else {
+      await clip($('montFull'), cut, inCut);
+      $('montFull').style.display = ''; $('montBg').style.display = $('montPhone').style.display = 'none';
+    }
+    show($('mont'), 1 - ease(prog(t, e - .35, e)));
+    $('hookText').innerHTML = c.title.replace('코드로', '<b>코드로</b>');
+    show($('hook'), Math.min(ease(prog(t, s + .3, s + .8)), 1 - ease(prog(t, e - .35, e))), (1 - ease(prog(t, s + .3, s + .9))) * 40);
+  } else if (c.type === 'cover') {
     $('coverTitle').textContent = c.title; $('coverSub').textContent = c.sub || '';
     show($('cover'), a, rise);
     if (c.bg) { await clip($('bgImg'), c.bg, local); show($('bg'), a); }
+  } else if (c.type === 'endcard') {
+    $('endTitle').textContent = c.title; $('endSub').textContent = c.sub || '';
+    show($('endcard'), a, rise);
   } else {
     $('kicker').textContent = c.kicker || ''; $('title').textContent = c.title || '';
     show($('kicker'), a); show($('title'), a, rise);
@@ -129,14 +207,15 @@ window.renderFrame = async f => {
   if (c.source) { $('source').textContent = '출처: ' + c.source; show($('source'), a); }
 
   const line = at(NARR, t);
-  $('capText').textContent = line?.text || '';
   // 같은 챕터 안에서는 다음 줄까지 유지, 챕터 마지막 줄은 읽기가 끝나면 내린다 (다음 장면에 안 남게)
   const next = NARR[NARR.indexOf(line) + 1];
   const capEnd = line && next && next.ci === line.ci ? next.t : line?.end;
+  $('capText').textContent = line?.text || '';
   show($('caption'), line ? inOut(t, line.t, capEnd, .15) : 0);
+  avatar(t, line);
   $('barFill').style.width = `${(t / DURATION) * 100}%`;
   document.body.style.opacity = 1 - prog(t, DURATION - .5, DURATION);
 };
-ready(['900 100px Pretendard', '500 30px Menlo']);
+ready(['900 100px Pretendard', '500 25px Menlo']);
 </script>
 </body></html>

@@ -1,7 +1,8 @@
 // 코드 렌더 영상 렌더러 (레포 루트에서 실행)
 //   node toolkit/render.mjs <scene.html> [--name 이름] [--still] [--query "slide=2"]
 // 장면 파일 계약:
-//   window.META = { W, H, FPS, DURATION, AUDIO?: 'calm'|'bright'|'beat'|'none', VOICE?: 'Yuna', VOICE_FILE?: '녹음.m4a' }
+//   window.META = { W, H, FPS, DURATION, AUDIO?: 'calm'|'bright'|'beat'|'none', VOICE_FILE?: '녹음.m4a',
+//                   VOICE_ENGINE?: 'say'|'qwen', VOICE?, VOICE_INSTRUCT?, VOICE_SPEED? }  ← 음성 설정은 toolkit/tts.mjs
 //   window.NARRATION = [{ t: 초, text: '자막 문장', say?: '읽는 문장(영문 용어를 한글 발음으로)' }]   ← 있으면 macOS say 나레이션 + SRT 자막 생성
 //   window.renderFrame(f)  (async 가능) · window.READY = true
 // 출력: <scene 폴더>/out/<name>.mp4 (+ .srt) · --still 이면 <name>.png (frame META.STILL_FRAME || 0)
@@ -12,6 +13,7 @@ import { existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { homedir, tmpdir } from 'node:os';
 import { extname, join, resolve, dirname, relative, basename } from 'node:path';
+import { voice } from './tts.mjs';
 
 const args = process.argv.slice(2);
 const opt = k => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : undefined; };
@@ -129,31 +131,26 @@ await mkdir(tmp, { recursive: true });
 const musicPath = join(tmp, 'music.wav');
 await writeFile(musicPath, wav);
 
-// ── 나레이션: 녹음 파일(VOICE_FILE) 또는 macOS say, 같은 타이밍으로 SRT ──
+// ── 나레이션: 녹음 파일(VOICE_FILE) 또는 TTS(toolkit/tts.mjs, 캐시 <scene>/tts-cache), 같은 타이밍으로 SRT ──
 // ffmpeg 입력 순서: 0 = 프레임, 1 = 배경음, 2.. = 목소리
 const audioInputs = ['-i', musicPath], filters = [];
-const dur = p => parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', p]).toString());
 const srtTime = s => { const ms = Math.round(s * 1000); const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, sec = Math.floor(ms / 1000) % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},${String(ms % 1000).padStart(3, '0')}`; };
-let srt = '';
+let srt = '', lines = [];
 if (META.VOICE_FILE) {
   audioInputs.push('-i', join(sceneDir, META.VOICE_FILE));
   filters.push('[2:a]aresample=48000[v0]');
-} else {
+} else if (NARRATION.length) {
+  lines = voice(NARRATION.map(l => l.say || l.text), META, join(sceneDir, 'tts-cache'));
   NARRATION.forEach((line, i) => {
-    const p = join(tmp, `n${i}.aiff`);
-    execFileSync('say', ['-v', META.VOICE || 'Yuna', '-r', String(META.VOICE_RATE || 190), '-o', p, line.say || line.text]);
-    audioInputs.push('-i', p);
+    audioInputs.push('-i', lines[i].path);
     const ms = Math.round(line.t * 1000);
     filters.push(`[${i + 2}:a]aresample=48000,adelay=${ms}|${ms}[v${i}]`);
   });
 }
 NARRATION.forEach((line, i) => {
-  const next = NARRATION[i + 1]?.t ?? D;
-  if (!META.VOICE_FILE) {
-    const len = dur(join(tmp, `n${i}.aiff`));
-    if (line.t + len > next) console.warn(`⚠ 나레이션 ${i + 1}번이 ${(line.t + len - next).toFixed(1)}초 겹칩니다 — 다음 줄 t를 ${(line.t + len + .3).toFixed(1)} 이상으로`);
-  }
-  const end = META.VOICE_FILE ? next - .05 : Math.min(next - .05, line.t + dur(join(tmp, `n${i}.aiff`)) + .3);
+  const next = NARRATION[i + 1]?.t ?? D, len = lines[i]?.dur;
+  if (len && line.t + len > next) console.warn(`⚠ 나레이션 ${i + 1}번이 ${(line.t + len - next).toFixed(1)}초 겹칩니다 — 다음 줄 t를 ${(line.t + len + .3).toFixed(1)} 이상으로`);
+  const end = len ? Math.min(next - .05, line.t + len + .3) : next - .05;
   srt += `${i + 1}\n${srtTime(line.t)} --> ${srtTime(end)}\n${line.text}\n\n`;
 });
 const voices = filters.length;

@@ -1,25 +1,27 @@
-// longform.script.js 의 나레이션을 render.mjs 와 같은 설정(say -v Yuna -r 190)으로 읽어 길이를 잰다
+// longform.script.js 의 나레이션 음성을 만들고(toolkit/tts.mjs, 캐시 scenes/tts-cache) 길이·입 모양을 적는다
 //   node lectures/001-opus55-video-quality/scenes/timing.mjs   → longform.timing.js
-import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
-import { execFileSync } from 'node:child_process';
-import { tmpdir } from 'node:os';
+// render.mjs 도 같은 설정·같은 캐시를 쓰므로 렌더 음성과 타이밍이 일치한다.
+import { readFile, writeFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
+import { voice, envelope } from '../../../toolkit/tts.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const ctx = { window: {} };
 vm.runInNewContext(await readFile(join(here, 'longform.script.js'), 'utf8'), ctx);
-const { chapters, toSay } = ctx.window.SCRIPT;
-const tmp = await mkdtemp(join(tmpdir(), 'timing-'));
-const dur = p => parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', p]).toString());
+const { chapters, toSay, voice: meta } = ctx.window.SCRIPT;
 
-const lens = chapters.map((c, ci) => c.say.map((text, li) => {
-  const p = join(tmp, `${ci}-${li}.aiff`);
-  execFileSync('say', ['-v', 'Yuna', '-r', '190', '-o', p, toSay(text)]);
-  return +dur(p).toFixed(3);
-}));
-await rm(tmp, { recursive: true, force: true });
-await writeFile(join(here, 'longform.timing.js'), `// timing.mjs 가 생성 — 챕터별 나레이션 줄 길이(초)\nwindow.TIMING = ${JSON.stringify(lens)};\n`);
-const total = lens.flat().reduce((a, b) => a + b, 0);
-console.log(`${lens.flat().length}줄, 음성 합계 ${total.toFixed(1)}초`);
+const flat = chapters.flatMap((c, ci) => c.say.map((text, li) => ({ ci, li, say: toSay(text) })));
+const t0 = Date.now();
+const got = voice(flat.map(x => x.say), meta, join(here, 'tts-cache'));
+const TIMING = chapters.map(c => c.say.map(() => 0)), ENV = chapters.map(c => c.say.map(() => ''));
+flat.forEach((x, i) => {
+  TIMING[x.ci][x.li] = +got[i].dur.toFixed(3);
+  // 입 모양: 프레임당 한 글자 0~9
+  ENV[x.ci][x.li] = envelope(got[i].path, 30).map(v => Math.round(v * 9)).join('');
+});
+await writeFile(join(here, 'longform.timing.js'),
+  `// timing.mjs 가 생성 — 챕터별 나레이션 줄 길이(초)와 프레임별 음량(0~9, 아바타 입 모양)\nwindow.TIMING = ${JSON.stringify(TIMING)};\nwindow.ENV = ${JSON.stringify(ENV)};\n`);
+const total = got.reduce((a, b) => a + b.dur, 0);
+console.log(`${flat.length}줄, 음성 합계 ${total.toFixed(1)}초 (${((Date.now() - t0) / 1000).toFixed(0)}초 걸림)`);
