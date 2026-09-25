@@ -2,7 +2,7 @@
 //   node toolkit/render.mjs <scene.html> [--name 이름] [--still] [--query "slide=2"]
 // 장면 파일 계약:
 //   window.META = { W, H, FPS, DURATION, AUDIO?: 'calm'|'bright'|'beat'|'none', VOICE?: 'Yuna', VOICE_FILE?: '녹음.m4a' }
-//   window.NARRATION = [{ t: 초, text: '문장' }]   ← 있으면 macOS say 나레이션 + SRT 자막 생성
+//   window.NARRATION = [{ t: 초, text: '자막 문장', say?: '읽는 문장(영문 용어를 한글 발음으로)' }]   ← 있으면 macOS say 나레이션 + SRT 자막 생성
 //   window.renderFrame(f)  (async 가능) · window.READY = true
 // 출력: <scene 폴더>/out/<name>.mp4 (+ .srt) · --still 이면 <name>.png (frame META.STILL_FRAME || 0)
 import { chromium } from 'playwright-core';
@@ -141,7 +141,7 @@ if (META.VOICE_FILE) {
 } else {
   NARRATION.forEach((line, i) => {
     const p = join(tmp, `n${i}.aiff`);
-    execFileSync('say', ['-v', META.VOICE || 'Yuna', '-r', String(META.VOICE_RATE || 190), '-o', p, line.text]);
+    execFileSync('say', ['-v', META.VOICE || 'Yuna', '-r', String(META.VOICE_RATE || 190), '-o', p, line.say || line.text]);
     audioInputs.push('-i', p);
     const ms = Math.round(line.t * 1000);
     filters.push(`[${i + 2}:a]aresample=48000,adelay=${ms}|${ms}[v${i}]`);
