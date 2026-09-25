@@ -6,7 +6,7 @@
 ## 강의 목록
 | # | 주제 | 유튜브 | 노션 | 코드 |
 |---|---|---|---|---|
-| 001 | Claude Opus 5.5로 만든 영상, 퀄리티는 어느 정도일까 | (업로드 예정) | 📚 강의 → 🎬 Opus 5.5 영상 | [lectures/001-opus55-video-quality](lectures/001-opus55-video-quality) |
+| 001 | Claude Opus 5.5로 만든 영상, 퀄리티는 어느 정도일까 | 롱폼 [영상](https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/longform.mp4) (유튜브 업로드 예정) | 📚 강의 → 🎬 Opus 5.5 영상 | [lectures/001-opus55-video-quality](lectures/001-opus55-video-quality) |
 
 ## 한 강의가 만들어지는 흐름
 ```
