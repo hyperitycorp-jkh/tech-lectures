@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100">
+  <!-- 템플릿 미리보기용 예시 결과 화면. 실제 강의에서는 clip.mjs 로 푼 결과 영상({ clip: ... })으로 바꾼다 -->
+  <rect width="1600" height="1100" fill="#f4efe6"/>
+  <circle cx="520" cy="520" r="230" fill="#6a9bcc"/>
+  <rect x="820" y="300" width="440" height="440" rx="80" fill="#d97757" transform="rotate(12 1040 520)"/>
+  <path d="M120 900 C 400 780, 700 1020, 1000 880 S 1400 800, 1500 900" fill="none" stroke="#b5c77a" stroke-width="36" stroke-linecap="round"/>
+  <text x="800" y="1040" text-anchor="middle" font-family="Menlo, monospace" font-size="44" fill="#8a8580">result.mp4 → clip.mjs → { clip: '...' }</text>
+</svg>

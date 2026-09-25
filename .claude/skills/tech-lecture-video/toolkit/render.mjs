@@ -62,7 +62,12 @@ await probe.close();
 
 const page = await browser.newPage({ viewport: { width: META.W, height: META.H }, deviceScaleFactor: 1 }); watch(page);
 await page.goto(url);
-await page.waitForFunction(() => window.READY === true, null, { timeout: 30000 });
+// READY 를 기다리는 동안 404·스크립트 에러가 나면 바로 알려준다 (타임아웃까지 기다리지 않음)
+for (let waited = 0; !(await page.evaluate(() => window.READY === true)); waited += 100) {
+  if (errors.length) throw new Error(`장면 로드 실패: ${errors.join(' | ')}`);
+  if (waited > 30000) throw new Error('READY 30초 초과 — ready()/window.READY 호출 확인');
+  await new Promise(r => setTimeout(r, 100));
+}
 await page.evaluate(() => document.fonts.ready);
 if (errors.length) throw new Error(errors.join(' | '));
 
@@ -83,7 +88,8 @@ await rm(framesDir, { recursive: true, force: true });
 await mkdir(framesDir, { recursive: true });
 const total = Math.round(META.FPS * META.DURATION);
 for (let f = 0; f < total; f++) {
-  await page.evaluate(n => window.renderFrame(n), f);
+  try { await page.evaluate(n => window.renderFrame(n), f); }
+  catch (e) { throw new Error(`frame ${f} 렌더 실패: ${[...errors, e.message].join(' | ')}`); }
   await page.screenshot({ path: join(framesDir, `${String(f).padStart(5, '0')}.png`) });
   if (errors.length) throw new Error(`frame ${f}: ${errors.join(' | ')}`);
   if (f % 300 === 0) console.log(`${name} ${f}/${total}`);

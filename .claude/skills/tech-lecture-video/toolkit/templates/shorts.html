@@ -28,7 +28,8 @@ const CONTENT = {
   duration: 12,
   audio: 'beat',
   hook: '이거 <em>코드로</em><br>만든 영상입니다',   // 첫 1초 안에 보여야 한다
-  media: { clip: '/toolkit/templates/clips/sample', fit: 'cover' },  // 또는 { image: '...' } · fit: cover(꽉 채움) | contain(전체 보이기)
+  // 실제 강의: media: { clip: '/lectures/NNN-주제/clips/result', fit: 'cover' }  (clip.mjs 로 푼 결과 영상)
+  media: { image: '/toolkit/templates/sample-right.svg', fit: 'cover' },  // fit: cover(꽉 채움) | contain(전체 보이기)
   lines: [ { t: 1.5, text: '영상 생성 AI 없이' }, { t: 4.5, text: 'HTML로 그리고 한 장씩 캡처' }, { t: 7.5, text: 'ffmpeg로 묶으면 끝' } ],
   cta: { t: 10, text: '전체 강의는 유튜브에서', sub: '코드는 GitHub 링크' },
   narration: [ { t: .3, text: '이거 코드로 만든 영상입니다.' }, { t: 4.5, text: 'HTML로 그리고 한 장씩 캡처해서 묶었어요.' } ],

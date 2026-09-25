@@ -51,12 +51,13 @@ const CONTENT = {
     { t: 4, type: 'points', kicker: '01 · 무엇을', title: '오늘 테스트한 것', points: ['무엇이 새로 나왔나', '직접 돌려본 결과', '내 일에 응용하기'] },
     { t: 9, type: 'compare', kicker: '02 · 결과', title: '강의 화면 + 실제 결과',
       left: { image: '/toolkit/templates/sample-left.svg', label: '만드는 과정' },
-      right: { clip: '/toolkit/templates/clips/sample', label: '결과물' }, source: '' },
+      // 실제 강의: right: { clip: '/lectures/NNN-주제/clips/result', label: '결과물' }  (node toolkit/clip.mjs 결과.mp4 lectures/NNN-주제/clips/result)
+      right: { image: '/toolkit/templates/sample-right.svg', label: '결과물' }, source: '' },
   ],
   narration: [
     { t: 0.5, text: '오늘은 새로 나온 기술을 직접 테스트해 봤습니다.' },
     { t: 4.5, text: '무엇이 나왔는지, 돌려보니 어땠는지, 어디에 쓸 수 있는지 순서대로 봅니다.' },
-    { t: 9.5, text: '왼쪽은 만드는 과정, 오른쪽은 실제 결과물입니다.' },
+    { t: 10.2, text: '왼쪽은 만드는 과정, 오른쪽은 실제 결과물입니다.' },
   ],
 };
 // ────────────────────────────────────────────────────────────
