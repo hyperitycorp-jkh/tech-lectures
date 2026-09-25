@@ -1,6 +1,6 @@
 {
  "base": "https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/",
- "note": "유튜브는 private 로 올린 뒤 확인하고 공개로 바꾼다. [유튜브 링크] 는 롱폼 업로드 후 채운다. 인스타·Threads 미디어는 base 버킷에 먼저 올려야 한다.",
+ "note": "유튜브 4편은 2026-09-26 '바이브코더' 채널에 private 로 업로드됨(uploaded). 확인 후 스튜디오에서 공개로. 인스타·Threads 미디어는 base 버킷에 먼저 올려야 한다.",
  "items": [
   {
    "id": "longform",
@@ -22,7 +22,8 @@
     "p5.js",
     "모션그래픽",
     "1인 개발"
-   ]
+   ],
+   "uploaded": "https://youtu.be/ENXDMTlbvTA"
   },
   {
    "id": "shorts-1",
@@ -37,7 +38,8 @@
     "Opus 5.5",
     "AI 영상",
     "코드로 영상 만들기"
-   ]
+   ],
+   "uploaded": "https://youtu.be/BjksaQrVrqQ"
   },
   {
    "id": "shorts-2",
@@ -52,7 +54,8 @@
     "Opus 5.5",
     "AI 영상",
     "코드로 영상 만들기"
-   ]
+   ],
+   "uploaded": "https://youtu.be/hdkeGpuVmyQ"
   },
   {
    "id": "shorts-3",
@@ -67,7 +70,8 @@
     "Opus 5.5",
     "AI 영상",
     "코드로 영상 만들기"
-   ]
+   ],
+   "uploaded": "https://youtu.be/1jfrRJ3s0zU"
   },
   {
    "id": "reel-1",
@@ -115,7 +119,7 @@
     "제일 놀라웠던 건 실제 앱 홍보 영상. 레포에서 브랜드 색·로고·스토어 문구를 찾아서 20초 세로 영상 3편을 만들었다.",
     "대신 알아서 완벽하진 않다. 에러 없이 돌아도 제목이 겹치고, 폰 화면이 잘리고, 출처에 없는 내용을 붙이기도 했다. 전부 프레임을 눈으로 보고 잡았다.",
     "정리: 글자·데이터·실제 UI가 중요한 영상은 코드 렌더가 압도적. 실사 장면은 생성형 AI와 섞어 쓰는 게 맞다.",
-    "코드는 전부 공개. https://github.com/hyperitycorp-jkh/tech-lectures 전체 과정은 유튜브에 [유튜브 링크]"
+    "코드는 전부 공개. https://github.com/hyperitycorp-jkh/tech-lectures 전체 과정은 유튜브에 https://youtu.be/ENXDMTlbvTA"
    ]
   }
  ]

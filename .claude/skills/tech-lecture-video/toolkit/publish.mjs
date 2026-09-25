@@ -2,6 +2,7 @@
 //   node toolkit/publish.mjs lectures/NNN/publish.json                 ← 무엇을 어디에 올릴지 확인
 //   node toolkit/publish.mjs lectures/NNN/publish.json --go [--only id,id]   ← 실제 업로드 (공개 게시물이므로 사용자 확인 후에만)
 //   node toolkit/publish.mjs auth youtube        ← 강의 채널로 로그인해 refresh token 저장 (브라우저)
+//   node toolkit/publish.mjs whoami youtube      ← 로그인된 유튜브 채널 확인 (업로드 전에)
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
@@ -102,6 +103,12 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
   mkdirSync(CFG, { recursive: true });
   writeFileSync(join(CFG, 'youtube.json'), JSON.stringify({ refresh_token: j.refresh_token }), { mode: 0o600 });
   console.log(`저장 → ${join(CFG, 'youtube.json')}`);
+} else if (args[0] === 'whoami' && args[1] === 'youtube') {
+  // 로그인된 채널 확인 (조회만). 업로드 전에 강의 채널이 맞는지 본다
+  const tok = await youtubeToken();
+  const j = await (await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true', { headers: { Authorization: `Bearer ${tok}` } })).json();
+  for (const c of j.items || []) console.log(`${c.snippet.title}  (${c.snippet.customUrl || c.id})  구독 ${c.statistics.subscriberCount} · 영상 ${c.statistics.videoCount}`);
+  if (!j.items?.length) console.log('연결된 채널 없음', JSON.stringify(j.error || {}));
 } else if (args[0] === 'buffer-channels') {
   const d = await buffer('query { account { organizations { channels { id name service } } } }');
   for (const ch of d.account.organizations.flatMap(o => o.channels)) console.log(`${ch.service.padEnd(10)} ${ch.id}  ${ch.name}`);
