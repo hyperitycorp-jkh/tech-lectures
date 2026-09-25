@@ -1,0 +1,78 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#e9e4da;font-family:"Apple SD Gothic Neo",sans-serif;color:#1f1e1d}
+.phone{position:absolute;left:640px;top:40px;width:330px;height:680px;border-radius:48px;background:#1f1e1d;padding:12px;box-sizing:border-box;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+.screen{position:relative;width:100%;height:100%;border-radius:38px;background:#fbfaf7;overflow:hidden}
+.notch{position:absolute;left:50%;top:10px;width:96px;height:26px;border-radius:14px;background:#1f1e1d;transform:translateX(-50%)}
+.head{padding:56px 22px 8px;font-size:15px;color:#8a8580}
+.title{padding:0 22px;font-size:28px;font-weight:800;letter-spacing:-.5px}
+.ring{margin:18px auto 6px;display:block}
+.card{margin:10px 16px;padding:14px 16px;border-radius:18px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.card b{font-size:20px}
+.btn{position:absolute;left:16px;right:16px;bottom:22px;height:54px;border-radius:16px;background:#d97757;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center}
+.toast{position:absolute;left:16px;right:16px;bottom:90px;padding:14px;border-radius:14px;background:#1f1e1d;color:#fff;font-size:15px;text-align:center}
+.cursor{position:absolute;width:34px;height:34px;border-radius:50%;background:rgba(31,30,29,.25);border:2px solid rgba(31,30,29,.6);box-sizing:border-box;z-index:10}
+.copy{position:absolute;left:110px;top:210px;width:460px}
+.copy h1{font-size:54px;line-height:1.15;margin:0 0 18px;letter-spacing:-1.5px}
+.copy p{font-size:22px;color:#6b6660;margin:0;line-height:1.5}
+</style>
+<script src="/node_modules/react/umd/react.production.min.js"></script>
+<script src="/node_modules/react-dom/umd/react-dom.production.min.js"></script>
+<script src="/node_modules/htm/dist/htm.umd.js"></script>
+</head><body>
+<div id="root"></div>
+<script>
+// 06 앱 UI 데모 — React 컴포넌트를 시간 t로 렌더. 실제 제품 컴포넌트를 그대로 넣는 방식과 같다.
+const FPS = 30;
+const html = htm.bind(React.createElement);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, s, e) => clamp((t - s) / (e - s));
+const ease = x => 1 - Math.pow(1 - x, 3);
+
+function Ring({ p }) {
+  const r = 70, c = 2 * Math.PI * r;
+  return html`<svg class="ring" width="180" height="180" viewBox="0 0 180 180">
+    <circle cx="90" cy="90" r=${r} fill="none" stroke="#eee8de" stroke-width="16"/>
+    <circle cx="90" cy="90" r=${r} fill="none" stroke="#d97757" stroke-width="16" stroke-linecap="round"
+      stroke-dasharray=${c} stroke-dashoffset=${c * (1 - p)} transform="rotate(-90 90 90)"/>
+    <text x="90" y="86" text-anchor="middle" font-size="34" font-weight="800" fill="#1f1e1d">${(p * 5).toFixed(2)}</text>
+    <text x="90" y="114" text-anchor="middle" font-size="14" fill="#8a8580">/ 5.00 km</text>
+  </svg>`;
+}
+
+function App({ t }) {
+  const run = ease(prog(t, .6, 3.4));
+  const cards = [['페이스', `${(5 + (1 - run) * .8).toFixed(1)}'/km`], ['심박', `${Math.round(128 + run * 24)} bpm`], ['칼로리', `${Math.round(run * 312)} kcal`]];
+  // 커서: 버튼으로 이동해 탭
+  const cm = ease(prog(t, 3.6, 4.4));
+  const cx = 1080 + (800 - 1080) * cm, cy = 560 + (668 - 560) * cm;
+  const press = prog(t, 4.45, 4.6) * (1 - prog(t, 4.6, 4.8));
+  const toast = ease(prog(t, 4.7, 5.0));
+  const copyIn = ease(prog(t, 0, .8));
+  return html`
+    <div class="copy" style=${{ opacity: copyIn, transform: `translateX(${(1 - copyIn) * -40}px)` }}>
+      <h1>실제 React<br/>컴포넌트가 움직인다</h1>
+      <p>상태 값을 프레임 번호로 계산해서<br/>매 프레임 렌더하면 그대로 영상이 된다</p>
+    </div>
+    <div class="phone" style=${{ transform: `translateY(${(1 - ease(prog(t, 0, .7))) * 60}px)` }}><div class="screen">
+      <div class="notch"/>
+      <div class="head">오늘의 러닝</div>
+      <div class="title">저녁 한강 코스</div>
+      <${Ring} p=${run}/>
+      ${cards.map(([k, v], i) => {
+        const a = ease(prog(t, .9 + i * .2, 1.5 + i * .2));
+        return html`<div class="card" key=${k} style=${{ opacity: a, transform: `translateY(${(1 - a) * 30}px)` }}><span>${k}</span><b>${v}</b></div>`;
+      })}
+      <div class="btn" style=${{ transform: `scale(${1 - press * .06})`, background: toast > 0 ? '#5a7a64' : '#d97757' }}>${toast > 0 ? '기록 저장됨' : '러닝 종료'}</div>
+      ${toast > 0 && html`<div class="toast" style=${{ opacity: toast, transform: `translateY(${(1 - toast) * 30}px)` }}>🎉 5km 완주! 기록을 저장했어요</div>`}
+    </div></div>
+    <div class="cursor" style=${{ left: cx - 17 + 'px', top: cy - 17 + 'px', transform: `scale(${1 - press * .3})`, opacity: prog(t, 3.4, 3.6) * (1 - prog(t, 4.9, 5.2)) }}/>`;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+window.renderFrame = f => { ReactDOM.flushSync(() => root.render(html`<${App} t=${f / FPS}/>`)); };
+window.renderFrame(0);
+document.fonts.ready.then(() => { window.READY = true; });
+</script>
+</body></html>

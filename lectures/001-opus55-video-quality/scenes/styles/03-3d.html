@@ -1,0 +1,67 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#101014;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js" } }</script>
+</head><body>
+<script type="module">
+// 03 3D — Three.js. 조명·그림자·물리 기반 재질, 카메라 궤도 이동
+import * as THREE from 'three';
+const W = 1280, H = 720, FPS = 30;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#15151b');
+scene.fog = new THREE.Fog('#15151b', 12, 26);
+const camera = new THREE.PerspectiveCamera(40, W / H, .1, 100);
+
+scene.add(new THREE.HemisphereLight('#b8c6ff', '#20140f', .6));
+const key = new THREE.DirectionalLight('#ffe2c4', 2.4);
+key.position.set(5, 9, 4); key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8 });
+scene.add(key);
+const rim = new THREE.PointLight('#d97757', 40, 20); rim.position.set(-4, 3, -3); scene.add(rim);
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: '#1d1d24', roughness: .9 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+const hero = new THREE.Mesh(new THREE.TorusKnotGeometry(1.1, .36, 220, 32),
+  new THREE.MeshPhysicalMaterial({ color: '#d97757', metalness: .35, roughness: .22, clearcoat: 1, clearcoatRoughness: .1 }));
+hero.castShadow = true; scene.add(hero);
+
+// 주변을 도는 구슬들
+const orbs = [];
+const orbCols = ['#6a9bcc', '#b5c77a', '#e8b04a', '#f4efe6'];
+for (let i = 0; i < 14; i++) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(.16 + (i % 3) * .06, 32, 16),
+    new THREE.MeshStandardMaterial({ color: orbCols[i % 4], roughness: .3, metalness: .2 }));
+  m.castShadow = true; scene.add(m); orbs.push(m);
+}
+// 받침대
+const base = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 2, .3, 64), new THREE.MeshStandardMaterial({ color: '#2a2a33', roughness: .5 }));
+base.position.y = .15; base.receiveShadow = true; base.castShadow = true; scene.add(base);
+
+window.renderFrame = f => {
+  const t = f / FPS;
+  const intro = 1 - Math.pow(1 - Math.min(1, t / 1.5), 3);
+  hero.position.y = 2.2 + Math.sin(t * 1.6) * .15;
+  hero.rotation.set(t * .5, t * .8, 0);
+  hero.scale.setScalar(.2 + .8 * intro);
+  orbs.forEach((m, i) => {
+    const a = i / orbs.length * Math.PI * 2 + t * (.6 + (i % 3) * .15);
+    const r = 2.6 + (i % 4) * .35;
+    m.position.set(Math.cos(a) * r * intro, 1.2 + Math.sin(a * 2 + i) * .7, Math.sin(a) * r * intro);
+  });
+  const ca = -.6 + t * .35;
+  camera.position.set(Math.cos(ca) * 8.5, 3.4 + Math.sin(t * .5) * .4, Math.sin(ca) * 8.5);
+  camera.lookAt(0, 1.7, 0);
+  renderer.render(scene, camera);
+};
+window.renderFrame(0);
+window.READY = true;
+</script>
+</body></html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;background:#000;overflow:hidden}
+canvas{display:block;width:1280px;height:720px;image-rendering:pixelated}
+</style>
+</head><body>
+<canvas id="c" width="160" height="90"></canvas>
+<script>
+// 08 픽셀아트 — 160×90 캔버스에 그리고 CSS로 8배 확대(pixelated). 시차 스크롤 + 스프라이트
+const FPS = 30, W = 160, H = 90;
+const g = document.getElementById('c').getContext('2d');
+g.imageSmoothingEnabled = false;
+const PAL = { k: '#1a1c2c', w: '#f4f4f4', r: '#b13e53', o: '#ef7d57', y: '#ffcd75', g: '#38b764', d: '#257179', b: '#3b5dc9', s: '#41a6f6', c: '#73eff7', p: '#5d275d', n: '#333c57' };
+
+// 스프라이트: 문자 → 팔레트 색, '.'은 투명
+const RUN = [[
+  '...rrrr...', '..rrrrrr..', '..kyykyk..', '..yyyyyy..', '...yyyy...', '..bbbbbb..', '.ybbbbbby.', '..bbbbbb..', '..bb..bb..', '.kk....kk.',
+], [
+  '...rrrr...', '..rrrrrr..', '..kyykyk..', '..yyyyyy..', '...yyyy...', '..bbbbbb..', '..bbbbbby.', '.ybbbbbb..', '...bbbb...', '...kkkk...',
+]];
+const COIN = ['.yy.', 'yooy', 'yooy', '.yy.'];
+const CLOUD = ['...ww...', '.wwwwww.', 'wwwwwwww'];
+function sprite(rows, x, y) {
+  rows.forEach((row, j) => [...row].forEach((ch, i) => { if (ch !== '.') { g.fillStyle = PAL[ch]; g.fillRect(Math.round(x) + i, Math.round(y) + j, 1, 1); } }));
+}
+// 3×5 비트맵 폰트 (브라우저 폰트는 안티앨리어싱돼 픽셀이 뭉개짐)
+const FONT5 = {
+  S: '111100111001111', C: '111100100100111', O: '111101101101111', R: '110101110101101', E: '111100111100111',
+  0: '111101101101111', 1: '010110010010111', 2: '111001111100111', 3: '111001111001111', 4: '101101111001001',
+  5: '111100111001111', 6: '111100111101111', 7: '111001001001001', 8: '111101111101111', 9: '111101111001111',
+};
+function pixelText(str, x, y, col) {
+  g.fillStyle = col;
+  [...str].forEach((ch, n) => { const bits = FONT5[ch]; if (bits) [...bits].forEach((b, k) => { if (b === '1') g.fillRect(x + n * 4 + k % 3, y + Math.floor(k / 3), 1, 1); }); });
+}
+// 결정적 의사난수
+const rnd = n => { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); };
+
+window.renderFrame = f => {
+  const t = f / FPS, speed = 38;
+  // 하늘 그라데이션 밴드 (노을)
+  ['#29366f', '#3b5dc9', '#5d6fcf', '#b56a8c', '#ef7d57', '#ffcd75'].forEach((c, i) => { g.fillStyle = c; g.fillRect(0, i * 9, W, 9); });
+  g.fillStyle = '#ffcd75'; g.beginPath(); g.arc(120, 46, 10, 0, 7); g.fill();
+  // 구름 (느리게)
+  for (let i = 0; i < 5; i++) sprite(CLOUD, ((i * 47 - t * 6) % 200 + 200) % 200 - 20, 6 + rnd(i) * 18);
+  // 먼 산 (중간 속도)
+  g.fillStyle = PAL.p;
+  for (let x = 0; x < W; x++) { const wx = x + t * 10; g.fillRect(x, 50 - Math.round(8 * Math.abs(Math.sin(wx * .045)) + 5 * Math.sin(wx * .13)), 1, 40); }
+  g.fillStyle = PAL.d;
+  for (let x = 0; x < W; x++) { const wx = x + t * 20; g.fillRect(x, 60 - Math.round(6 * Math.abs(Math.sin(wx * .07)) + 3 * Math.sin(wx * .21)), 1, 30); }
+  // 땅 타일 (빠르게)
+  const off = (t * speed) % 8;
+  g.fillStyle = PAL.g; g.fillRect(0, 72, W, 3);
+  for (let x = -8; x < W + 8; x += 8) { g.fillStyle = PAL.k; g.fillRect(Math.round(x - off), 75, 8, 15); g.fillStyle = PAL.n; g.fillRect(Math.round(x - off) + 1, 76, 6, 6); g.fillRect(Math.round(x - off) + 4 - 4, 83, 3, 6); }
+  // 장애물과 코인
+  const world = t * speed;
+  for (let i = 0; i < 6; i++) {
+    const bx = 90 + i * 70 - world;
+    if (bx > -10 && bx < W) { g.fillStyle = PAL.r; g.fillRect(Math.round(bx), 64, 6, 8); g.fillStyle = PAL.o; g.fillRect(Math.round(bx) + 1, 65, 4, 2); }
+    const cx = 90 + i * 70 + 3 - world, bob = Math.round(Math.sin(t * 8 + i));
+    const collected = cx < 34;
+    if (!collected && cx > -6 && cx < W) sprite(COIN, cx, 42 + bob);
+  }
+  // 캐릭터: 장애물 직전에 점프
+  let jumpY = 0;
+  for (let i = 0; i < 6; i++) {
+    const bx = 90 + i * 70 - world, d = (bx - 30) / speed; // 도착까지 남은 시간
+    if (d < .35 && d > -.25) { const p = (.35 - d) / .6; jumpY = Math.max(jumpY, Math.sin(p * Math.PI) * 26); }
+  }
+  const frame = jumpY > 0 ? 0 : Math.floor(t * 10) % 2;
+  sprite(RUN[frame], 26, 62 - jumpY);
+  // 점수
+  const score = Math.max(0, Math.floor((world - 57) / 70) + 1) * 100;
+  g.fillStyle = PAL.k; g.fillRect(2, 2, 43, 9);
+  pixelText('SCORE ' + String(score).padStart(4, '0'), 4, 4, PAL.w);
+};
+window.READY = true;
+</script>
+</body></html>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100">
+  <!-- 템플릿 미리보기용 예시 이미지: 코드 에디터 모양 -->
+  <rect width="1600" height="1100" fill="#17161a"/>
+  <circle cx="60" cy="56" r="14" fill="#ff5f57"/><circle cx="104" cy="56" r="14" fill="#febc2e"/><circle cx="148" cy="56" r="14" fill="#28c840"/>
+  <g font-family="Menlo, monospace" font-size="52">
+    <text x="80" y="220" fill="#6a9bcc">window<tspan fill="#f4efe6">.renderFrame = (f) =&gt; {</tspan></text>
+    <text x="140" y="320" fill="#6a9bcc">const<tspan fill="#f4efe6"> t = f / 30;</tspan></text>
+    <text x="140" y="420" fill="#b5c77a">circle<tspan fill="#f4efe6">(960, 540, 120 * t);</tspan></text>
+    <text x="80" y="520" fill="#f4efe6">};</text>
+    <text x="80" y="680" fill="#6b6660">// 같은 f → 항상 같은 그림</text>
+  </g>
+  <circle cx="1250" cy="880" r="140" fill="#d97757"/>
+</svg>

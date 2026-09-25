@@ -1,0 +1,14 @@
+{
+  "name": "tech-lectures",
+  "private": true,
+  "type": "module",
+  "description": "새 기술을 테스트하고 응용해서 강의로 만드는 레포. 영상은 코드로 렌더한다.",
+  "scripts": {
+    "render": "node toolkit/render.mjs",
+    "capture": "node toolkit/capture.mjs",
+    "clip": "node toolkit/clip.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.55.0"
+  }
+}

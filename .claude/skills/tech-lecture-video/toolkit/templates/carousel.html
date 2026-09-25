@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 인스타 캐러셀 (1080×1350, 장마다 정지 이미지). 장 번호는 ?slide=N (1부터).
+     렌더: for i in 1 2 3 4 5; do node toolkit/render.mjs <path>/carousel.html --still --query slide=$i; done -->
+<style>
+html,body{margin:0;width:1080px;height:1350px;overflow:hidden;background:#f4efe6;color:#1f1e1d;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#no{left:80px;top:80px;font:700 32px "SF Mono",Menlo,monospace;color:var(--acc)}
+#kicker{left:80px;top:150px;font-size:38px;font-weight:700;color:#6b6660}
+#title{left:80px;right:80px;top:220px;font-size:92px;font-weight:900;line-height:1.14;letter-spacing:-3px}
+#title em{font-style:normal;color:var(--acc)}
+#body{left:80px;right:80px;top:560px;font-size:46px;line-height:1.55;font-weight:500}
+#img{left:80px;right:80px;top:560px;width:920px;height:640px;border-radius:28px;object-fit:cover}
+#foot{left:80px;right:80px;bottom:60px;display:flex;justify-content:space-between;font-size:30px;color:#8a8580}
+#dots{display:flex;gap:10px;align-items:center}
+#dots i{display:block;width:14px;height:14px;border-radius:7px;background:#d8d2c6}
+#dots i.on{background:var(--acc);width:36px}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="abs" id="no"></div><div class="abs" id="kicker"></div><div class="abs" id="title"></div>
+<div class="abs" id="body"></div><img class="abs" id="img">
+<div class="abs" id="foot"><span id="handle"></span><span id="dots"></span></div>
+<script>
+// ── 여기만 고친다 ─────────────────────────────────────────────
+// 1장 = 표지(후킹), 마지막 장 = 저장·팔로우 유도. 한 장에 메시지 하나.
+const CONTENT = {
+  accent: '#d97757', handle: '@채널이름',
+  slides: [
+    { kicker: '직접 써봄', title: '영상 AI 없이<br><em>코드로</em> 만든 영상' },
+    { kicker: '원리', title: '영상 = <em>그림 N장</em>', body: '30fps 12초면 그림 360장. Claude는 그림을 그리는 코드를 짜고, 헤드리스 Chrome이 한 장씩 캡처합니다.' },
+    { kicker: '결과', title: '8가지 <em>스타일</em>', image: '/toolkit/templates/sample-left.svg' },
+    { kicker: '저장해두세요', title: '전체 강의는<br><em>유튜브</em>에서', body: '코드는 GitHub에 전부 공개했습니다. 링크는 프로필에.' },
+  ],
+};
+// ────────────────────────────────────────────────────────────
+const N = CONTENT.slides.length, k = Math.min(N, Math.max(1, +new URLSearchParams(location.search).get('slide') || 1));
+const s = CONTENT.slides[k - 1];
+window.META = { W: 1080, H: 1350, FPS: 30, DURATION: 1, AUDIO: 'none', SLIDES: N };
+document.documentElement.style.setProperty('--acc', CONTENT.accent);
+$('no').textContent = `${String(k).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
+$('kicker').textContent = s.kicker || ''; $('title').innerHTML = s.title;
+$('body').textContent = s.body || ''; $('body').style.display = s.body && !s.image ? 'block' : 'none';
+if (s.image) $('img').src = s.image; else $('img').style.display = 'none';
+$('handle').textContent = CONTENT.handle;
+$('dots').innerHTML = CONTENT.slides.map((_, i) => `<i class="${i === k - 1 ? 'on' : ''}"></i>`).join('');
+window.renderFrame = () => {};
+ready(['900 92px Pretendard']);
+</script>
+</body></html>

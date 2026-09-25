@@ -1,0 +1,65 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#fbfaf7;font-family:"Apple SD Gothic Neo",sans-serif}</style>
+<script src="/node_modules/d3/dist/d3.min.js"></script>
+</head><body>
+<svg id="svg" width="1280" height="720"></svg>
+<script>
+// 07 데이터 애니메이션 — D3 바 차트 레이스. 연도 사이 값을 보간하고 순위를 부드럽게 바꾼다.
+// 값은 연출용 예시 데이터(실제 통계 아님).
+const FPS = 30, DURATION = 6;
+const NAMES = ['모션그래픽', '수채화', '3D', '셰이더', '키네틱 타이포', '앱 UI', '데이터', '픽셀아트'];
+const COLORS = ['#d97757', '#6a9bcc', '#b5c77a', '#e8b04a', '#8e7cc3', '#5a7a64', '#c46a8a', '#4f8f9e'];
+const KEYS = [ // 5개 키프레임(가상의 연도)
+  [30, 22, 18, 10, 26, 34, 14, 8], [42, 30, 36, 18, 30, 40, 26, 20], [48, 44, 58, 30, 34, 46, 40, 28],
+  [55, 52, 70, 52, 38, 64, 50, 46], [60, 58, 78, 66, 44, 88, 62, 70],
+];
+const YEARS = [2022, 2023, 2024, 2025, 2026];
+const M = { l: 220, r: 90, t: 130, b: 40 }, BAR = 52, GAP = 12, TOP = 6;
+const svg = d3.select('#svg');
+svg.append('text').attr('x', M.l).attr('y', 70).attr('font-size', 36).attr('font-weight', 800).attr('fill', '#1f1e1d').text('인기 영상 스타일 (예시 데이터)');
+const yearLabel = svg.append('text').attr('x', 1280 - M.r).attr('y', 660).attr('text-anchor', 'end')
+  .attr('font-size', 110).attr('font-weight', 800).attr('fill', '#1f1e1d').attr('opacity', .12);
+const axisG = svg.append('g').attr('transform', `translate(0,${M.t - 12})`);
+const barsG = svg.append('g');
+const x = d3.scaleLinear().domain([0, 100]).range([M.l, 1280 - M.r]);
+
+function state(t) {
+  const pos = Math.min(t / (DURATION - .6), 1) * (KEYS.length - 1);
+  const i = Math.min(Math.floor(pos), KEYS.length - 2), k = d3.easeCubicInOut(pos - i);
+  const vals = NAMES.map((n, j) => ({ n, c: COLORS[j], v: KEYS[i][j] + (KEYS[i + 1][j] - KEYS[i][j]) * k }));
+  // 부드러운 순위: 앞/뒤 키프레임 순위를 보간
+  const rankAt = arr => { const o = arr.map((v, j) => [v, j]).sort((a, b) => b[0] - a[0]); const r = []; o.forEach(([, j], idx) => r[j] = idx); return r; };
+  const r0 = rankAt(KEYS[i]), r1 = rankAt(KEYS[i + 1]);
+  // 순위 교체는 구간 가운데서 짧게 일어나게 해 라벨 겹침 시간을 줄임
+  const kr = d3.easeCubicInOut(Math.min(1, Math.max(0, (k - .35) / .3)));
+  vals.forEach((d, j) => d.rank = r0[j] + (r1[j] - r0[j]) * kr);
+  return { vals, year: Math.round(YEARS[i] + k) };
+}
+
+window.renderFrame = f => {
+  const { vals, year } = state(f / FPS);
+  const max = d3.max(vals, d => d.v);
+  x.domain([0, max * 1.1]);
+  axisG.call(d3.axisTop(x).ticks(5).tickSize(-(TOP + 2) * (BAR + GAP)).tickFormat(d3.format('d')))
+    .call(g => g.select('.domain').remove())
+    .call(g => g.selectAll('line').attr('stroke', '#e6e0d6'))
+    .call(g => g.selectAll('text').attr('font-size', 14).attr('fill', '#8a8580'));
+  const y = r => M.t + r * (BAR + GAP);
+  const rows = barsG.selectAll('g.row').data(vals, d => d.n).join(e => {
+    const g = e.append('g').attr('class', 'row');
+    g.append('rect').attr('rx', 8).attr('height', BAR);
+    g.append('text').attr('class', 'name').attr('text-anchor', 'end').attr('dy', '.35em').attr('font-size', 22).attr('font-weight', 700).attr('fill', '#1f1e1d');
+    g.append('text').attr('class', 'val').attr('dy', '.35em').attr('font-size', 20).attr('font-weight', 600).attr('fill', '#6b6660');
+    return g;
+  });
+  rows.attr('transform', d => `translate(0,${y(d.rank)})`).attr('opacity', d => d.rank > TOP + .5 ? 0 : 1 - Math.max(0, d.rank - TOP) * 2);
+  rows.select('rect').attr('x', M.l).attr('width', d => x(d.v) - M.l).attr('fill', d => d.c);
+  rows.select('.name').attr('x', M.l - 14).attr('y', BAR / 2).text(d => d.n);
+  rows.select('.val').attr('x', d => x(d.v) + 10).attr('y', BAR / 2).text(d => Math.round(d.v));
+  yearLabel.text(year);
+};
+window.renderFrame(0);
+document.fonts.ready.then(() => { window.READY = true; });
+</script>
+</body></html>

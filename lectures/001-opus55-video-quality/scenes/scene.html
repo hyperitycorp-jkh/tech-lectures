@@ -1,0 +1,187 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#0e0e10}canvas{display:block}</style>
+</head><body>
+<canvas id="c" width="1280" height="720"></canvas>
+<script>
+// 결정적(deterministic) 렌더러: renderFrame(f)는 같은 f에 항상 같은 그림을 그린다.
+const W = 1280, H = 720, FPS = 30, DURATION = 12;
+const c = document.getElementById('c'), g = c.getContext('2d');
+const FONT = '"Apple SD Gothic Neo","Pretendard",sans-serif';
+const MONO = '"SF Mono",Menlo,monospace';
+const INK = '#f4efe6', DIM = '#8a8580', ACC = '#d97757', ACC2 = '#6a9bcc', ACC3 = '#b5c77a';
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, s, e) => clamp((t - s) / (e - s));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const lerp = (a, b, x) => a + (b - a) * x;
+// 씬 페이드: 들어올 때 0→1, 나갈 때 1→0
+const fade = (t, s, e, d = .35) => Math.min(prog(t, s, s + d), 1 - prog(t, e - d, e));
+
+function text(str, x, y, size, color, { weight = 700, align = 'center', font = FONT, alpha = 1 } = {}) {
+  g.save(); g.globalAlpha *= alpha; g.fillStyle = color; g.textAlign = align; g.textBaseline = 'middle';
+  g.font = `${weight} ${size}px ${font}`; g.fillText(str, x, y); g.restore();
+}
+function rrect(x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); }
+function heading(num, label) {
+  text(num, 120, 110, 26, ACC, { align: 'left', font: MONO });
+  text(label, 180, 110, 36, INK, { align: 'left' });
+}
+
+// 배경: 천천히 흐르는 점 격자
+function background(t) {
+  g.fillStyle = '#0e0e10'; g.fillRect(0, 0, W, H);
+  g.fillStyle = 'rgba(244,239,230,0.06)';
+  const off = (t * 12) % 40;
+  for (let x = -40; x < W + 40; x += 40) for (let y = -40; y < H + 40; y += 40) {
+    g.beginPath(); g.arc(x + off, y + off * .5, 1.4, 0, Math.PI * 2); g.fill();
+  }
+}
+
+// 방사형 스파크 마크
+function spark(x, y, r, rot) {
+  g.save(); g.translate(x, y); g.rotate(rot); g.fillStyle = ACC;
+  for (let i = 0; i < 12; i++) {
+    g.rotate(Math.PI / 6);
+    const len = r * (i % 2 ? .72 : 1);
+    g.beginPath(); g.moveTo(-r * .07, 0); g.lineTo(0, -len); g.lineTo(r * .07, 0); g.closePath(); g.fill();
+  }
+  g.restore();
+}
+
+// ── 씬 1: 타이틀 (0 ~ 2.5s)
+function scene1(t) {
+  const a = fade(t, 0, 2.5); if (!a) return;
+  g.save(); g.globalAlpha = a;
+  spark(W / 2, 250, 60 * easeOut(prog(t, .1, 1.1)), t * .8);
+  const title = '코드로 그린 영상';
+  const sub = title.slice(0, Math.floor(prog(t, .5, 1.5) * title.length));
+  text(sub, W / 2, 380, 84, INK, { weight: 800 });
+  if (t > .5 && t < 1.9 && Math.floor(t * 4) % 2 === 0) {
+    g.font = `800 84px ${FONT}`;
+    g.fillStyle = ACC; g.fillRect(W / 2 + g.measureText(sub).width / 2 + 8, 340, 6, 80);
+  }
+  text('카메라도, 영상 생성 모델도 없이', W / 2, 470, 30, DIM, { weight: 500, alpha: easeOut(prog(t, 1.4, 2)) });
+  g.restore();
+}
+
+// ── 씬 2: 기획 → 스토리보드 카드 (2.5 ~ 5.3s)
+function scene2(t) {
+  const a = fade(t, 2.5, 5.3); if (!a) return;
+  g.save(); g.globalAlpha = a;
+  heading('01', '기획 · 스토리보드');
+  const cards = [['타이틀', ACC], ['기획', ACC2], ['코드', ACC3], ['렌더', ACC], ['인코딩', ACC2]];
+  cards.forEach(([label, col], i) => {
+    const p = easeOut(prog(t, 2.7 + i * .18, 3.4 + i * .18));
+    const x = 120 + i * 214, y = lerp(520, 250, p);
+    g.save(); g.globalAlpha *= p;
+    rrect(x, y, 190, 250, 16); g.fillStyle = '#1b1a1d'; g.fill();
+    g.lineWidth = 2; g.strokeStyle = 'rgba(244,239,230,.15)'; g.stroke();
+    rrect(x + 16, y + 16, 158, 120, 10); g.fillStyle = col; g.fill();
+    const k = t * 1.5 + i;
+    g.fillStyle = '#0e0e10'; g.beginPath(); g.arc(x + 95 + Math.cos(k) * 30, y + 76, 16, 0, Math.PI * 2); g.fill();
+    text(`SHOT ${i + 1}`, x + 20, y + 170, 16, DIM, { align: 'left', font: MONO, weight: 500 });
+    text(label, x + 20, y + 205, 28, INK, { align: 'left' });
+    g.restore();
+  });
+  g.restore();
+}
+
+// ── 씬 3: 코드가 타이핑되며 오른쪽 캔버스에 그림이 그려짐 (5.3 ~ 8.5s)
+const CODE = [
+  ['function', ACC2, ' draw(t) {'],
+  ['  const', ACC2, ' r = 120 * ease(t);'],
+  ['  circle', ACC3, '(640, 360, r);'],
+  ['  wave', ACC3, '(t, 3.5, "#d97757");'],
+  ['  label', ACC3, '("frame " + f);'],
+  ['}', INK, ''],
+];
+function scene3(t) {
+  const a = fade(t, 5.3, 8.5); if (!a) return;
+  g.save(); g.globalAlpha = a;
+  heading('02', '장면을 코드로 작성');
+  // 에디터 패널
+  rrect(100, 170, 520, 440, 16); g.fillStyle = '#17161a'; g.fill();
+  ['#ff5f57', '#febc2e', '#28c840'].forEach((col, i) => { g.fillStyle = col; g.beginPath(); g.arc(128 + i * 22, 196, 6, 0, 7); g.fill(); });
+  const total = CODE.reduce((s, l) => s + l[0].length + l[2].length, 0);
+  let budget = Math.floor(prog(t, 5.5, 7.3) * total);
+  CODE.forEach(([kw, col, rest], i) => {
+    const y = 250 + i * 48;
+    text(String(i + 1), 130, y, 18, '#4a4750', { align: 'left', font: MONO, weight: 400 });
+    const k = kw.slice(0, Math.max(0, budget)); budget -= kw.length;
+    const r = rest.slice(0, Math.max(0, budget)); budget -= rest.length;
+    g.font = `500 22px ${MONO}`;
+    const kw_w = g.measureText(k).width;
+    text(k, 170, y, 22, col, { align: 'left', font: MONO, weight: 500 });
+    text(r, 170 + kw_w, y, 22, INK, { align: 'left', font: MONO, weight: 500 });
+  });
+  // 결과 캔버스 패널: 코드 진행에 맞춰 요소 등장
+  const cx = 920, cy = 390;
+  rrect(660, 170, 520, 440, 16); g.fillStyle = INK; g.fill();
+  const pc = easeOut(prog(t, 6.0, 6.8));
+  g.fillStyle = ACC2; g.beginPath(); g.arc(cx, cy, 120 * pc * (1 + .05 * Math.sin(t * 6)), 0, 7); g.fill();
+  const pw = prog(t, 6.6, 7.4);
+  if (pw > 0) {
+    g.save(); rrect(660, 170, 520, 440, 16); g.clip();
+    g.strokeStyle = ACC; g.lineWidth = 6; g.lineCap = 'round'; g.beginPath();
+    for (let x = 0; x <= 520 * pw; x += 4) {
+      const y = cy + Math.sin(x / 520 * Math.PI * 2 * 3.5 + t * 4) * 60;
+      x === 0 ? g.moveTo(660 + x, y) : g.lineTo(660 + x, y);
+    }
+    g.stroke(); g.restore();
+  }
+  text('frame ' + Math.floor(t * FPS), 690, 580, 20, '#0e0e10', { align: 'left', font: MONO, weight: 600, alpha: easeOut(prog(t, 7.1, 7.4)) });
+  g.restore();
+}
+
+// ── 씬 4: 프레임들이 ffmpeg로 빨려들어가 MP4가 됨 (8.5 ~ 10.7s)
+function scene4(t) {
+  const a = fade(t, 8.5, 10.7); if (!a) return;
+  g.save(); g.globalAlpha = a;
+  heading('03', '프레임 렌더 → ffmpeg 인코딩');
+  const boxX = 900;
+  for (let i = 0; i < 14; i++) {
+    const travel = (t - 8.5) * 360 + i * 110, x = travel % 1540 - 260;
+    // ffmpeg에 가까운(오른쪽) 프레임일수록 번호가 작게
+    const label = (Math.floor(travel / 1540) * 14 + 13 - i) * 25;
+    if (x > boxX - 100) continue;
+    const y = 380 + Math.sin(i * 1.7) * 6;
+    g.save(); g.globalAlpha *= clamp((boxX - 100 - x) / 120);
+    rrect(x, y - 50, 90, 100, 8); g.fillStyle = [ACC, ACC2, ACC3][i % 3]; g.fill();
+    text(String(label).padStart(4, '0'), x + 45, y + 70, 14, DIM, { font: MONO, weight: 500 });
+    g.restore();
+  }
+  rrect(boxX, 290, 240, 180, 20); g.fillStyle = '#1b1a1d'; g.fill();
+  g.lineWidth = 3; g.strokeStyle = ACC; g.stroke();
+  text('ffmpeg', boxX + 120, 360, 34, INK, { font: MONO });
+  const pb = prog(t, 8.8, 10.2);
+  rrect(boxX + 30, 410, 180, 12, 6); g.fillStyle = '#2a2830'; g.fill();
+  if (pb > 0) { rrect(boxX + 30, 410, 180 * pb, 12, 6); g.fillStyle = ACC; g.fill(); }
+  text('output.mp4 ✓', boxX + 120, 530, 26, ACC3, { alpha: easeOut(prog(t, 10.0, 10.4)) });
+  g.restore();
+}
+
+// ── 씬 5: 엔드 카드 (10.7 ~ 12s)
+function scene5(t) {
+  const a = prog(t, 10.7, 11.1) * (1 - prog(t, 11.7, 12)); if (!a) return;
+  g.save(); g.globalAlpha = a;
+  spark(W / 2, 270, 46, t * .8);
+  text(`${DURATION * FPS} frames · ${FPS}fps · 100% code`, W / 2, 380, 40, INK, { weight: 800 });
+  text('Written by Claude Opus 5.5', W / 2, 440, 26, DIM, { weight: 500, font: MONO });
+  g.restore();
+}
+
+window.renderFrame = f => {
+  const t = f / FPS;
+  background(t);
+  scene1(t); scene2(t); scene3(t); scene4(t); scene5(t);
+  return c.toDataURL('image/png').split(',')[1];
+};
+window.META = { W, H, FPS, DURATION };
+// 브라우저에서 직접 열면 실시간 미리보기 (렌더 스크립트에서는 꺼짐)
+if (!navigator.webdriver) {
+  const t0 = performance.now();
+  (function loop() { renderFrame(Math.floor((performance.now() - t0) / 1000 * FPS) % (DURATION * FPS)); requestAnimationFrame(loop); })();
+}
+</script>
+</body></html>

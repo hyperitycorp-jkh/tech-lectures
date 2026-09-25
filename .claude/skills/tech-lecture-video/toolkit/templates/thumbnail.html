@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 유튜브 썸네일 (1280×720 정지 이미지). 렌더: node toolkit/render.mjs <path>/thumbnail.html --still
+     원칙: 3~6단어, 가장 큰 글자는 모바일 작은 화면에서도 읽혀야 한다. 오른쪽에 결과 화면 1장. -->
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0e0e10;font-family:"Pretendard",sans-serif;color:#fff}
+.abs{position:absolute}
+#img{right:-40px;top:70px;width:640px;height:580px;border-radius:28px;object-fit:cover;transform:rotate(3deg);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+#badge{left:64px;top:64px;padding:12px 24px;border-radius:14px;background:var(--acc);font-size:34px;font-weight:900}
+#t{left:64px;top:170px;width:700px;font-size:108px;font-weight:900;line-height:1.08;letter-spacing:-4px;text-shadow:0 6px 24px rgba(0,0,0,.5)}
+#t em{font-style:normal;color:var(--acc)}
+#sub{left:64px;bottom:64px;font-size:36px;font-weight:700;color:#cfc8bd}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<img class="abs" id="img">
+<div class="abs" id="badge"></div>
+<div class="abs" id="t"></div>
+<div class="abs" id="sub"></div>
+<script>
+// ── 여기만 고친다 ─────────────────────────────────────────────
+const CONTENT = {
+  accent: '#d97757',
+  badge: '직접 써봄',
+  title: '코드로 만든<br><em>영상 퀄리티</em>',
+  sub: 'Opus 5.5 · 영상 AI 없이',
+  image: '/toolkit/templates/sample-left.svg',
+};
+// ────────────────────────────────────────────────────────────
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1, AUDIO: 'none' };
+document.documentElement.style.setProperty('--acc', CONTENT.accent);
+$('badge').textContent = CONTENT.badge; $('t').innerHTML = CONTENT.title; $('sub').textContent = CONTENT.sub;
+$('img').src = CONTENT.image;
+window.renderFrame = () => {};
+ready(['900 108px Pretendard']);
+</script>
+</body></html>

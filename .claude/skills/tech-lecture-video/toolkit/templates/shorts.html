@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 쇼츠·릴스 템플릿 (9:16 1080×1920, 60초 이하). 같은 파일을 유튜브 쇼츠와 인스타 릴스에 올린다.
+     렌더: node toolkit/render.mjs lectures/NNN-주제/scenes/shorts.html -->
+<style>
+:root{--bg:#0e0e10;--ink:#fff;--acc:#d97757}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+/* 위아래 15%는 플랫폼 UI가 덮으므로 글자를 두지 않는다 */
+#hook{left:70px;right:70px;top:300px;text-align:center;font-size:104px;font-weight:900;line-height:1.18;letter-spacing:-3px}
+#hook em{font-style:normal;color:var(--acc)}
+#media{left:90px;width:900px;top:640px;height:900px;border-radius:40px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+#media img{max-width:100%;max-height:100%;object-fit:contain}
+#line{left:70px;right:70px;top:1560px;text-align:center;font-size:58px;font-weight:800;line-height:1.3}
+#cta{left:0;right:0;top:820px;text-align:center}
+#cta b{display:inline-block;padding:30px 60px;border-radius:70px;background:var(--acc);font-size:56px}
+#cta p{font-size:44px;margin-top:40px;opacity:.8}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="abs" id="hook"></div>
+<div class="abs" id="media"><img id="img"></div>
+<div class="abs" id="line"></div>
+<div class="abs" id="cta"><b id="ctaText"></b><p id="ctaSub"></p></div>
+<script>
+// ── 여기만 고친다 ─────────────────────────────────────────────
+const CONTENT = {
+  duration: 12,
+  audio: 'beat',
+  hook: '이거 <em>코드로</em><br>만든 영상입니다',   // 첫 1초 안에 보여야 한다
+  media: { clip: '/toolkit/templates/clips/sample', fit: 'cover' },  // 또는 { image: '...' } · fit: cover(꽉 채움) | contain(전체 보이기)
+  lines: [ { t: 1.5, text: '영상 생성 AI 없이' }, { t: 4.5, text: 'HTML로 그리고 한 장씩 캡처' }, { t: 7.5, text: 'ffmpeg로 묶으면 끝' } ],
+  cta: { t: 10, text: '전체 강의는 유튜브에서', sub: '코드는 GitHub 링크' },
+  narration: [ { t: .3, text: '이거 코드로 만든 영상입니다.' }, { t: 4.5, text: 'HTML로 그리고 한 장씩 캡처해서 묶었어요.' } ],
+};
+// ────────────────────────────────────────────────────────────
+$('img').style.objectFit = CONTENT.media.fit || 'contain';
+if (CONTENT.media.fit === 'cover') Object.assign($('img').style, { width: '100%', height: '100%', maxWidth: 'none', maxHeight: 'none' });
+window.META = { W: 1080, H: 1920, FPS: 30, DURATION: CONTENT.duration, AUDIO: CONTENT.audio };
+window.NARRATION = CONTENT.narration;
+$('hook').innerHTML = CONTENT.hook;
+$('ctaText').textContent = CONTENT.cta.text; $('ctaSub').textContent = CONTENT.cta.sub || '';
+
+window.renderFrame = async f => {
+  const t = f / 30, ct = CONTENT.cta.t;
+  const body = 1 - ease(prog(t, ct - .4, ct));
+  show($('hook'), Math.min(ease(prog(t, 0, .35)), body), 0, 1 + .06 * (1 - ease(prog(t, 0, .5))));
+  const m = CONTENT.media;
+  if (m.clip) await CLIP.show($('img'), m.clip, Math.max(0, f - 15));
+  else if ($('img').getAttribute('src') !== m.image) { $('img').src = m.image; await $('img').decode(); }
+  show($('media'), Math.min(ease(prog(t, .5, 1)), body), (1 - ease(prog(t, .5, 1))) * 80);
+  const l = at(CONTENT.lines, t);
+  $('line').textContent = l?.text || '';
+  const nextT = CONTENT.lines[CONTENT.lines.indexOf(l) + 1]?.t ?? ct;
+  show($('line'), l ? Math.min(inOut(t, l.t, nextT, .2), body) : 0, l ? (1 - ease(prog(t, l.t, l.t + .3))) * 20 : 0);
+  const ca = back(prog(t, ct, ct + .6));
+  show($('cta'), clamp(ca), 0, .8 + .2 * ca);
+  document.body.style.opacity = 1 - prog(t, CONTENT.duration - .3, CONTENT.duration);
+};
+ready(['900 104px Pretendard']);
+</script>
+</body></html>

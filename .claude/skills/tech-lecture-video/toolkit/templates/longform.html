@@ -1,0 +1,120 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 롱폼 강의 템플릿 (16:9 1920×1080). 강의 폴더로 복사한 뒤 CONTENT 만 고쳐서 쓴다.
+     렌더: node toolkit/render.mjs lectures/NNN-주제/scenes/longform.html -->
+<style>
+:root{--bg:#0e0e10;--ink:#f4efe6;--dim:#8a8580;--acc:#d97757;--panel:#17161a}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#kicker{left:120px;top:90px;font:600 30px "SF Mono",Menlo,monospace;color:var(--acc)}
+#title{left:120px;top:132px;right:120px;font-size:66px;font-weight:800;letter-spacing:-1.5px}
+#cover{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#cover h1{font-size:120px;font-weight:900;letter-spacing:-4px;margin:0}
+#cover p{font-size:42px;color:var(--dim);margin-top:26px}
+#points{left:120px;top:300px;right:120px}
+#points div{font-size:52px;font-weight:700;margin-bottom:44px;display:flex;gap:28px}
+#points i{font-style:normal;color:var(--acc);width:56px}
+#code{left:120px;top:290px;width:1680px;height:560px;border-radius:24px;background:var(--panel);padding:56px;box-sizing:border-box;font:500 34px/1.7 "SF Mono",Menlo,monospace;white-space:pre;overflow:hidden}
+.media{top:280px;height:600px;border-radius:22px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.media img{max-width:100%;max-height:100%;object-fit:contain}
+#mediaFull{left:120px;width:1680px}
+#mediaL{left:120px;width:820px}#mediaR{left:980px;width:820px}
+.mlabel{top:895px;width:820px;text-align:center;font-size:30px;font-weight:700;color:var(--dim)}
+#source{right:120px;top:895px;font-size:24px;color:var(--dim)}
+#caption{left:0;right:0;top:960px;text-align:center}
+#caption span{display:inline-block;max-width:1500px;padding:12px 28px;border-radius:12px;background:rgba(0,0,0,.72);font-size:40px;font-weight:600;line-height:1.35}
+#bar{left:0;right:0;bottom:0;height:10px;background:#222}
+#barFill{height:100%;background:var(--acc)}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="abs" id="cover"><h1 id="coverTitle"></h1><p id="coverSub"></p></div>
+<div class="abs" id="kicker"></div><div class="abs" id="title"></div>
+<div class="abs" id="points"></div>
+<div class="abs" id="code"></div>
+<div class="abs media" id="mediaFull"><img id="imgFull"></div>
+<div class="abs media" id="mediaL"><img id="imgL"></div><div class="abs media" id="mediaR"><img id="imgR"></div>
+<div class="abs mlabel" id="labelL" style="left:120px"></div><div class="abs mlabel" id="labelR" style="left:980px"></div>
+<div class="abs" id="source"></div>
+<div class="abs" id="caption"><span id="capText"></span></div>
+<div class="abs" id="bar"><div id="barFill"></div></div>
+<script>
+// ── 여기만 고친다 ─────────────────────────────────────────────
+// 챕터 종류: cover · points · code · image · clip · compare(왼쪽 강의 이미지/클립 + 오른쪽 결과 클립)
+// image/clip 경로는 레포 루트 기준 절대경로. clip 은 toolkit/clip.mjs 로 푼 폴더.
+const CONTENT = {
+  duration: 16,
+  audio: 'calm',
+  burnCaptions: true,           // 자막을 화면에 굽는다 (SRT 는 항상 따로 생성)
+  chapters: [
+    { t: 0, type: 'cover', title: '새 기술, 직접 써봤습니다', sub: '테스트 → 응용 → 결과까지' },
+    { t: 4, type: 'points', kicker: '01 · 무엇을', title: '오늘 테스트한 것', points: ['무엇이 새로 나왔나', '직접 돌려본 결과', '내 일에 응용하기'] },
+    { t: 9, type: 'compare', kicker: '02 · 결과', title: '강의 화면 + 실제 결과',
+      left: { image: '/toolkit/templates/sample-left.svg', label: '만드는 과정' },
+      right: { clip: '/toolkit/templates/clips/sample', label: '결과물' }, source: '' },
+  ],
+  narration: [
+    { t: 0.5, text: '오늘은 새로 나온 기술을 직접 테스트해 봤습니다.' },
+    { t: 4.5, text: '무엇이 나왔는지, 돌려보니 어땠는지, 어디에 쓸 수 있는지 순서대로 봅니다.' },
+    { t: 9.5, text: '왼쪽은 만드는 과정, 오른쪽은 실제 결과물입니다.' },
+  ],
+};
+// ────────────────────────────────────────────────────────────
+
+window.META = { W: 1920, H: 1080, FPS: 30, DURATION: CONTENT.duration, AUDIO: CONTENT.audio };
+window.NARRATION = CONTENT.narration;
+const CH = CONTENT.chapters;
+const chEnd = i => (CH[i + 1]?.t ?? CONTENT.duration);
+
+async function media(img, spec, local) {
+  if (!spec) return;
+  if (spec.clip) await CLIP.show(img, spec.clip, local);
+  else if (img.getAttribute('src') !== spec.image) { img.src = spec.image; await img.decode(); }
+}
+
+window.renderFrame = async f => {
+  const t = f / 30, i = CH.indexOf(at(CH, t)), c = CH[i], s = c.t, e = chEnd(i);
+  const a = i === 0 ? 1 - ease(prog(t, e - .4, e)) : inOut(t, s, e);
+  const local = Math.max(0, f - Math.round((s + .3) * 30));
+  const rise = (1 - ease(prog(t, s, s + .6))) * 30;
+  ['cover', 'kicker', 'title', 'points', 'code', 'mediaFull', 'mediaL', 'mediaR', 'labelL', 'labelR', 'source'].forEach(id => show($(id), 0));
+
+  if (c.type === 'cover') {
+    $('coverTitle').textContent = c.title; $('coverSub').textContent = c.sub || '';
+    show($('cover'), a, rise);
+  } else {
+    $('kicker').textContent = c.kicker || ''; $('title').textContent = c.title || '';
+    show($('kicker'), a); show($('title'), a, rise);
+  }
+  if (c.type === 'points') {
+    $('points').innerHTML = c.points.map((p, k) => {
+      const pa = Math.min(ease(prog(t, s + .5 + k * .6, s + 1 + k * .6)), a);
+      return `<div style="opacity:${pa};transform:translateX(${(1 - pa) * -40}px)"><i>${String(k + 1).padStart(2, '0')}</i>${p}</div>`;
+    }).join('');
+    show($('points'), 1);
+  }
+  if (c.type === 'code') {
+    const n = Math.floor(prog(t, s + .4, s + (c.typeSeconds || 3)) * c.code.length);
+    $('code').textContent = c.code.slice(0, n); show($('code'), a);
+  }
+  if (c.type === 'image' || c.type === 'clip') {
+    await media($('imgFull'), c, local); show($('mediaFull'), a, rise);
+  }
+  if (c.type === 'compare') {
+    await media($('imgL'), c.left, local); await media($('imgR'), c.right, local);
+    $('labelL').textContent = c.left.label || ''; $('labelR').textContent = c.right.label || '';
+    show($('mediaL'), a, rise); show($('mediaR'), Math.min(a, ease(prog(t, s + .5, s + 1))), rise);
+    show($('labelL'), a); show($('labelR'), a);
+  }
+  if (c.source) { $('source').textContent = '출처: ' + c.source; show($('source'), a); }
+
+  const line = at(CONTENT.narration, t);
+  const nextT = CONTENT.narration[CONTENT.narration.indexOf(line) + 1]?.t ?? CONTENT.duration;
+  $('capText').textContent = line?.text || '';
+  show($('caption'), CONTENT.burnCaptions && line ? inOut(t, line.t, nextT, .2) : 0);
+  $('barFill').style.width = `${(t / CONTENT.duration) * 100}%`;
+  document.body.style.opacity = 1 - prog(t, CONTENT.duration - .5, CONTENT.duration);
+};
+ready(['900 120px Pretendard', '500 34px Menlo']);
+</script>
+</body></html>

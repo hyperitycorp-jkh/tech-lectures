@@ -1,0 +1,71 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#f3ecdf}</style>
+<script src="/node_modules/p5/lib/p5.min.js"></script>
+</head><body>
+<script>
+// 02 수채화 — p5.js. 반투명 변형 다각형을 수십 겹 쌓아 번짐을 흉내 낸다.
+// 매 프레임 같은 시드로 다시 그리므로 결정적이다.
+const W = 1280, H = 720, FPS = 30;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, s, e) => clamp((t - s) / (e - s));
+
+new p5(s => {
+  let paper;
+  s.setup = () => {
+    s.createCanvas(W, H); s.pixelDensity(1); s.noLoop();
+    // 종이 질감은 한 번만 만들어 재사용
+    paper = s.createGraphics(W, H); paper.pixelDensity(1);
+    paper.background('#f3ecdf'); paper.noStroke(); s.randomSeed(7);
+    for (let i = 0; i < 9000; i++) { paper.fill(120, 100, 70, s.random(4, 14)); paper.rect(s.random(W), s.random(H), s.random(1, 3), s.random(1, 3)); }
+
+    // 한 붓자국: 기본 다각형을 재귀 변형한 뒤 여러 겹 칠함
+    function deform(pts, depth, v) {
+      if (!depth) return pts;
+      const out = [];
+      for (let i = 0; i < pts.length; i++) {
+        const a = pts[i], b = pts[(i + 1) % pts.length];
+        const mx = (a[0] + b[0]) / 2 + s.randomGaussian() * v, my = (a[1] + b[1]) / 2 + s.randomGaussian() * v;
+        out.push(a, [mx, my]);
+      }
+      return deform(out, depth - 1, v * .55);
+    }
+    function blob(x, y, r, col, grow, seed, flatten = 1) {
+      if (grow <= 0) return;
+      s.randomSeed(seed);
+      const base = [];
+      for (let i = 0; i < 10; i++) { const a = i / 10 * s.TWO_PI; base.push([x + Math.cos(a) * r * grow, y + Math.sin(a) * r * grow * flatten]); }
+      const soft = deform(base, 2, r * .18 * grow);
+      const c = s.color(col); c.setAlpha(10);
+      s.noStroke(); s.fill(c);
+      for (let k = 0; k < 26; k++) {
+        const pts = deform(soft, 3, r * .09 * grow);
+        s.beginShape(); pts.forEach(p => s.vertex(p[0], p[1])); s.endShape(s.CLOSE);
+      }
+    }
+
+    window.renderFrame = f => {
+      const t = f / FPS;
+      s.image(paper, 0, 0);
+      // 하늘 → 해 → 먼 산 → 가까운 산 → 호수 순서로 칠해짐
+      blob(640, 170, 700, '#9dbfd9', prog(t, 0, 1.2), 1, .35);
+      blob(930, 220, 90, '#e9885f', prog(t, .6, 1.6), 2);
+      blob(930, 220, 60, '#f2b35c', prog(t, .9, 1.8), 3);
+      blob(300, 470, 380, '#7d9bb3', prog(t, 1.4, 2.6), 4, .45);
+      blob(820, 480, 420, '#6f8ea8', prog(t, 1.8, 3.0), 5, .4);
+      blob(520, 560, 460, '#5a7a64', prog(t, 2.6, 3.8), 6, .35);
+      blob(1080, 570, 360, '#4e6c58', prog(t, 3.0, 4.1), 7, .35);
+      blob(640, 690, 720, '#86aac2', prog(t, 3.6, 4.8), 8, .15);
+      // 제목 붓글씨 느낌
+      const ta = prog(t, 4.4, 5.2);
+      if (ta > 0) {
+        s.fill(40, 36, 30, 230 * ta); s.textAlign(s.CENTER, s.CENTER);
+        s.textFont('Apple SD Gothic Neo'); s.textStyle(s.BOLD); s.textSize(56);
+        s.text('물감이 번지는 풍경', W / 2, 90);
+      }
+    };
+    window.READY = true;
+  };
+});
+</script>
+</body></html>
