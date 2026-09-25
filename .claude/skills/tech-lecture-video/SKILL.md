@@ -22,7 +22,7 @@ description: 새 기술을 직접 테스트하고 응용한 결과를 유튜브 
    - 터미널·코드: 실제 출력을 복사해 템플릿의 `code` 챕터로 (가짜 출력 금지)
 6. **장면 작성** — `toolkit/templates/*.html`을 `lectures/NNN/scenes/`로 복사하고 `CONTENT`만 고친다.
    - `longform.html` 16:9 강의. 챕터 종류 cover·points·code·image·clip·**compare(왼쪽 강의 화면 + 오른쪽 실제 결과)** (001 롱폼은 montage·side·trio·endcard 추가판)
-   - `shorts.html` 9:16 60초 이하 (유튜브 쇼츠 = 인스타 릴스 같은 파일)
+   - `shorts.html` 9:16 60초 이하 (유튜브 쇼츠 = 인스타 릴스 같은 파일). 오른쪽 버튼 열(x>940, y>900)도 비운다. 001은 `?s=N`으로 3편을 한 파일에서 (lectures/001-*/scenes/shorts.html)
    - `thumbnail.html` 1280×720 · `carousel.html` 1080×1350 장별
    - 나레이션은 `CONTENT.narration` — macOS `say`(Yuna)로 초안 + SRT 자동. 본인 녹음이 있으면 `META.VOICE_FILE`
    - **목소리는 Qwen3-TTS(로컬·무료) 권장** (엔진 기본값은 say라 META에 지정해야 함) — `META.VOICE_ENGINE: 'qwen'`, `VOICE: 'Sohee'`, `VOICE_INSTRUCT: '밝고 귀엽고 에너지 넘치는 톤, 살짝 웃으면서 말하듯이'`, `VOICE_SPEED: 1.15`. 처음 한 번 `sh toolkit/tts/setup.sh` (실행환경 0.4GB + 모델 2.9GB, 레포 밖). macOS `say`는 지루하다는 피드백으로 초안용만
@@ -39,7 +39,8 @@ description: 새 기술을 직접 테스트하고 응용한 결과를 유튜브 
 9. **공유**
    - 영상: `gcloud storage cp <mp4> gs://hyperity-lecture-assets/<강의>/` → `https://storage.googleapis.com/hyperity-lecture-assets/...` (공개 버킷, 비공개 파일 금지)
    - 노션: Notion MCP로 `📚 강의` 페이지(id `3e6db7ff-b044-814c-a335-e314045d2e24`) 아래에 강좌 페이지 생성, 챕터와 같은 구조, 영상은 `<video src="버킷 URL">`
-   - GitHub: 레포 README 강의 목록 표에 한 줄 추가. **푸시·레포 생성은 매번 사용자에게 확인받은 뒤에만.** 유튜브·인스타·쓰레드 업로드는 사용자가 직접 한다.
+   - **업로드 스크립트** `node toolkit/publish.mjs lectures/NNN/publish.json` — 기본 dry-run(목록·빠진 파일·`[…링크]` 자리 표시). `--go` 로 유튜브(private 로 올린 뒤 확인해 공개)·Buffer(Threads 답글 체인·인스타 릴스/캐러셀). 인증은 `~/.config/tech-lectures/`(youtube-client.json → `publish.mjs auth youtube` 로 youtube.json, buffer.json). **공개 게시는 매번 사용자 확인 후.** 다른 프로젝트(viral-engine)의 채널 인증은 쓰지 않는다
+   - GitHub: 레포 README 강의 목록 표에 한 줄 추가. **푸시·레포 생성은 매번 사용자에게 확인받은 뒤에만.** 실제 업로드(`--go`)는 사용자 확인 후에만 실행한다.
 
 ## 규칙
 

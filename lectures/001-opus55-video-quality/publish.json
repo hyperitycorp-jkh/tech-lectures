@@ -1,0 +1,122 @@
+{
+ "base": "https://storage.googleapis.com/hyperity-lecture-assets/opus-5.5/",
+ "note": "유튜브는 private 로 올린 뒤 확인하고 공개로 바꾼다. [유튜브 링크] 는 롱폼 업로드 후 채운다. 인스타·Threads 미디어는 base 버킷에 먼저 올려야 한다.",
+ "items": [
+  {
+   "id": "longform",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/longform.mp4",
+   "thumbnail": "scenes/out/thumbnail.png",
+   "captions": "scenes/out/longform.srt",
+   "title": "영상 AI 없이, 코드로 만든 영상 — 퀄리티 어디까지 될까? (Claude Opus 5.5)",
+   "description": "Claude Opus 5.5가 \"영상을 잘 만든다\"는데, 실제로는 영상을 그리는 코드를 짜는 방식이에요.\n직접 8가지 스타일과 실제 앱 홍보 영상 3편을 만들어 보고, 잘하는 것과 약한 것을 정리했어요.\n\n📂 코드 전부 공개: https://github.com/hyperitycorp-jkh/tech-lectures\n\n00:00 영상 AI 없이, 코드로 만든 영상\n00:30 계기: 출시 당일 공개된 뮤직비디오\n00:53 원리: 영상 = 그림 N장\n01:35 파이프라인: HTML → 헤드리스 Chrome → ffmpeg\n02:31 8가지 스타일\n03:48 실제 앱 홍보 영상 3편\n05:15 퀄리티 평가: 잘하는 것 / 약한 것\n06:16 에러 없이 돌았는데 틀린 실수 3개\n07:06 직접 해보려면 (GitHub)\n\n도구(전부 무료): Node.js · playwright-core · Chrome · ffmpeg · p5.js · Three.js · D3 · React · Qwen3-TTS",
+   "tags": [
+    "Claude",
+    "Opus 5.5",
+    "AI 영상",
+    "코드로 영상 만들기",
+    "ffmpeg",
+    "Playwright",
+    "Three.js",
+    "p5.js",
+    "모션그래픽",
+    "1인 개발"
+   ]
+  },
+  {
+   "id": "shorts-1",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-1.mp4",
+   "captions": "scenes/out/shorts-1.srt",
+   "title": "이거 전부 코드로 만든 영상 8종 #Shorts",
+   "description": "영상 AI 없이 코드만으로 만든 영상 8종. 전체 과정은 채널에 👉 #Claude #AI영상 #코딩\n\n코드: https://github.com/hyperitycorp-jkh/tech-lectures",
+   "tags": [
+    "Claude",
+    "Opus 5.5",
+    "AI 영상",
+    "코드로 영상 만들기"
+   ]
+  },
+  {
+   "id": "shorts-2",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-2.mp4",
+   "captions": "scenes/out/shorts-2.srt",
+   "title": "얼굴이 점점 선명해지는 광고, 코드로 만들었어요 #Shorts",
+   "description": "소개팅 앱 홍보 영상을 코드로. 색·로고·폰트·문구는 전부 앱 레포에서 👉 #Claude #AI영상 #코딩\n\n코드: https://github.com/hyperitycorp-jkh/tech-lectures",
+   "tags": [
+    "Claude",
+    "Opus 5.5",
+    "AI 영상",
+    "코드로 영상 만들기"
+   ]
+  },
+  {
+   "id": "shorts-3",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-3.mp4",
+   "captions": "scenes/out/shorts-3.srt",
+   "title": "에러 없이 돌아도 영상은 틀릴 수 있어요 #Shorts",
+   "description": "AI가 코드로 만든 영상, 에러 없이 렌더됐는데 틀린 3가지 👉 #Claude #AI영상 #코딩\n\n코드: https://github.com/hyperitycorp-jkh/tech-lectures",
+   "tags": [
+    "Claude",
+    "Opus 5.5",
+    "AI 영상",
+    "코드로 영상 만들기"
+   ]
+  },
+  {
+   "id": "reel-1",
+   "target": "instagram",
+   "media": [
+    "shorts-1.mp4"
+   ],
+   "text": "영상 AI 없이 코드만으로 만든 영상 8종. 전체 과정은 채널에 👉 #Claude #AI영상 #코딩"
+  },
+  {
+   "id": "reel-2",
+   "target": "instagram",
+   "media": [
+    "shorts-2.mp4"
+   ],
+   "text": "소개팅 앱 홍보 영상을 코드로. 색·로고·폰트·문구는 전부 앱 레포에서 👉 #Claude #AI영상 #코딩"
+  },
+  {
+   "id": "reel-3",
+   "target": "instagram",
+   "media": [
+    "shorts-3.mp4"
+   ],
+   "text": "AI가 코드로 만든 영상, 에러 없이 렌더됐는데 틀린 3가지 👉 #Claude #AI영상 #코딩"
+  },
+  {
+   "id": "carousel",
+   "target": "instagram",
+   "media": [
+    "carousel-slide1.png",
+    "carousel-slide2.png",
+    "carousel-slide3.png",
+    "carousel-slide4.png",
+    "carousel-slide5.png"
+   ],
+   "text": "영상 AI 없이 코드로 만든 영상 🎬 원리부터 약점까지 5장으로 정리했어요. 저장해 두세요!\n\n#Claude #AI영상 #코딩 #개발자 #1인개발"
+  },
+  {
+   "id": "thread",
+   "target": "threads",
+   "text": "Claude Opus 5.5가 영상을 잘 만든다길래 직접 해봤다. 결론부터: 영상 AI가 아니라 \"영상을 그리는 코드\"를 짠다. 🧵",
+   "replies": [
+    "원리는 단순하다. 영상은 그림 여러 장. renderFrame(f) 함수가 f번째 그림을 그리고, 헤드리스 Chrome이 한 장씩 찍고, ffmpeg가 묶는다.",
+    "무료 도구로 스타일 8개를 만들었다. 모션그래픽, 수채화, 3D, 셰이더, 키네틱 타이포, React UI, D3 차트, 픽셀아트.",
+    "제일 놀라웠던 건 실제 앱 홍보 영상. 레포에서 브랜드 색·로고·스토어 문구를 찾아서 20초 세로 영상 3편을 만들었다.",
+    "대신 알아서 완벽하진 않다. 에러 없이 돌아도 제목이 겹치고, 폰 화면이 잘리고, 출처에 없는 내용을 붙이기도 했다. 전부 프레임을 눈으로 보고 잡았다.",
+    "정리: 글자·데이터·실제 UI가 중요한 영상은 코드 렌더가 압도적. 실사 장면은 생성형 AI와 섞어 쓰는 게 맞다.",
+    "코드는 전부 공개. https://github.com/hyperitycorp-jkh/tech-lectures 전체 과정은 유튜브에 [유튜브 링크]"
+   ]
+  }
+ ]
+}
