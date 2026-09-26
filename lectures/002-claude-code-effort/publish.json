@@ -58,14 +58,12 @@
    "uploaded": "https://youtu.be/8ki7WyxVNJc"
   },
   {
-   "id": "thread",
+   "id": "thread-v1",
    "target": "threads",
    "media": [
-    "carousel-slide1.png",
-    "carousel-slide2.png",
-    "carousel-slide3.png",
-    "carousel-slide4.png",
-    "carousel-slide5.png"
+    "carousel-slide1.png?v=2",
+    "carousel-slide3.png?v=2",
+    "carousel-slide4.png?v=2"
    ],
    "text": "클로드 코드 effort, 뭘로 두고 쓰세요?\n클로드 코드 팀이 직접 실험한 글 읽고 정리해 봤다 🧵",
    "replies": [
@@ -75,6 +73,26 @@
     "정리하면\nlow — 스케치 · 쉬운 수정\nmedium — 대부분의 새 기능\nhigh — 버그 수정 · 검증이 중요한 일\nmax — 어려운 문제 통째로 맡길 때",
     "팀이 새 기능 만들 때 쓰는 순서\n1. 명세 주고 빠진 걸 인터뷰 받기\n2. low로 빠르게 구현\n3. 방향 검토하면서 low로 반복\n4. 마지막 검증·테스트만 high\n\n/effort low · /effort high — 대화 중간에 바꿔도 캐시 안 깨진다.",
     "영상으로 정리했다 👉 https://youtu.be/0E-1a-WjYiA\n원문: claude.dev/blog/spending-your-effort"
+   ],
+   "uploaded": [
+    "https://www.threads.com/@jkh8308/post/DdwmTSeIGrQ",
+    "https://www.threads.com/@jkh8308/post/DdwoNDBlef9"
+   ],
+   "note": "요약형 v1 — 첫 번째는 첫 글 누락(Buffer thread 배열 버그), 두 번째는 실수로 재게시. v2 로 교체, 사용자가 직접 삭제"
+  },
+  {
+   "id": "thread-v2",
+   "target": "threads",
+   "media": [
+    "carousel-slide1.png?v=3",
+    "carousel-slide3.png?v=3",
+    "carousel-slide4.png?v=3"
+   ],
+   "text": "클로드 코드 effort, 무조건 max가 좋은 줄 알았는데 아니더라.\n토큰은 3배 쓰는데, low가 나은 일도 있다.",
+   "replies": [
+    "effort = 얼마나 공들일지 알려 주는 신호.\n\n1시간 주면 쓸 만한 걸 내고 같이 고치고, 12시간 주면 끝까지 판다.\n올릴수록 스스로 검증·예외 테스트를 더 한다. 대신 토큰도 같이 오른다.",
+    "차이가 확 나는 건 예외가 많은 일.\nHTML에 숨긴 JS 걸러내기: low 1/5 → high 5/5\n\n근데 접근법 자체가 틀린 건 max로도 못 고친다.",
+    "그래서 이렇게 쓰기로 함\nlow — 스케치 · 쉬운 수정\nmedium — 대부분의 기능\nhigh — 버그 · 검증\nmax — 통째로 맡길 때\n\n클로드 코드 팀은 low로 만들고 검증만 high로 돌린다더라.\n영상 정리 👉 https://youtu.be/0E-1a-WjYiA"
    ]
   }
  ]

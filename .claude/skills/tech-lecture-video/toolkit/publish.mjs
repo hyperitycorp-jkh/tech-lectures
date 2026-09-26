@@ -72,15 +72,16 @@ async function buffer(query, variables) {
 const asset = url => url.toLowerCase().endsWith('.mp4') ? { video: { url } } : { image: { url } };
 // 서비스별 게시 메타 (종류 → 메타)
 const BUFFER_META = {
-  threads: it => it.replies?.length ? { threads: { thread: it.replies.map(text => ({ text, assets: [] })) } } : undefined,
+  // Buffer 는 thread 배열을 게시물 전체로 쓴다(첫 글 text 를 대체) → 첫 글(text + 미디어)을 배열 맨 앞에 넣는다
+  threads: (it, assets = []) => it.replies?.length ? { threads: { thread: [{ text: it.text, assets }, ...it.replies.map(text => ({ text, assets: [] }))] } } : undefined,
   instagram: it => ({ instagram: { type: it.media?.[0]?.endsWith('.mp4') ? 'reel' : 'post', shouldShareToFeed: true } }),
 };
 async function bufferPost(it, { pub }) {
   const { channels } = readCfg('buffer.json'), channelId = channels?.[it.target];
   if (!channelId) throw new Error(`buffer.json 에 ${it.target} 채널 id 가 없습니다 (node toolkit/publish.mjs buffer-channels)`);
   const input = { text: it.text, channelId, schedulingType: 'automatic', mode: 'shareNow' };
-  const meta = BUFFER_META[it.target](it); if (meta) input.metadata = meta;
   if (it.media?.length) input.assets = it.media.map(m => asset(pub.base + m));
+  const meta = BUFFER_META[it.target](it, input.assets); if (meta) input.metadata = meta;
   const d = await buffer(`mutation CreatePost($input: CreatePostInput!) { createPost(input: $input) { __typename ... on PostActionSuccess { post { id } } ... on MutationError { message } } }`, { input });
   const p = d.createPost;
   if (p.__typename !== 'PostActionSuccess') throw new Error(`Buffer 게시 실패: ${p.message || p.__typename}`);
