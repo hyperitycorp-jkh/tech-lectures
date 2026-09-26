@@ -10,7 +10,7 @@
    "thumbnail": "scenes/out/thumbnail.png",
    "captions": "scenes/out/longform.srt",
    "title": "클로드 코드로 영상 만들기 — 퀄리티 어디까지 될까? (Opus 5.5)",
-   "description": "Claude Opus 5.5가 \"영상을 잘 만든다\"는데, 실제로는 영상을 그리는 코드를 짜는 방식이에요.\n직접 8가지 스타일과 실제 앱 홍보 영상 3편을 만들어 보고, 잘하는 것과 약한 것을 정리했어요.\n\n📂 코드 전부 공개: https://github.com/hyperitycorp-jkh/tech-lectures\n\n00:00 클로드 코드로 만든 영상들\n00:30 계기: 출시 당일 공개된 뮤직비디오\n00:53 원리: 영상 = 그림 N장\n01:35 파이프라인: HTML → 헤드리스 Chrome → ffmpeg\n02:31 8가지 스타일\n03:48 실제 앱 홍보 영상 3편\n05:15 퀄리티 평가: 잘하는 것 / 약한 것\n06:16 에러 없이 돌았는데 틀린 실수 3개\n07:06 직접 해보려면 (GitHub)\n\n도구(전부 무료): Node.js · playwright-core · Chrome · ffmpeg · p5.js · Three.js · D3 · React · Qwen3-TTS",
+   "description": "Claude Opus 5.5가 \"영상을 잘 만든다\"는데, 실제로는 영상을 그리는 코드를 짜는 방식이에요.\n직접 8가지 스타일과 실제 앱 홍보 영상 3편을 만들어 보고, 잘하는 것과 약한 것을 정리했어요.\n\n📂 코드는 정리해서 공개할 예정이에요 (공개되면 여기에 링크를 올릴게요)\n\n00:00 클로드 코드로 만든 영상들\n00:30 계기: 출시 당일 공개된 뮤직비디오\n00:53 원리: 영상 = 그림 N장\n01:35 파이프라인: HTML → 헤드리스 Chrome → ffmpeg\n02:31 8가지 스타일\n03:48 실제 앱 홍보 영상 3편\n05:15 퀄리티 평가: 잘하는 것 / 약한 것\n06:16 에러 없이 돌았는데 틀린 실수 3개\n07:06 직접 해보려면 (GitHub)\n\n도구(전부 무료): Node.js · playwright-core · Chrome · ffmpeg · p5.js · Three.js · D3 · React · Qwen3-TTS",
    "tags": [
     "Claude",
     "Opus 5.5",
@@ -32,7 +32,7 @@
    "file": "scenes/out/shorts-1.mp4",
    "captions": "scenes/out/shorts-1.srt",
    "title": "이거 전부 코드로 만든 영상 8종 #Shorts",
-   "description": "영상 AI 없이 코드만으로 만든 영상 8종. 전체 과정은 채널에 👉 #Claude #AI영상 #코딩\n\n코드: https://github.com/hyperitycorp-jkh/tech-lectures",
+   "description": "영상 AI 없이 코드만으로 만든 영상 8종. 전체 과정은 채널에 👉 #Claude #AI영상 #코딩",
    "tags": [
     "Claude",
     "Opus 5.5",
@@ -48,7 +48,7 @@
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "얼굴이 점점 선명해지는 광고, 코드로 만들었어요 #Shorts",
-   "description": "소개팅 앱 홍보 영상을 코드로. 색·로고·폰트·문구는 전부 앱 레포에서 👉 #Claude #AI영상 #코딩\n\n코드: https://github.com/hyperitycorp-jkh/tech-lectures",
+   "description": "소개팅 앱 홍보 영상을 코드로. 색·로고·폰트·문구는 전부 앱 레포에서 👉 #Claude #AI영상 #코딩",
    "tags": [
     "Claude",
     "Opus 5.5",
@@ -64,7 +64,7 @@
    "file": "scenes/out/shorts-3.mp4",
    "captions": "scenes/out/shorts-3.srt",
    "title": "에러 없이 돌아도 영상은 틀릴 수 있어요 #Shorts",
-   "description": "AI가 코드로 만든 영상, 에러 없이 렌더됐는데 틀린 3가지 👉 #Claude #AI영상 #코딩\n\n코드: https://github.com/hyperitycorp-jkh/tech-lectures",
+   "description": "AI가 코드로 만든 영상, 에러 없이 렌더됐는데 틀린 3가지 👉 #Claude #AI영상 #코딩",
    "tags": [
     "Claude",
     "Opus 5.5",
@@ -119,7 +119,7 @@
     "제일 놀라웠던 건 실제 앱 홍보 영상. 레포에서 브랜드 색·로고·스토어 문구를 찾아서 20초 세로 영상 3편을 만들었다.",
     "대신 알아서 완벽하진 않다. 에러 없이 돌아도 제목이 겹치고, 폰 화면이 잘리고, 출처에 없는 내용을 붙이기도 했다. 전부 프레임을 눈으로 보고 잡았다.",
     "정리: 글자·데이터·실제 UI가 중요한 영상은 코드 렌더가 압도적. 실사 장면은 생성형 AI와 섞어 쓰는 게 맞다.",
-    "코드는 전부 공개. https://github.com/hyperitycorp-jkh/tech-lectures 전체 과정은 유튜브에 https://youtu.be/ENXDMTlbvTA"
+    "코드는 정리해서 곧 공개할 예정. 전체 과정은 유튜브에 https://youtu.be/ENXDMTlbvTA"
    ]
   }
  ]
