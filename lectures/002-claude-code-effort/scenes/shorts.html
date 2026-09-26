@@ -1,0 +1,128 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 002 쇼츠·릴스 (9:16 1080×1920). 대본은 shorts.script.js, 음성 길이·입 모양은 shorts.timing.js (timing.mjs shorts).
+     렌더: node toolkit/render.mjs lectures/002-claude-code-effort/scenes/shorts.html --query s=1 --name shorts-1
+     안전 영역: 위아래 288px(15%)에 글자 없음, 오른쪽 버튼 열(x>940, y>900) 비움. 특정 프레임: --still --query "s=1&f=90" -->
+<style>
+:root{--bg:#0e0e10;--ink:#f4efe6;--acc:#d97757}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#bg{inset:0}
+#bg img{width:100%;height:100%;object-fit:cover;filter:blur(18px) brightness(.22)}
+#hook{left:70px;right:70px;top:320px;text-align:center;font-size:96px;font-weight:900;line-height:1.15;letter-spacing:-3px;white-space:pre-line}
+#hook em{font-style:normal;color:var(--acc)}
+#title{left:70px;right:70px;top:420px;text-align:center;font-size:68px;font-weight:900;letter-spacing:-2px}
+.box{border-radius:32px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.box img{max-width:100%;max-height:100%;object-fit:contain}
+#mediaH{left:60px;top:700px;width:960px;height:540px}
+#mediaV{left:330px;top:620px;width:420px;height:747px;border:6px solid #2a2930;border-radius:40px}
+#mediaV img{width:100%;height:100%;object-fit:cover}
+#chip{left:60px;top:618px;padding:10px 22px;border-radius:14px;background:rgba(0,0,0,.72);font-size:40px;font-weight:800}
+#chip b{color:var(--acc);margin-right:12px}
+#list{left:90px;top:620px;width:900px}
+#list div{height:160px;margin-bottom:34px;border-radius:28px;background:#17161a;border:2px solid #2a2930;display:flex;align-items:center;gap:28px;padding:0 40px;box-sizing:border-box;font-size:50px;font-weight:800}
+#list i{font-style:normal;color:var(--acc);font-size:60px}
+#cta{left:70px;right:70px;top:640px;text-align:center}
+#cta b{display:inline-block;padding:34px 64px;border-radius:80px;background:var(--acc);font-size:64px;font-weight:900;color:#fff}
+#cta p{font-size:42px;margin-top:44px;color:#c9c3ba;line-height:1.45}
+#caption{left:300px;width:640px;top:1400px;display:flex;align-items:center;justify-content:center;height:220px}
+#caption span{display:inline-block;text-wrap:balance;word-break:keep-all;text-align:center;padding:16px 28px;border-radius:20px;background:#f4efe6;color:#141316;font-size:42px;font-weight:800;line-height:1.38;letter-spacing:-.5px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+<script src="voice.js"></script>
+<script src="shorts.script.js"></script>
+<script src="shorts.timing.js"></script>
+<script src="avatar.js"></script>
+</head><body>
+<div class="abs" id="bg"><img id="bgImg"></div>
+<div class="abs" id="hook"></div>
+<div class="abs" id="title"></div>
+<div class="abs box" id="mediaH"><img id="imgH"></div>
+<div class="abs box" id="mediaV"><img id="imgV"></div>
+<div class="abs" id="chip"></div>
+<div class="abs" id="list"></div>
+<div class="abs" id="cta"><b>저장 & 구독</b><p>전체 가이드는 긴 영상으로<br>치트시트는 설명란에</p></div>
+<div class="abs" id="caption"><span id="capText"></span></div>
+<script>
+const FPS = 30, LEAD = .3, GAP = .25, TAIL = .5;
+const q = new URLSearchParams(location.search), SN = +(q.get('s') || 1);
+// 선택한 편의 챕터만 0초부터 타임라인 (TIMING 은 전체 챕터 순서 기준)
+const CH = [], NARR = [];
+let T = 0;
+SCRIPT.chapters.forEach((c, ci) => {
+  if (c.short !== SN) return;
+  const ch = { ...c, t: T };
+  let x = T + (CH.length ? LEAD : .15);
+  c.say.forEach((text, li) => {
+    NARR.push({ t: +x.toFixed(2), end: x + TIMING[ci][li] + .2, ci, li, k: CH.length, text, say: SCRIPT.toSay(text) });
+    x += TIMING[ci][li] + GAP;
+  });
+  T = x - GAP + (c.type === 'cta' ? 1.2 : TAIL);
+  CH.push(ch);
+});
+const DURATION = Math.ceil(T * 10) / 10;
+window.META = { W: 1080, H: 1920, FPS, DURATION, AUDIO: 'bright', ...SCRIPT.voice, STILL_FRAME: +(q.get('f') || 0) };
+window.NARRATION = NARR;
+const chEnd = i => (CH[i + 1]?.t ?? DURATION);
+mountAvatar(document.body, { left: 50, top: 1390, size: 230 });
+
+async function clip(img, spec, local) {
+  if (spec.image) { if (img.getAttribute('src') !== spec.image) { img.src = spec.image; await img.decode(); } return; }
+  const L = Math.round((spec.len || 0) * FPS);
+  let n = L ? local % (spec.pp ? 2 * L : L) : local;
+  if (spec.pp && n >= L) n = 2 * L - 1 - n;
+  await CLIP.show(img, spec.clip, Math.round((spec.from || 0) * FPS) + n);
+}
+const ALL = ['bg', 'hook', 'title', 'mediaH', 'mediaV', 'chip', 'list', 'cta'];
+
+// 챕터 종류별 그리기 (종류 → 함수)
+const DRAW = {
+  async hook(c, ctx) { $('hook').innerHTML = c.hook.replace(/\n/g, '<br>'); show($('hook'), ctx.a, 0, 1 + .06 * (1 - ease(prog(ctx.t, c.t, c.t + .5)))); await media(c.media, ctx); },
+  async clip(c, ctx) { $('title').textContent = c.title; show($('title'), ctx.a, ctx.rise); await media(c.media, ctx); },
+  async reel(c, ctx) {
+    const n = SCRIPT.styles.length, dur = ctx.e - c.t, k = Math.min(n - 1, Math.floor((ctx.t - c.t) / (dur / n)));
+    $('title').textContent = c.title; show($('title'), ctx.a, ctx.rise);
+    await clip($('imgH'), { clip: '/lectures/001-opus55-video-quality/clips/reel', from: k * 6 + 1.5 }, Math.round(((ctx.t - c.t) % (dur / n)) * FPS));
+    show($('mediaH'), ctx.a);
+    $('chip').innerHTML = `<b>${String(k + 1).padStart(2, '0')}</b>${SCRIPT.styles[k]}`; show($('chip'), ctx.a);
+  },
+  async list(c, ctx) {
+    $('title').textContent = c.title; show($('title'), ctx.a, ctx.rise);
+    const lines = NARR.filter(l => l.k === ctx.i);
+    $('list').innerHTML = c.items.map((it, k) => {
+      const s = lines[k]?.t ?? c.t, pa = Math.min(ease(prog(ctx.t, s - .1, s + .3)), ctx.a);
+      return `<div style="opacity:${pa};transform:translateX(${(1 - pa) * -60}px)"><i>${k + 1}</i>${it}</div>`;
+    }).join('');
+    show($('list'), 1);
+    await media(SCRIPT.chapters.find(x => x.short === SN && x.type === 'hook').media, ctx, true);
+  },
+  async cta(c, ctx) { show($('cta'), clamp(back(prog(ctx.t, c.t, c.t + .6))), 0, .85 + .15 * ease(prog(ctx.t, c.t, c.t + .6))); },
+};
+// 영상: 세로(v)면 폰 틀, 가로면 넓은 상자. dim 이면 배경으로만. abs 면 편 시작부터 이어서 재생
+async function media(m, ctx, bgOnly) {
+  if (!m) return;
+  const local = m.abs ? ctx.f : ctx.local;
+  if (m.dim || bgOnly) { await clip($('bgImg'), m, local); show($('bg'), 1); if (m.dim || bgOnly) return; }
+  if (m.v) { await clip($('imgV'), m, local); show($('mediaV'), ctx.a, ctx.rise); await clip($('bgImg'), m, local); show($('bg'), 1); }
+  else { await clip($('imgH'), m, local); show($('mediaH'), ctx.a, ctx.rise); }
+}
+
+window.renderFrame = async f => {
+  const t = f / FPS, i = CH.indexOf(at(CH, t)), c = CH[i], e = chEnd(i);
+  const ctx = { f, t, i, e, a: inOut(t, c.t, e, .25), local: Math.max(0, f - Math.round(c.t * FPS)), rise: (1 - ease(prog(t, c.t, c.t + .5))) * 30 };
+  if (i === 0) ctx.a = 1 - ease(prog(t, e - .25, e));  // 첫 장면은 바로 보인다 (첫 1초 훅)
+  ALL.forEach(id => show($(id), 0));
+  await DRAW[c.type](c, ctx);
+
+  const line = at(NARR, t), next = NARR[NARR.indexOf(line) + 1];
+  const capEnd = line && next && next.k === line.k ? next.t : line?.end;
+  $('capText').textContent = line?.text || '';
+  show($('caption'), line ? inOut(t, line.t, capEnd, .12) : 0);
+  let a = 0;
+  if (line && t < line.end) { const env = ENV[line.ci][line.li], k = Math.round((t - line.t) * FPS); a = ((+env[k] || 0) + (+env[k - 1] || 0)) / 18; }
+  avatarFrame(t, a, !!(line && t < line.end));
+  document.body.style.opacity = 1 - prog(t, DURATION - .3, DURATION);
+};
+ready(['900 96px Pretendard']);
+</script>
+</body></html>

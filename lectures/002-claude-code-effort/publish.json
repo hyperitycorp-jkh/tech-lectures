@@ -1,0 +1,81 @@
+{
+ "base": "https://storage.googleapis.com/hyperity-lecture-assets/claude-effort/",
+ "note": "유튜브는 '바이브코더' 채널. Threads 는 개인 채널(jkh8308)만 — 블러리 채널 금지. 캐러셀 이미지·치트시트는 base 버킷에 먼저 올린다.",
+ "items": [
+  {
+   "id": "longform",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/longform.mp4",
+   "thumbnail": "scenes/out/thumb-1.png",
+   "captions": "scenes/out/longform.srt",
+   "title": "클로드 코드 effort 제대로 정리 — 언제 low, 언제 max? (Opus 5.5 · Fable 5.1)",
+   "description": "클로드 코드 effort, 뭘로 두고 쓰세요?\n클로드 코드 팀이 직접 실험하고 벤치마크를 파고든 글을 바탕으로, effort가 뭔지 · 언제 어떤 단계를 쓰는지 · 팀이 쓰는 작업 순서까지 정리했어요.\n\n📄 effort 치트시트 (한 장): https://storage.googleapis.com/hyperity-lecture-assets/claude-effort/cheatsheet.png\n📰 원문: https://claude.dev/blog/spending-your-effort/\n📂 영상 코드: https://github.com/hyperitycorp-jkh/tech-lectures\n\n00:00 effort, 제대로 정리\n00:38 effort란? — 1시간 vs 12시간\n01:03 올릴수록 점수도 토큰도 오른다\n01:17 \"운동 기록 앱\" 1.5분 vs 67분\n01:36 명세를 자세히 주면?\n01:48 어려운 일에선? — HTML 정화기 1/5 → 5/5\n02:18 분야별 통과율\n02:32 effort가 고쳐 주는 것, 못 고치는 것\n02:58 언제 뭘 쓰나 — 단계별 가이드\n03:20 클로드 코드 팀의 작업 순서\n03:39 /effort 로 바꾸는 법\n\n※ 수치는 원문(Anthropic 내부 실행) 기준, 그래프는 원문을 다시 그린 근삿값이에요.",
+   "tags": [
+    "Claude",
+    "Claude Code",
+    "클로드 코드",
+    "effort",
+    "Opus 5.5",
+    "Fable 5.1",
+    "AI 코딩",
+    "바이브코딩",
+    "Terminal-Bench",
+    "개발자"
+   ],
+   "uploaded": "https://youtu.be/0E-1a-WjYiA"
+  },
+  {
+   "id": "shorts-1",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/shorts-1.mp4",
+   "captions": "scenes/out/shorts-1.srt",
+   "title": "클로드 코드 effort, 이것만 기억하세요 #Shorts",
+   "description": "low · medium · high · max, 언제 뭘 쓰나. 전체 가이드는 채널 롱폼에 👉 https://youtu.be/0E-1a-WjYiA\n#클로드코드 #ClaudeCode #AI코딩",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "effort",
+    "AI 코딩"
+   ],
+   "uploaded": "https://youtu.be/XyBIN_QmpNs"
+  },
+  {
+   "id": "shorts-2",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/shorts-2.mp4",
+   "captions": "scenes/out/shorts-2.srt",
+   "title": "클로드 코드 effort 올리면 뭐가 달라질까? #Shorts",
+   "description": "원문 실험: 1/5 → 5/5, 놓친 예외 59 → 24. 단, 접근법이 틀린 건 못 고친다. 전체 가이드 👉 https://youtu.be/0E-1a-WjYiA\n#클로드코드 #ClaudeCode #AI코딩",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "effort",
+    "AI 코딩"
+   ],
+   "uploaded": "https://youtu.be/8ki7WyxVNJc"
+  },
+  {
+   "id": "thread",
+   "target": "threads",
+   "media": [
+    "carousel-slide1.png",
+    "carousel-slide2.png",
+    "carousel-slide3.png",
+    "carousel-slide4.png",
+    "carousel-slide5.png"
+   ],
+   "text": "클로드 코드 effort, 뭘로 두고 쓰세요?\n클로드 코드 팀이 직접 실험한 글 읽고 정리해 봤다 🧵",
+   "replies": [
+    "effort = 이 일에 얼마나 공들일지 클로드한테 알려 주는 신호.\n1시간 주면 쓸 만한 최선본을 내고, 12시간 주면 끝까지 판다.\n높을수록 스스로 판단하고 검증·예외 테스트를 더 한다.",
+    "'운동 기록 앱 만들어줘' 한 줄 줬더니\nlow 1.5분 → 기록이랑 그래프\nmax 67분 → 히트맵까지\n\n대충 시킬수록 effort가 높으면 클로드가 대신 정하는 게 많아진다. 명세를 자세히 주면 단계별 결과가 비슷해진다.",
+    "차이가 확 나는 건 어려운 일.\nHTML에 숨긴 자바스크립트 걸러내는 과제에서 low 1/5 → high 이상 5/5.\n보안·하드웨어처럼 예외가 많은 분야일수록 크게 오르고, 규칙집 따르는 일은 별로 안 오른다.\n\n단, 접근법 자체가 틀린 건 effort로 못 고친다.",
+    "정리하면\nlow — 스케치 · 쉬운 수정\nmedium — 대부분의 새 기능\nhigh — 버그 수정 · 검증이 중요한 일\nmax — 어려운 문제 통째로 맡길 때",
+    "팀이 새 기능 만들 때 쓰는 순서\n1. 명세 주고 빠진 걸 인터뷰 받기\n2. low로 빠르게 구현\n3. 방향 검토하면서 low로 반복\n4. 마지막 검증·테스트만 high\n\n/effort low · /effort high — 대화 중간에 바꿔도 캐시 안 깨진다.",
+    "영상으로 정리했다 👉 https://youtu.be/0E-1a-WjYiA\n원문: claude.dev/blog/spending-your-effort"
+   ]
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 // 코드 렌더 영상 렌더러 (레포 루트에서 실행)
 //   node toolkit/render.mjs <scene.html> [--name 이름] [--still] [--query "slide=2"]
 // 장면 파일 계약:
-//   window.META = { W, H, FPS, DURATION, AUDIO?: 'calm'|'bright'|'beat'|'none', VOICE_FILE?: '녹음.m4a',
+//   window.META = { W, H, FPS, DURATION, AUDIO?: 'calm'|'bright'|'beat'|'teaser'|'none' (teaser 는 BPM·DROP_BEAT·END_BEAT), MUSIC_FILE?: '곡.mp3', VOICE_FILE?: '녹음.m4a',
 //                   VOICE_ENGINE?: 'say'|'qwen', VOICE?, VOICE_INSTRUCT?, VOICE_SPEED? }  ← 음성 설정은 toolkit/tts.mjs
 //   window.NARRATION = [{ t: 초, text: '자막 문장', say?: '읽는 문장(영문 용어를 한글 발음으로)' }]   ← 있으면 macOS say 나레이션 + SRT 자막 생성
 //   window.renderFrame(f)  (async 가능) · window.READY = true
@@ -113,6 +113,25 @@ const PRESETS = {
     const c = PROG[Math.floor(t / 4) % 4], k = Math.floor(t / .5);
     return (pad(t, c, .016) + bell(t - k * .5, c[k % 4] + 12, .03)) * env(t, 1, 1.5, D);
   },
+  // 티저: META.BPM 박자에 맞춰 — 드롭 전은 박자마다 '쾅'(붐), 드롭 직전 라이저, 드롭(DROP_BEAT~END_BEAT)은 킥·클랩·하이햇·베이스, 끝은 패드
+  teaser: t => {
+    const b = 60 / (META.BPM || 120), bi = Math.floor(t / b), bt = t - bi * b, drop = META.DROP_BEAT ?? 16, end = META.END_BEAT ?? drop + 16;
+    const boom = x => x < 0 ? 0 : Math.sin(TAU * (38 + 70 * Math.exp(-x * 18)) * x) * Math.exp(-x * 3.5) * .5;
+    const kick = x => x < 0 ? 0 : Math.sin(TAU * (48 + 110 * Math.exp(-x * 32)) * x) * Math.exp(-x * 10) * .42;
+    if (bi < drop - 4) return boom(bt);
+    if (bi < drop) {  // 라이저: 노이즈·음이 올라가고, 마지막 반 박자는 비운다
+      const p = (t - (drop - 4) * b) / (4 * b);
+      if (p > .9) return 0;
+      return (noise() * .06 + Math.sin(TAU * (220 + 660 * p * p) * t) * .05) * p + boom(bt) * (1 - p);
+    }
+    if (bi < end) {
+      const c = PROG[Math.floor((bi - drop) / 4) % 4], ht = (t + b / 2) % b, clap = bi % 2 === 1 ? noise() * Math.exp(-bt * 28) * .12 : 0;
+      const bass = Math.sin(TAU * note(c[0] - 12) * t) * .12 * Math.exp(-(bt % (b / 2)) * 5);
+      const stab = pad(t, c.map(m => m + 12), .012) * Math.exp(-bt * 6);
+      return kick(bt) + clap + noise() * Math.exp(-ht * 70) * .05 + bass + stab;
+    }
+    return boom(t - end * b) + pad(t, PROG[0], .02) * env(t - end * b, .05, 1.5, D - end * b);
+  },
   beat: t => {
     const beat = 60 / 112, bt = t % beat, ht = (t + beat / 2) % beat;
     const kick = Math.sin(TAU * (50 + 90 * Math.exp(-bt * 30)) * bt) * Math.exp(-bt * 9) * .25;
@@ -130,10 +149,12 @@ const tmp = join(tmpdir(), `render-${process.pid}`);
 await mkdir(tmp, { recursive: true });
 const musicPath = join(tmp, 'music.wav');
 await writeFile(musicPath, wav);
+// 음악 파일(META.MUSIC_FILE — 직접 고른 곡·음악 생성 결과)이 있으면 코드 합성 대신 그걸 쓴다. 짧으면 반복
+const musicInput = META.MUSIC_FILE ? ['-stream_loop', '-1', '-i', join(sceneDir, META.MUSIC_FILE)] : ['-i', musicPath];
 
 // ── 나레이션: 녹음 파일(VOICE_FILE) 또는 TTS(toolkit/tts.mjs, 캐시 <scene>/tts-cache), 같은 타이밍으로 SRT ──
 // ffmpeg 입력 순서: 0 = 프레임, 1 = 배경음, 2.. = 목소리
-const audioInputs = ['-i', musicPath], filters = [];
+const audioInputs = [...musicInput], filters = [];
 const srtTime = s => { const ms = Math.round(s * 1000); const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, sec = Math.floor(ms / 1000) % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},${String(ms % 1000).padStart(3, '0')}`; };
 let srt = '', lines = [];
 if (META.VOICE_FILE) {
@@ -155,8 +176,8 @@ NARRATION.forEach((line, i) => {
 });
 const voices = filters.length;
 const mix = voices
-  ? `${filters.join(';')};[1:a]volume=${META.MUSIC_UNDER_VOICE ?? .35}[m];[m]${[...Array(voices).keys()].map(i => `[v${i}]`).join('')}amix=inputs=${voices + 1}:normalize=0:duration=first[a]`
-  : '[1:a]anull[a]';
+  ? `${filters.join(';')};[1:a]aresample=48000,volume=${META.MUSIC_UNDER_VOICE ?? .35}[m];[m]${[...Array(voices).keys()].map(i => `[v${i}]`).join('')}amix=inputs=${voices + 1}:normalize=0:duration=first[a]`
+  : '[1:a]aresample=48000[a]';
 const outMp4 = join(outDir, `${name}.mp4`);
 execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(META.FPS), '-i', join(framesDir, '%05d.png'), ...audioInputs,
   '-filter_complex', mix, '-map', '0:v', '-map', '[a]',

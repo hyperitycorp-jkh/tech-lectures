@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 002 유튜브 썸네일 (1280×720). 첫 장면 훅과 같은 약속: "effort 제대로 정리해드릴게요"
+     그래프는 curve.js (원문 그래프를 우리 스타일로 다시 그린 근삿값)
+     렌더: node toolkit/render.mjs lectures/002-claude-code-effort/scenes/thumbnail.html --still --query v=1   (v=1|2) -->
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#f6f4ef;color:#1d1c1a;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#chart{right:-40px;top:70px}
+h1{position:absolute;left:64px;top:88px;margin:0;font-size:128px;font-weight:900;letter-spacing:-6px;line-height:1}
+h1 em{font-style:normal;color:#d97757}
+h2{position:absolute;left:66px;top:250px;margin:0;font-size:74px;font-weight:900;letter-spacing:-3.5px;line-height:1.12}
+h2 span{background:linear-gradient(transparent 58%,#f5d98c 58%)}
+.tag{position:absolute;left:66px;bottom:64px;display:flex;gap:14px}
+.tag b{padding:12px 22px;border-radius:14px;background:#1d1c1a;color:#f6f4ef;font:700 30px "SF Mono",Menlo,monospace}
+.tag b.on{background:#d97757}
+.logo{position:absolute;left:66px;top:40px;font:700 28px "SF Mono",Menlo,monospace;color:#9a958c}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+<script src="curve.js"></script>
+</head><body>
+<div class="abs" id="chart"></div>
+<div class="logo">Claude Code</div>
+<h1><em>effort</em></h1>
+<h2 id="h2"></h2>
+<div class="tag"><b>low</b><b>medium</b><b>high</b><b class="on">max</b></div>
+<script>
+const v = +(new URLSearchParams(location.search).get('v') || 1);
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1 };
+$('h2').innerHTML = v === 1 ? '<span>제대로</span><br>정리해드릴게요' : '언제 low,<br>언제 <span>max?</span>';
+$('chart').innerHTML = curveSVG({ w: 760, h: 600, only: v === 1 ? ['Opus 5.5', 'Fable 5.1'] : ['Opus 5.5'], grid: true, font: .9 });
+window.renderFrame = async () => {};
+ready(['900 128px Pretendard']);
+</script>
+</body></html>
