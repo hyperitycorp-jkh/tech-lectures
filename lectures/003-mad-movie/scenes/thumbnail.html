@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 003 유튜브 썸네일 (1280×720). 첫 장면 훅과 같은 약속: "이런 매드무비, 오푸스 5.5로 만들었어요"
+     오른쪽 그림은 완성 매드무비의 실제 프레임(글자가 사람 뒤로 들어간 장면)
+     렌더: node toolkit/render.mjs lectures/003-mad-movie/scenes/thumbnail.html --still --query v=1 --name thumb-1   (v=1|2) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&display=block">
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0b0710;color:#fff;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#shot{right:0;top:0;width:760px;height:720px;overflow:hidden}
+#shot img{position:absolute;height:100%;left:50%;transform:translateX(-50%)}
+#shot:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0b0710 0%,rgba(11,7,16,0) 38%)}
+h1{position:absolute;left:56px;top:150px;margin:0;font-family:"Black Han Sans";font-size:132px;line-height:1.02;letter-spacing:-2px;text-shadow:0 8px 30px rgba(0,0,0,.6)}
+h1 em{font-style:normal;color:#ff2d6f}
+h2{position:absolute;left:60px;top:430px;margin:0;font-size:58px;font-weight:900;letter-spacing:-2px}
+h2 span{background:linear-gradient(transparent 58%,#ff2d6f 58%)}
+.chips{position:absolute;left:60px;bottom:60px;display:flex;gap:12px}
+.chips b{padding:10px 20px;border-radius:14px;background:#fff;color:#0b0710;font-size:32px;font-weight:900}
+.tag{position:absolute;left:60px;top:72px;font:700 30px "SF Mono",Menlo,monospace;color:#ff9dbb}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="abs" id="shot"><img id="img"></div>
+<div class="tag">Claude Opus 5.5</div>
+<h1 id="h1"></h1>
+<h2 id="h2"></h2>
+<div class="chips"><b>누끼</b><b>박자</b><b>자막</b><b>효과</b></div>
+<script>
+const v = +(new URLSearchParams(location.search).get('v') || 1);
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1 };
+$('img').src = v === 1 ? '/lectures/003-mad-movie/scenes/clips/v-dance/00075.jpg' : '/lectures/003-mad-movie/scenes/clips/v-dance/00128.jpg';
+$('h1').innerHTML = '이런 <em>매드무비</em>,';
+$('h2').innerHTML = v === 1 ? '<span>오푸스 5.5</span>가 다 편집' : 'AI로 <span>직접</span> 만들기';
+window.renderFrame = async () => {};
+ready(['400 132px "Black Han Sans"']);
+</script>
+</body></html>

@@ -1,0 +1,73 @@
+{
+ "base": "https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/",
+ "note": "유튜브는 '바이브코더' 채널. Threads 는 개인 채널(jkh8308)만 — 블러리 채널 금지. 캐러셀·규칙 한 장은 base 버킷에 먼저 올린다. 공개 게시는 사용자 확인 후.",
+ "items": [
+  {
+   "id": "longform",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/longform.mp4",
+   "thumbnail": "scenes/out/thumb-1.png",
+   "captions": "scenes/out/longform.srt",
+   "title": "오푸스 5.5로 매드무비 만들기 — 누끼·박자·자막까지 (클로드 코드)",
+   "description": "\"오푸스한테 매드무비 부탁하면 다 해 준다\"길래 직접 해 봤어요.\n무료 스톡 영상으로 누끼·박자·자막·효과까지, 그리고 설정 파일 하나로 앱 광고 4편까지 만들었어요.\n\n📄 매드무비 규칙 한 장: https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/mad-rules.png\n📂 코드(엔진·누끼 도구): https://github.com/hyperitycorp-jkh/tech-lectures\n\n{CHAPTERS}\n\n영상 소스: Mixkit (Stock Video Free License) · 음악: 코드로 직접 합성한 비트\n누끼: macOS Vision (설치 없음)",
+   "tags": [
+    "Claude",
+    "Claude Code",
+    "클로드 코드",
+    "Opus 5.5",
+    "매드무비",
+    "누끼",
+    "영상 편집",
+    "AI 영상",
+    "바이브코딩",
+    "모션그래픽"
+   ]
+  },
+  {
+   "id": "shorts-1",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/shorts-1.mp4",
+   "captions": "scenes/out/shorts-1.srt",
+   "title": "이거 전부 AI가 편집한 매드무비 #Shorts",
+   "description": "누끼·박자·자막까지 오푸스 5.5가 편집. 앱 광고 4편은 설정 파일만 바꿨어요. 만드는 법 👉 [롱폼 링크]\n#클로드코드 #매드무비 #AI영상",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "매드무비",
+    "AI 영상"
+   ]
+  },
+  {
+   "id": "shorts-2",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/shorts-2.mp4",
+   "captions": "scenes/out/shorts-2.srt",
+   "title": "맥에 누끼 기능 숨어 있음 #Shorts",
+   "description": "사진 앱 '피사체 들어올리기'를 명령어로 — 영상도 360장 25초. 전체 과정 👉 [롱폼 링크]\n#맥 #누끼 #클로드코드",
+   "tags": [
+    "macOS",
+    "누끼",
+    "배경 제거",
+    "Claude Code"
+   ]
+  },
+  {
+   "id": "thread",
+   "target": "threads",
+   "media": [
+    "carousel-slide1.png",
+    "carousel-slide3.png",
+    "carousel-slide4.png"
+   ],
+   "text": "오푸스 5.5한테 매드무비 부탁하면 다 해 준다길래 직접 해 봤다.\n진짜 누끼까지 알아서 딴다.",
+   "replies": [
+    "비결은 프롬프트가 아니라 도구 조합.\n누끼는 맥에 원래 들어 있는 Vision 기능으로 땄다. 설치 없이 360장에 25초.",
+    "편집은 박자부터 정했다.\n128 BPM 32박 = 15초. 인트로 → 라이저 → 드롭 5마디 → 엔딩, 드롭은 마디마다 효과를 바꾼다.",
+    "이 규칙을 설정 파일로 만들었더니 앱 광고 4편이 금방 나왔다.\n영상 정리 👉 [롱폼 링크]"
+   ]
+  }
+ ]
+}
