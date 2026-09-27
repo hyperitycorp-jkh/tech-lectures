@@ -130,6 +130,13 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
     }
     console.log(j.id ? `✓ ${it.id} ${j.status.privacyStatus}${j.status.publishAt ? ` → ${j.status.publishAt} 자동 공개` : ''} "${j.snippet.title}"${thumb}` : `✗ ${it.id} ${JSON.stringify(j.error?.message || j)}`);
   }
+} else if (args[0] === 'stats' && args[1] === 'youtube') {
+  // 올린 영상(uploaded)의 조회수·좋아요·댓글·공개 상태 (조회만)
+  const path = resolve(args[2] || ''), pub = JSON.parse(readFileSync(path, 'utf8')), tok = await youtubeToken();
+  const its = pub.items.filter(x => x.target === 'youtube' && x.uploaded), ids = its.map(x => x.uploaded.split('/').pop());
+  const j = await (await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,status&id=${ids.join(',')}`, { headers: { Authorization: `Bearer ${tok}` } })).json();
+  for (const v of j.items || []) { const it = its[ids.indexOf(v.id)], st = v.statistics;
+    console.log(`${it.id.padEnd(9)} ${v.status.privacyStatus.padEnd(8)} 조회 ${String(st.viewCount).padStart(5)} · 좋아요 ${st.likeCount || 0} · 댓글 ${st.commentCount || 0}  ${it.title}`); }
 } else if (args[0] === 'whoami' && args[1] === 'youtube') {
   // 로그인된 채널 확인 (조회만). 업로드 전에 강의 채널이 맞는지 본다
   const tok = await youtubeToken();

@@ -1,11 +1,11 @@
 {
  "base": "https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/",
- "note": "유튜브는 '바이브코더' 채널. Threads 는 개인 채널(jkh8308)만 — 블러리 채널 금지. 캐러셀·규칙 한 장은 base 버킷에 먼저 올린다. 공개 게시는 사용자 확인 후. 2026-09-27: 전부 비공개로 먼저 올리고 공개는 나중에(사용자 결정) — publishAt 으로 예약 가능. 공개 일정(사용자 확인 2026-09-27): 매일 19시 KST — 9/27 롱폼+①, 9/28 ②, 9/29 ④, 9/30 ⑤, 10/1 ⑥, 10/2 ⑦, 10/3 ③.",
+ "note": "유튜브는 '바이브코더' 채널. Threads 는 개인 채널(jkh8308)만 — 블러리 채널 금지. 캐러셀·규칙 한 장은 base 버킷에 먼저 올린다. 공개 게시는 사용자 확인 후. 2026-09-27: 전부 비공개로 먼저 올리고 공개는 나중에(사용자 결정) — publishAt 으로 예약 가능. 공개 일정(사용자 확인 2026-09-27): 매일 19시 KST — 9/27 롱폼+①, 9/28 ②, 9/29 ④, 9/30 ⑤, 10/1 ⑥, 10/2 ⑦, 10/3 ③. 변경(사용자 확인 2026-09-27 18시): 롱폼·①·②·⑥ 즉시 공개, ④⑤ 9/28 19시, ⑦③ 9/29 19시.",
  "items": [
   {
    "id": "longform",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/longform.mp4",
    "thumbnail": "scenes/out/thumb-1.png",
    "captions": "scenes/out/longform.srt",
@@ -23,13 +23,12 @@
     "바이브코딩",
     "모션그래픽"
    ],
-   "uploaded": "https://youtu.be/Rw1ZngcDDco",
-   "publishAt": "2026-09-27T19:00:00+09:00"
+   "uploaded": "https://youtu.be/Rw1ZngcDDco"
   },
   {
    "id": "shorts-1",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-1.mp4",
    "captions": "scenes/out/shorts-1.srt",
    "title": "이거 전부 AI가 편집한 매드무비 #Shorts",
@@ -40,13 +39,12 @@
     "매드무비",
     "AI 영상"
    ],
-   "uploaded": "https://youtu.be/XAfFfCUj2XU",
-   "publishAt": "2026-09-27T19:00:00+09:00"
+   "uploaded": "https://youtu.be/XAfFfCUj2XU"
   },
   {
    "id": "shorts-2",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "맥에 누끼 기능 숨어 있음 #Shorts",
@@ -57,8 +55,7 @@
     "배경 제거",
     "Claude Code"
    ],
-   "uploaded": "https://youtu.be/3N6nMJZV2X4",
-   "publishAt": "2026-09-28T19:00:00+09:00"
+   "uploaded": "https://youtu.be/3N6nMJZV2X4"
   },
   {
    "id": "shorts-3",
@@ -75,7 +72,7 @@
     "앱 광고"
    ],
    "uploaded": "https://youtu.be/-CzuY1CZluQ",
-   "publishAt": "2026-10-03T19:00:00+09:00"
+   "publishAt": "2026-09-29T19:00:00+09:00"
   },
   {
    "id": "shorts-4",
@@ -92,7 +89,7 @@
     "앱 광고"
    ],
    "uploaded": "https://youtu.be/-TANT0WAMTc",
-   "publishAt": "2026-09-29T19:00:00+09:00"
+   "publishAt": "2026-09-28T19:00:00+09:00"
   },
   {
    "id": "shorts-5",
@@ -109,12 +106,12 @@
     "앱 광고"
    ],
    "uploaded": "https://youtu.be/DPHV2gVQgDI",
-   "publishAt": "2026-09-30T19:00:00+09:00"
+   "publishAt": "2026-09-28T19:00:00+09:00"
   },
   {
    "id": "shorts-6",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/morning-mad-v.mp4",
    "title": "AI가 만든 15초 알람 앱 광고 #Shorts",
    "description": "목소리로 깨워 주는 알람 — 박자에 맞춰 파형이 뛴다. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #앱광고 #매드무비",
@@ -125,8 +122,7 @@
     "AI 영상",
     "앱 광고"
    ],
-   "uploaded": "https://youtu.be/1Ci_Cqu9_Ag",
-   "publishAt": "2026-10-01T19:00:00+09:00"
+   "uploaded": "https://youtu.be/1Ci_Cqu9_Ag"
   },
   {
    "id": "shorts-7",
@@ -143,7 +139,7 @@
     "앱 광고"
    ],
    "uploaded": "https://youtu.be/Z2Xjfaf6AsU",
-   "publishAt": "2026-10-02T19:00:00+09:00"
+   "publishAt": "2026-09-29T19:00:00+09:00"
   },
   {
    "id": "thread",
@@ -159,8 +155,8 @@
     "편집은 박자부터 정했다.\n128 BPM 32박 = 15초. 인트로 → 라이저 → 드롭 5마디 → 엔딩, 드롭은 마디마다 효과를 바꾼다.",
     "이 규칙을 설정 파일로 만들었더니 앱 광고 4편이 금방 나왔다.\n영상 정리 👉 https://youtu.be/Rw1ZngcDDco"
    ],
-   "dueAt": "2026-09-27T19:05:00+09:00",
-   "uploaded": "buffer post 6ab8be63ccccb9429c475a73 (예약 2026-09-27 19:05 KST)"
+   "dueAt": "2026-09-27T18:06:00+09:00",
+   "uploaded": "https://www.threads.com/@jkh8308/post/DdyP_bPljUz"
   }
  ]
 }

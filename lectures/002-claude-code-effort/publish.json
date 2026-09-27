@@ -44,7 +44,7 @@
   {
    "id": "shorts-2",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "클로드 코드 effort 올리면 뭐가 달라질까? #Shorts",
@@ -56,7 +56,7 @@
     "AI 코딩"
    ],
    "uploaded": "https://youtu.be/8ki7WyxVNJc",
-   "note": "①과 너무 비슷해서 비공개 (2026-09-27), 데모 쇼츠(shorts-3)로 교체"
+   "note": "①과 비슷해 비공개했다가(9/27) 조회 1,171회로 가장 잘 나와서 다시 공개 (사용자 확인 2026-09-27 18시)"
   },
   {
    "id": "shorts-3",
