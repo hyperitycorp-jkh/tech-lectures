@@ -1,0 +1,1 @@
+high 62.6s tools=5 tokens=55862 (headless Chrome로 렌더 확인)

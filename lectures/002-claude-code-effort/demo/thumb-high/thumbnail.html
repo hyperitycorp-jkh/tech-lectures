@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Effort 썸네일</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+  :root {
+    --bg: #0f0d0b;
+    --ink: #fff8f0;
+    --muted: #b9ada0;
+    --claude: #d97757;
+    --low: #5ec8ff;
+    --max: #ff4d2e;
+    --yellow: #ffd23f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); }
+  body {
+    font-family: "Pretendard", -apple-system, sans-serif;
+    color: var(--ink);
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 배경: 왼쪽 차가움 → 오른쪽 뜨거움 */
+  .bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 620px 520px at 8% 100%, rgba(94,200,255,0.22), transparent 70%),
+      radial-gradient(ellipse 720px 620px at 100% 90%, rgba(255,77,46,0.38), transparent 70%),
+      radial-gradient(ellipse 500px 300px at 60% 0%, rgba(217,119,87,0.18), transparent 70%);
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 40%, #000 100%);
+  }
+
+  /* 상단 배지 */
+  .badge {
+    position: absolute; top: 44px; left: 64px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 24px 12px 16px;
+    background: var(--claude);
+    border-radius: 14px;
+    font-size: 34px; font-weight: 800; letter-spacing: -0.02em;
+    color: #1a0f0a;
+    box-shadow: 0 8px 0 #8f4128;
+  }
+  .badge .spark { width: 36px; height: 36px; }
+
+  .cmd {
+    position: absolute; top: 52px; right: 64px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 30px; font-weight: 700;
+    color: var(--muted);
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    background: rgba(0,0,0,0.4);
+  }
+  .cmd b { color: var(--yellow); font-weight: 700; }
+
+  /* 메인 카피 */
+  .title {
+    position: absolute; top: 148px; left: 64px;
+    font-size: 150px; font-weight: 900; line-height: 1.02; letter-spacing: -0.055em;
+  }
+  .title .when { color: var(--ink); }
+  .title .low {
+    color: var(--low);
+    text-shadow: 0 0 40px rgba(94,200,255,0.45);
+  }
+  .title .max {
+    color: var(--max);
+    text-shadow: 0 0 50px rgba(255,77,46,0.6);
+  }
+  .title .q { color: var(--yellow); }
+
+  /* 하단 게이지 */
+  .gauge {
+    position: absolute; left: 64px; right: 64px; bottom: 58px;
+  }
+  .track {
+    position: relative;
+    height: 34px; border-radius: 17px;
+    background: linear-gradient(90deg, var(--low) 0%, #9ad06a 34%, var(--yellow) 60%, #ff8a2e 80%, var(--max) 100%);
+    box-shadow: 0 0 40px rgba(255,120,60,0.35), inset 0 -4px 0 rgba(0,0,0,0.25);
+  }
+  .tick {
+    position: absolute; top: -8px; width: 6px; height: 50px; margin-left: -3px;
+    background: var(--bg); border-radius: 3px;
+  }
+  .labels {
+    position: relative; height: 44px;
+    margin-top: 16px;
+    font-size: 34px; font-weight: 800; letter-spacing: -0.01em;
+  }
+  .labels span { position: absolute; top: 0; transform: translateX(-50%); color: var(--muted); }
+  .labels span:first-child { left: 0; transform: none; color: var(--low); }
+  .labels span:nth-child(2) { left: 33.33%; }
+  .labels span:nth-child(3) { left: 66.66%; }
+  .labels span:last-child { right: 0; transform: none; color: var(--max); }
+
+  .knob {
+    position: absolute; top: 50%; left: 50%;
+    width: 64px; height: 64px; margin: -32px 0 0 -32px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 6px solid var(--bg);
+    box-shadow: 0 0 0 4px var(--ink), 0 10px 24px rgba(0,0,0,0.5);
+  }
+  .knob::after {
+    content: "?";
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-size: 36px; font-weight: 900; color: var(--bg);
+  }
+
+  /* 오른쪽 스티커 */
+  .sticker {
+    position: absolute; right: 70px; top: 214px;
+    transform: rotate(6deg);
+    background: var(--yellow);
+    color: #1a1204;
+    padding: 20px 28px;
+    border-radius: 18px;
+    font-size: 44px; font-weight: 900; line-height: 1.15; letter-spacing: -0.03em;
+    text-align: center;
+    box-shadow: 0 10px 0 #a8850f, 0 20px 40px rgba(0,0,0,0.45);
+  }
+  .sticker small {
+    display: block;
+    font-size: 26px; font-weight: 800; opacity: 0.75; margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grid"></div>
+
+  <div class="badge">
+    <svg class="spark" viewBox="0 0 24 24" aria-hidden="true">
+      <g fill="#1a0f0a">
+        <rect x="11" y="1" width="2" height="22" rx="1"/>
+        <rect x="11" y="1" width="2" height="22" rx="1" transform="rotate(45 12 12)"/>
+        <rect x="11" y="1" width="2" height="22" rx="1" transform="rotate(90 12 12)"/>
+        <rect x="11" y="1" width="2" height="22" rx="1" transform="rotate(135 12 12)"/>
+      </g>
+    </svg>
+    클로드 코드 effort
+  </div>
+
+  <div class="cmd">/effort <b>?</b></div>
+
+  <h1 class="title">
+    <span class="when">언제 </span><span class="low">low</span><span class="when">,</span><br>
+    <span class="when">언제 </span><span class="max">max</span><span class="q">?</span>
+  </h1>
+
+  <div class="sticker"><small>토큰 vs 품질</small>설정 한 번에<br>정리</div>
+
+  <div class="gauge">
+    <div class="track">
+      <div class="tick" style="left:33.33%"></div>
+      <div class="tick" style="left:66.66%"></div>
+      <div class="knob"></div>
+    </div>
+    <div class="labels">
+      <span>low</span><span>medium</span><span>high</span><span>max</span>
+    </div>
+  </div>
+</body>
+</html>

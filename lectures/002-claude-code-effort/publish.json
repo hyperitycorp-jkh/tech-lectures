@@ -44,7 +44,7 @@
   {
    "id": "shorts-2",
    "target": "youtube",
-   "privacy": "public",
+   "privacy": "private",
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "클로드 코드 effort 올리면 뭐가 달라질까? #Shorts",
@@ -55,7 +55,25 @@
     "effort",
     "AI 코딩"
    ],
-   "uploaded": "https://youtu.be/8ki7WyxVNJc"
+   "uploaded": "https://youtu.be/8ki7WyxVNJc",
+   "note": "①과 너무 비슷해서 비공개 (2026-09-27), 데모 쇼츠(shorts-3)로 교체"
+  },
+  {
+   "id": "shorts-3",
+   "target": "youtube",
+   "privacy": "public",
+   "file": "scenes/out/shorts-3.mp4",
+   "captions": "scenes/out/shorts-3.srt",
+   "title": "같은 요청, 클로드 코드 effort만 바꿔 봤다 #Shorts",
+   "description": "\"유튜브 썸네일 만들어줘\" — effort low는 21초, high는 63초. high는 직접 렌더해서 확인까지 했다. (각 1회 실행, Opus 5.5)\n언제 뭘 쓰는지 전체 가이드 👉 https://youtu.be/0E-1a-WjYiA\n#클로드코드 #ClaudeCode #AI코딩",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "effort",
+    "AI 코딩",
+    "Opus 5.5"
+   ],
+   "uploaded": "https://youtu.be/DitkF8XEOy4"
   },
   {
    "id": "thread-v1",

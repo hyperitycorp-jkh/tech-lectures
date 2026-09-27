@@ -4,7 +4,7 @@
 effort가 뭔지, 단계별로 언제 쓰는지, 클로드 코드 팀이 쓰는 작업 순서를 정리한 가이드 영상.
 
 - 롱폼: https://youtu.be/0E-1a-WjYiA
-- 쇼츠: https://youtu.be/XyBIN_QmpNs · https://youtu.be/8ki7WyxVNJc
+- 쇼츠: https://youtu.be/XyBIN_QmpNs · https://youtu.be/DitkF8XEOy4 (데모: low vs high)
 - 치트시트: https://storage.googleapis.com/hyperity-lecture-assets/claude-effort/cheatsheet.png
 
 ## 파일

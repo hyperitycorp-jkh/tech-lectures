@@ -1,9 +1,11 @@
 // 002 쇼츠·릴스 2편 대본 (9:16, 각 30초 안팎). 음성 설정·발음은 voice.js (롱폼과 같은 목소리)
 //   음성·길이·입 모양: node lectures/002-claude-code-effort/scenes/timing.mjs shorts
-//   렌더: node toolkit/render.mjs lectures/002-claude-code-effort/scenes/shorts.html --query s=1 --name shorts-1   (s=1|2)
-// 챕터 종류: hook · clip · list · cta   media: { image } 또는 { clip, ... }
+//   렌더: node toolkit/render.mjs lectures/002-claude-code-effort/scenes/shorts.html --query s=1 --name shorts-1   (s=1|2|3)
+// ③ 은 직접 돌린 데모(demo/thumb-low · thumb-high, 각 1회) — ①②와 다른 각도(요약이 아니라 결과)
+// 챕터 종류: hook · clip · list · shot(결과 한 장 + 기록) · duo(두 결과 위아래) · cta   media: { image } 또는 { clip, ... }
 const L = '/lectures/002-claude-code-effort';
 const BLOG = { image: `${L}/captures/blog.png` };
+const LOW = { image: `${L}/demo/thumb-low/thumb.png` }, HIGH = { image: `${L}/demo/thumb-high/thumb.png` };
 
 window.SCRIPT = { toSay: window.toSay, voice: window.VOICE, styles: [], chapters: [
   // ① effort, 이것만 기억하세요
@@ -26,4 +28,19 @@ window.SCRIPT = { toSay: window.toSay, voice: window.VOICE, styles: [], chapters
     '그런데 접근법 자체가 틀린 건, 올려도 안 고쳐져요.',
   ] },
   { short: 2, type: 'cta', say: ['언제 뭘 쓰는지는 긴 영상에 정리했어요. 저장해 두세요!'] },
+
+  // ③ 같은 요청, effort만 바꿔 봤다 (데모)
+  { short: 3, type: 'hook', hook: '같은 요청,\neffort만 <em>바꿔 봤다</em>', media: { ...HIGH, dim: true }, prompt: '"유튜브 썸네일 만들어줘"', prompt2: 'effort <b>low</b> vs <b>high</b>', say: [
+    '클로드 코드한테 똑같이, 유튜브 썸네일을 만들어 달라고 했어요. effort만 바꿔서요.',
+  ] },
+  { short: 3, type: 'shot', tag: 'effort low', media: LOW, note: '21초 · 도구 2번 · 렌더 확인 <em>안 함</em>', say: [
+    'low는 21초 만에 끝냈어요. 파일 하나 쓰고, 확인 없이 바로 끝.',
+  ] },
+  { short: 3, type: 'shot', tag: 'effort high', hi: true, media: HIGH, note: '63초 · 도구 5번 · 직접 렌더해서 <em>확인</em>', say: [
+    'high는 1분쯤 걸렸는데, 직접 렌더해 보고 확인까지 했어요.',
+  ] },
+  { short: 3, type: 'duo', title: '나란히 보면', a: LOW, b: HIGH, say: [
+    '나란히 놓으면 차이가 확 보이죠. 시간은 세 배 걸렸고, 토큰은 조금 더 썼어요.',
+  ] },
+  { short: 3, type: 'cta', say: ['언제 뭘 쓰는지는 긴 영상에 정리해 뒀어요. 저장해 두세요!'] },
 ] };
