@@ -5,6 +5,7 @@
 //   node toolkit/publish.mjs whoami youtube      ← 로그인된 유튜브 채널 확인 (업로드 전에)
 //   node toolkit/publish.mjs sync youtube <publish.json>  ← 올린 영상(uploaded)의 제목·설명·공개 여부·썸네일을 json 에 맞춤
 //   예약 공개: 항목에 publishAt: '2026-09-28T19:00:00+09:00' → 비공개로 두었다가 그 시각에 자동 공개 (올릴 때·sync 둘 다)
+//   Threads·인스타 예약: 항목에 dueAt: 'ISO 시각' → Buffer customScheduled (롱폼이 공개된 뒤로 잡는다)
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
@@ -83,7 +84,8 @@ const BUFFER_META = {
 async function bufferPost(it, { pub }) {
   const { channels } = readCfg('buffer.json'), channelId = channels?.[it.target];
   if (!channelId) throw new Error(`buffer.json 에 ${it.target} 채널 id 가 없습니다 (node toolkit/publish.mjs buffer-channels)`);
-  const input = { text: it.text, channelId, schedulingType: 'automatic', mode: 'shareNow' };
+  // dueAt(ISO)이 있으면 그 시각에 올라가게 예약(customScheduled), 없으면 바로 게시
+  const input = { text: it.text, channelId, schedulingType: 'automatic', ...(it.dueAt ? { mode: 'customScheduled', dueAt: new Date(it.dueAt).toISOString() } : { mode: 'shareNow' }) };
   if (it.media?.length) input.assets = it.media.map(m => asset(pub.base + m));
   const meta = BUFFER_META[it.target](it, input.assets); if (meta) input.metadata = meta;
   const d = await buffer(`mutation CreatePost($input: CreatePostInput!) { createPost(input: $input) { __typename ... on PostActionSuccess { post { id } } ... on MutationError { message } } }`, { input });

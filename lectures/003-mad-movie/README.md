@@ -6,7 +6,9 @@
 ## 결과
 - 댄스 매드무비(공개 예시): `scenes/mad.html?c=dance`, 설정은 `scenes/dance.mad.js`
 - 앱 광고 4편(러닝·소개팅·알람·사진 일기): 회사 앱이라 설정과 에셋은 `private/`에 두고 공개하지 않는다
-- 영상 링크: 업로드 후 추가
+- 롱폼: https://youtu.be/Rw1ZngcDDco (2026-09-27 19:00 공개)
+- 쇼츠 7편: 결과 몽타주 · 맥 누끼 꼼수 · 댄스 · 러닝 앱 · 소개팅 앱 · 알람 앱 · 사진 일기 앱 — 9/27~10/3 매일 19:00 공개 (주소는 publish.json)
+- 매드무비 규칙 한 장: https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/mad-rules.png
 
 ## 방법 요약
 1. **소스**
