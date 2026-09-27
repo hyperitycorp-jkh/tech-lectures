@@ -111,7 +111,8 @@
     "effort = 얼마나 공들일지 알려 주는 신호.\n\n1시간 주면 쓸 만한 걸 내고 같이 고치고, 12시간 주면 끝까지 판다.\n올릴수록 스스로 검증·예외 테스트를 더 한다. 대신 토큰도 같이 오른다.",
     "차이가 확 나는 건 예외가 많은 일.\nHTML에 숨긴 JS 걸러내기: low 1/5 → high 5/5\n\n근데 접근법 자체가 틀린 건 max로도 못 고친다.",
     "그래서 이렇게 쓰기로 함\nlow — 스케치 · 쉬운 수정\nmedium — 대부분의 기능\nhigh — 버그 · 검증\nmax — 통째로 맡길 때\n\n클로드 코드 팀은 low로 만들고 검증만 high로 돌린다더라.\n영상 정리 👉 https://youtu.be/0E-1a-WjYiA"
-   ]
+   ],
+   "uploaded": "https://www.threads.com/@jkh8308/post/DdwocoxGnkY"
   }
  ]
 }
