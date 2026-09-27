@@ -73,6 +73,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--b
 #barFill{height:100%;background:var(--acc)}
 </style>
 <script src="/toolkit/templates/lib.js"></script>
+<script src="/toolkit/templates/avatar.js"></script>
 <script src="voice.js"></script>
 <script src="longform.script.js"></script>
 <script src="longform.timing.js"></script>
@@ -99,29 +100,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--b
 <div class="abs" id="stat"></div>
 <div class="abs" id="source"></div>
 <div class="abs" id="caption"><span id="capText"></span></div>
-<!-- 캐릭터 아바타: 입 = 나레이션 음량, 눈 깜빡임·들썩임은 프레임 번호로 결정 -->
-<svg class="abs" id="avatar" viewBox="0 0 260 260">
-  <ellipse cx="130" cy="248" rx="72" ry="9" fill="rgba(0,0,0,.45)"/>
-  <g id="avBody">
-    <line x1="130" y1="44" x2="130" y2="20" stroke="#2a2930" stroke-width="5" stroke-linecap="round"/>
-    <path d="M130 2 L136 14 L148 20 L136 26 L130 38 L124 26 L112 20 L124 14 Z" fill="#d97757"/>
-    <path d="M130 42 C203 42 230 102 230 152 C230 212 186 242 130 242 C74 242 30 212 30 152 C30 102 57 42 130 42 Z" fill="#ffb38a"/>
-    <ellipse cx="130" cy="196" rx="62" ry="36" fill="#ffc7a6"/>
-    <path d="M50 132 C50 60 210 60 210 132" stroke="#2a2930" stroke-width="12" fill="none" stroke-linecap="round"/>
-    <rect x="30" y="114" width="28" height="50" rx="13" fill="#2a2930"/>
-    <rect x="202" y="114" width="28" height="50" rx="13" fill="#2a2930"/>
-    <path d="M46 162 C54 200 80 210 100 208" stroke="#2a2930" stroke-width="6" fill="none" stroke-linecap="round"/>
-    <circle cx="102" cy="208" r="7" fill="#d97757"/>
-    <g id="eyeL" transform="translate(100 140)"><ellipse rx="17" ry="20" fill="#fff"/><ellipse cy="3" rx="11" ry="13" fill="#1f1e1d"/><circle cx="-4" cy="-3" r="4.5" fill="#fff"/></g>
-    <g id="eyeR" transform="translate(160 140)"><ellipse rx="17" ry="20" fill="#fff"/><ellipse cy="3" rx="11" ry="13" fill="#1f1e1d"/><circle cx="-4" cy="-3" r="4.5" fill="#fff"/></g>
-    <ellipse cx="78" cy="174" rx="15" ry="8" fill="#ff7a7a" opacity=".45"/>
-    <ellipse cx="182" cy="174" rx="15" ry="8" fill="#ff7a7a" opacity=".45"/>
-    <g transform="translate(130 180)">
-      <path id="mouthClosed" d="M-14 0 Q0 13 14 0" stroke="#3a2320" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <g id="mouthOpen"><ellipse id="mo" rx="13" ry="8" fill="#3a2320"/><ellipse id="tongue" rx="8" ry="4" fill="#ff8a8a"/></g>
-    </g>
-  </g>
-</svg>
+<!-- 캐릭터 아바타: toolkit/templates/avatar.js (바이브코더 비글) — 입 = 나레이션 음량, 깜빡임·들썩임은 시간으로 결정 -->
 <div class="abs" id="bar"><div id="barFill"></div></div>
 <script>
 const FPS = 30, LEAD = .5, GAP = .3, TAIL = .7;
@@ -168,17 +147,9 @@ function avatar(t, line) {
     const v = i => (+env[i] || 0) / 9;
     a = (v(k) + v(k - 1)) / 2;
   }
-  const open = a > .12;
-  $('mouthClosed').style.display = open ? 'none' : '';
-  $('mouthOpen').style.display = open ? '' : 'none';
-  $('mo').setAttribute('rx', 12 + a * 5); $('mo').setAttribute('ry', 3 + a * 15);
-  $('tongue').setAttribute('cy', 1 + a * 8); $('tongue').setAttribute('ry', 2 + a * 5);
-  const cyc = t % 3.7, blink = cyc > 3.55 || (Math.floor(t / 3.7) % 3 === 1 && cyc > 3.3 && cyc < 3.42);
-  ['eyeL', 'eyeR'].forEach((id, k) => $(id).setAttribute('transform', `translate(${k ? 160 : 100} 140) scale(1 ${blink ? .1 : 1})`));
-  const talk = line && t < line.end ? 1 : 0;
-  $('avBody').setAttribute('transform',
-    `translate(0 ${(-7 * a - 2 * Math.sin(t * 2.4)).toFixed(2)}) rotate(${(talk * 2.5 * Math.sin(t * 3.1)).toFixed(2)} 130 240)`);
+  avatarFrame(t, a, !!(line && t < line.end));
 }
+mountAvatar(document.body, { left: 1650, top: 808, size: 250 });
 
 window.renderFrame = async f => {
   const t = f / FPS, i = CH.indexOf(at(CH, t)), c = CH[i], s = c.t, e = chEnd(i);

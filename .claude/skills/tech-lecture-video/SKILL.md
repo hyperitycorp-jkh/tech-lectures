@@ -28,6 +28,7 @@ description: 새 기술을 직접 테스트하고 응용한 결과를 유튜브 
    - 나레이션은 `CONTENT.narration` — macOS `say`(Yuna)로 초안 + SRT 자동. 본인 녹음이 있으면 `META.VOICE_FILE`
    - **목소리는 Qwen3-TTS(로컬·무료) 권장** (엔진 기본값은 say라 META에 지정해야 함) — `META.VOICE_ENGINE: 'qwen'`, `VOICE: 'Sohee'`, `VOICE_INSTRUCT: '밝고 귀엽고 에너지 넘치는 톤, 살짝 웃으면서 말하듯이'`, `VOICE_SPEED: 1.15`. 처음 한 번 `sh toolkit/tts/setup.sh` (실행환경 0.4GB + 모델 2.9GB, 레포 밖). macOS `say`는 지루하다는 피드백으로 초안용만
    - **영상 나레이션은 목소리를 고정한다**: VoiceDesign(`VOICE_MODEL: …VoiceDesign-8bit` + `VOICE_INSTRUCT`)은 줄마다 목소리를 새로 지어서 문장마다 다른 사람처럼 들린다(002에서 실제로 겪음). 목소리를 고를 때만 VoiceDesign 으로 샘플을 뽑고, 고른 샘플을 `~/.local/share/qwen-tts/voices/<이름>.wav`(+ 같은 이름 `.txt` 대본)에 두고 `VOICE_REF: '~/.local/share/qwen-tts/voices/<이름>.wav'` 로 복제(Base 모델)해서 쓴다. 현재 기준: `d2-keynote`(남성 키노트 톤, 사용자 선택). 받아쓰기 검수는 글자만 보니, 렌더 전에 줄 두세 개를 이어 들어 목소리가 같은지도 확인
+   - **캐릭터는 바이브코더 비글**(`toolkit/templates/avatar.js` 움직이는 버전, `avatar.svg` 정지 그림, `profile.html` 채널 프로필). 장면에서 `<script src="/toolkit/templates/avatar.js">` 후 `mountAvatar(...)`·`avatarFrame(t, a, talking)`. 스누피 등 남의 캐릭터를 따라 그리지 않는다(오리지널)
    - 음성은 `<scene>/tts-cache/`에 문장별로 캐시된다(Qwen은 매번 조금씩 다르게 읽음). 긴 강의는 대본에서 줄 길이를 먼저 재고(`toolkit/tts.mjs`의 `voice()`) 챕터 시각을 계산한다 — 예: `lectures/001-*/scenes/timing.mjs`
    - 대본은 말하듯 "~해요" 말투, 영문 용어는 `say` 필드에 한글 발음으로 (자막은 원래 표기)
    - **말하는 캐릭터 아바타**: 오른쪽 아래 SVG 캐릭터, 입 = `envelope()` 음량(프레임당 0~9), 눈 깜빡임은 프레임 번호로 — 예: `lectures/001-*/scenes/longform.html`. 본문·자막 오른쪽 끝을 1680px 안으로

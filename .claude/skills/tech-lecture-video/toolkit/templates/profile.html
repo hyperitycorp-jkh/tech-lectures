@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 바이브코더 채널 프로필 (800×800) — 비글이 노트북 뒤에서 빼꼼. 유튜브는 원형으로 잘리니 가운데 원 안에 다 들어가게
+     렌더: node toolkit/render.mjs toolkit/templates/profile.html --still --name profile   (v=2: 배경색 바꾼 안) -->
+<style>html,body{margin:0;width:800px;height:800px;overflow:hidden;background:#fff}</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<svg id="p" width="800" height="800" viewBox="0 0 800 800"></svg>
+<script>
+const v = +(new URLSearchParams(location.search).get('v') || 1), INK = '#26232b';
+const BG = v === 1 ? ['#ffe4c7', '#ffb98a'] : ['#d8f0e6', '#9fd9c3'];
+window.META = { W: 800, H: 800, FPS: 30, DURATION: 1 };
+$('p').innerHTML = `
+  <defs><radialGradient id="bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="${BG[0]}"/><stop offset="1" stop-color="${BG[1]}"/></radialGradient></defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <g transform="translate(145 70) scale(1.95)">
+    <path d="M130 52 C200 52 226 104 226 152 C226 208 186 238 130 238 C74 238 34 208 34 152 C34 104 60 52 130 52 Z" fill="#fff" stroke="${INK}" stroke-width="6"/>
+    <path d="M147 108 C175 102 193 121 191 147 C189 167 169 171 155 161 C141 149 135 117 147 108 Z" fill="#8a5530" opacity=".92"/>
+    <ellipse cx="130" cy="180" rx="46" ry="33" fill="#fbf3e6"/>
+    <path d="M64 64 C35 70 25 122 35 167 C41 190 64 190 72 171 C84 143 88 102 84 77 Z" fill="#8a5530" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M196 64 C225 70 235 122 225 167 C219 190 196 190 188 171 C176 143 172 102 176 77 Z" fill="#8a5530" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+    <g transform="translate(100 138)"><ellipse rx="9.5" ry="12.5" fill="${INK}"/><circle cx="-3" cy="-5" r="3.6" fill="#fff"/></g>
+    <g transform="translate(160 138)"><ellipse rx="9.5" ry="12.5" fill="${INK}"/><circle cx="-3" cy="-5" r="3.6" fill="#fff"/></g>
+    <ellipse cx="130" cy="161" rx="15" ry="11" fill="${INK}"/><ellipse cx="125" cy="157" rx="4.5" ry="2.6" fill="#fff" opacity=".6"/>
+    <ellipse cx="78" cy="170" rx="13" ry="8" fill="#ff9aa6" opacity=".5"/><ellipse cx="182" cy="170" rx="13" ry="8" fill="#ff9aa6" opacity=".5"/>
+    <path d="M115 182 Q122.5 191 130 182 Q137.5 191 145 182" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- 노트북 (뒷면이 보이고, 앞발이 위에 걸쳐 있다) -->
+  <path d="M150 520 L650 520 L688 700 L112 700 Z" fill="#3a3842" stroke="${INK}" stroke-width="10" stroke-linejoin="round"/>
+  <rect x="96" y="694" width="608" height="30" rx="14" fill="#2b2931" stroke="${INK}" stroke-width="10"/>
+  <text x="400" y="640" text-anchor="middle" font-size="96" font-weight="900" fill="#ffd400" font-family="Menlo, monospace">&lt;/&gt;</text>
+  <g stroke="${INK}" stroke-width="9" fill="#fff">
+    <path d="M232 540 C226 500 250 482 282 486 C312 490 322 516 316 540 Z"/>
+    <path d="M484 540 C478 500 502 482 534 486 C564 490 574 516 568 540 Z"/>
+  </g>
+  <g stroke="${INK}" stroke-width="5" stroke-linecap="round"><path d="M262 506 L262 526 M286 504 L286 526"/><path d="M514 506 L514 526 M538 504 L538 526"/></g>
+`;
+window.renderFrame = async () => {};
+ready([]);
+</script>
+</body></html>
