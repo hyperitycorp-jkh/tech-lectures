@@ -17,3 +17,4 @@ node_modules/
 
 .DS_Store
 **/tts-cache/
+lectures/004-openrouter/models.json

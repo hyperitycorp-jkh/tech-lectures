@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 004 유튜브 썸네일 (1280×720). 첫 장면 훅과 같은 약속: "캐릭터 채팅 1,000번 — 모델만 바꿔도 90배"
+     렌더: node toolkit/render.mjs lectures/004-openrouter/scenes/thumbnail.html --still --query v=1 --name thumb-1   (v=1|2) -->
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0e0e10;color:#f4efe6;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+.tag{left:60px;top:54px;font:700 30px "SF Mono",Menlo,monospace;color:#d97757}
+h1{position:absolute;left:56px;top:110px;margin:0;font-size:92px;font-weight:900;letter-spacing:-4px;line-height:1.05}
+h1 em{font-style:normal;color:#d97757}
+.big{position:absolute;left:52px;top:330px;font-size:230px;font-weight:900;letter-spacing:-12px;line-height:1;color:#d97757}
+.big small{font-size:90px;letter-spacing:-3px;color:#f4efe6}
+.cmp{position:absolute;right:60px;top:120px;width:500px}
+.cmp div{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-radius:22px;margin-bottom:16px;font-size:40px;font-weight:900}
+.cmp .hi{background:#26232b;color:#a8a2b0;text-decoration:line-through;text-decoration-thickness:4px}
+.cmp .lo{background:#d97757;color:#fff}
+.cmp small{font-size:26px;font-weight:700;opacity:.85}
+.chip{position:absolute;left:60px;bottom:58px;display:flex;gap:12px}
+.chip b{padding:10px 20px;border-radius:14px;background:#f4efe6;color:#141316;font-size:32px;font-weight:900}
+.dog{position:absolute;right:40px;bottom:0;width:250px}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="abs tag">OpenRouter · DeepSeek</div>
+<h1 id="h1"></h1>
+<div class="big" id="big"></div>
+<div class="cmp">
+  <div class="hi"><span>Claude Opus</span><span>21,000원</span></div>
+  <div class="lo"><span>DeepSeek</span><span>231원</span></div>
+  <small style="display:block;padding:0 6px;font-size:22px;color:#8a8580">캐릭터 채팅 1,000번 · 환율 1,400원</small>
+</div>
+<div class="chip"><b>비용</b><b>수위 조절</b><b>퀄리티</b></div>
+<img class="dog" src="/toolkit/templates/avatar.svg">
+<script>
+const v = +(new URLSearchParams(location.search).get('v') || 1);
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1 };
+$('h1').innerHTML = v === 1 ? 'AI 캐릭터 채팅<br>모델만 바꿔도' : '캐릭터 채팅,<br><em>싼 AI</em>도 될까?';
+$('big').innerHTML = v === 1 ? '90<small>배</small>' : '231<small>원</small>';
+window.renderFrame = async () => {};
+ready(['900 92px Pretendard']);
+</script>
+</body></html>

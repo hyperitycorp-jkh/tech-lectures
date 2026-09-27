@@ -1,0 +1,81 @@
+{
+ "base": "https://storage.googleapis.com/hyperity-lecture-assets/openrouter-chat/",
+ "note": "유튜브 '바이브코더'. 전부 비공개 업로드 + schedule 로 예약 공개(9/30부터, 3강 일정 뒤). Threads 는 개인(jkh8308), 캐러셀 첨부. 인스타 안 함.",
+ "schedule": {
+  "start": "2026-09-30",
+  "time": "19:00",
+  "tz": "+09:00"
+ },
+ "items": [
+  {
+   "id": "longform",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/longform.mp4",
+   "thumbnail": "scenes/out/thumb-1.png",
+   "captions": "scenes/out/longform.srt",
+   "title": "오픈라우터로 AI 캐릭터 채팅 90배 싸게 만들기 — 수위 조절까지 (DeepSeek)",
+   "description": "AI 캐릭터 채팅 1,000번에 Claude Opus는 약 21,000원, DeepSeek는 231원. 그럼 싼 모델도 수위를 지킬까?\nOpenRouter로 직접 테스트하고, 싸고 안전한 캐릭터 채팅 구성을 제안해요.\n\n📄 수위 규칙 템플릿: https://storage.googleapis.com/hyperity-lecture-assets/openrouter-chat/rules.png\n📂 테스트 코드: https://github.com/hyperitycorp-jkh/tech-lectures/tree/main/lectures/004-openrouter\n📊 참고: OpenRouter × a16z State of AI (https://openrouter.ai/state-of-ai)\n\n00:00 캐릭터 채팅 1,000번, 모델만 바꿔도 90배\n00:20 OpenRouter — API 키 하나로 모델 458개\n00:31 실제 사용 데이터: 오픈 모델의 52%는 롤플레이\n00:41 모델별 대화 1,000번 비용\n00:53 싸면 수위는 누가 막나?\n01:06 캐릭터 설정 + 수위 규칙\n01:20 테스트: 로맨스 · 선 넘는 요청 · 미성년 · 위기\n01:45 결과: 여섯 상황 모두 통과, 1.4원\n02:05 제안: 싸고 안전한 캐릭터 채팅 구성\n02:17 OpenRouter 호출 코드\n\n※ 비용은 OpenRouter 가격표(2026-09-27) 기준 계산, DeepSeek은 실측(수위 검사 포함) · 환율 1,400원. 테스트는 노골적인 요청 없이 진행했어요.",
+   "tags": [
+    "OpenRouter",
+    "오픈라우터",
+    "DeepSeek",
+    "딥시크",
+    "AI 캐릭터 채팅",
+    "LLM 비용",
+    "수위 조절",
+    "모더레이션",
+    "Claude",
+    "바이브코딩"
+   ],
+   "comment": "📄 수위 규칙 템플릿: https://storage.googleapis.com/hyperity-lecture-assets/openrouter-chat/rules.png\n📂 테스트 코드는 설명란 링크에 있어요.\n\n⏱ 바로 보기\n00:41 모델별 대화 1,000번 비용\n01:20 테스트: 로맨스 · 선 넘는 요청 · 미성년 · 위기\n01:45 결과: 여섯 상황 모두 통과, 1.4원\n\n캐릭터 채팅에 어떤 모델 쓰고 계세요? 다음엔 어떤 모델을 테스트해 볼까요? 🐶"
+  },
+  {
+   "id": "shorts-1",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-1.mp4",
+   "captions": "scenes/out/shorts-1.srt",
+   "title": "AI 캐릭터 채팅 1,000번, 21,000원 vs 231원 #Shorts",
+   "description": "모델만 바꿔도 90배. 싼 모델로 수위까지 지키는 법 👉 [롱폼 링크]\n#오픈라우터 #딥시크 #AI챗봇",
+   "tags": [
+    "OpenRouter",
+    "DeepSeek",
+    "AI 캐릭터 채팅",
+    "LLM 비용"
+   ],
+   "comment": "지금 쓰시는 모델은 대화 1,000번에 얼마 나와요? 🐶 싸게 쓰면서 수위 조절하는 법은 채널 롱폼에 있어요."
+  },
+  {
+   "id": "shorts-2",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-2.mp4",
+   "captions": "scenes/out/shorts-2.srt",
+   "title": "싼 AI도 선을 지킬까? (DeepSeek 수위 테스트) #Shorts",
+   "description": "선 넘는 요청 · 미성년 · 위기 신호에 DeepSeek은 어떻게 반응할까. 수위 규칙 템플릿 👉 [롱폼 링크]\n#딥시크 #AI챗봇 #모더레이션",
+   "tags": [
+    "DeepSeek",
+    "AI 캐릭터 채팅",
+    "수위 조절",
+    "모더레이션"
+   ],
+   "comment": "수위 규칙은 캐릭터 설정에 4줄만 적었어요. 템플릿은 채널 롱폼 설명란에 있어요 🐶"
+  },
+  {
+   "id": "thread",
+   "target": "threads",
+   "media": [
+    "carousel-slide1.png",
+    "carousel-slide2.png",
+    "carousel-slide4.png"
+   ],
+   "text": "캐릭터 채팅 1,000번에 클로드 오퍼스는 2만 1천 원, 딥시크는 231원이더라.\n90배 차이. 근데 싼 모델이 수위는 지킬까 싶어서 직접 테스트해 봤다.",
+   "replies": [
+    "캐릭터 설정에 수위 규칙을 4줄 적었다.\n설렘은 가볍게까지, 선 넘으면 캐릭터 말투로 돌리기, 미성년·위기 신호는 무조건 멈춤.",
+    "딥시크가 여섯 상황을 다 지켰다.\n검사도 같은 모델로 한 번 더 돌렸는데 분류까지 다 맞음. 6번 대화+검사 합쳐서 1.4원.",
+    "옥에 티 하나. 위기 상황에서 사용자를 캐릭터 이름으로 불렀다. 결국 사람이 한 번씩은 봐야 한다.\n영상 정리 👉 [롱폼 링크]"
+   ]
+  }
+ ]
+}
