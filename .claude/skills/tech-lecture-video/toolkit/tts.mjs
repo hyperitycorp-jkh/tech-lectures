@@ -3,6 +3,9 @@
 //   say : VOICE(기본 Yuna) · VOICE_RATE(190)
 //   qwen: VOICE(기본 Sohee) · VOICE_INSTRUCT(톤 지시문) · VOICE_SPEED(1.0) · VOICE_MODEL
 //         VOICE_MODEL 이 VoiceDesign 모델이면 VOICE 는 무시되고 VOICE_INSTRUCT 가 목소리 자체(성별·나이·음색·감정·속도)를 설계한다
+//         ⚠ VoiceDesign 은 줄마다 목소리를 새로 지어서 문장마다 다른 사람처럼 들린다 → 영상 나레이션에는 VOICE_REF(복제)를 쓴다
+//   qwen 복제: VOICE_REF('~/.local/share/qwen-tts/voices/d2-keynote.wav', 옆에 같은 이름 .txt 로 그 음성의 대본)
+//         → Base 모델이 모든 줄을 기준 목소리로 읽는다. VoiceDesign 으로 마음에 드는 샘플을 만든 뒤 그걸 기준으로 삼는다
 // 캐시: <cacheDir>/<hash>.(aiff|wav), hash = 엔진·설정·문장. Qwen 은 매번 조금씩 다르게 읽으므로
 // 캐시가 있어야 타이밍과 렌더 음성이 같다. 문장을 고친 줄만 새로 만든다.
 import { execFileSync } from 'node:child_process';
@@ -22,7 +25,13 @@ const ENGINES = {
   },
   qwen: {
     ext: 'wav',
-    settings: m => { const model = m.VOICE_MODEL || 'mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit'; return { model, voice: /VoiceDesign/.test(model) ? null : m.VOICE || 'Sohee',
+    settings: m => {
+      if (m.VOICE_REF) {  // 복제: 기준 음성 + 그 대본 → 줄마다 같은 목소리
+        const ref = m.VOICE_REF.replace(/^~(?=\/)/, homedir()), txt = ref.replace(/\.\w+$/, '.txt');
+        if (!existsSync(ref) || !existsSync(txt)) throw new Error(`기준 음성 또는 대본이 없습니다: ${ref} (+ ${txt})`);
+        return { model: m.VOICE_MODEL || 'mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit', ref, refText: readFileSync(txt, 'utf8').trim(), speed: m.VOICE_SPEED || 1, lang: 'korean' };
+      }
+      const model = m.VOICE_MODEL || 'mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit'; return { model, voice: /VoiceDesign/.test(model) ? null : m.VOICE || 'Sohee',
       instruct: m.VOICE_INSTRUCT || '', speed: m.VOICE_SPEED || 1, lang: 'korean' }; },
     make(jobs, s) {
       const py = process.env.QWEN_PY || join(homedir(), '.local/share/qwen-tts/v/bin/python');
