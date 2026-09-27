@@ -28,7 +28,9 @@
     "Claude",
     "바이브코딩"
    ],
-   "comment": "📄 수위 규칙 템플릿: https://storage.googleapis.com/hyperity-lecture-assets/openrouter-chat/rules.png\n📂 테스트 코드는 설명란 링크에 있어요.\n\n⏱ 바로 보기\n00:41 모델별 대화 1,000번 비용\n01:20 테스트: 로맨스 · 선 넘는 요청 · 미성년 · 위기\n01:45 결과: 여섯 상황 모두 통과, 1.4원\n\n캐릭터 채팅에 어떤 모델 쓰고 계세요? 다음엔 어떤 모델을 테스트해 볼까요? 🐶"
+   "comment": "📄 수위 규칙 템플릿: https://storage.googleapis.com/hyperity-lecture-assets/openrouter-chat/rules.png\n📂 테스트 코드는 설명란 링크에 있어요.\n\n⏱ 바로 보기\n00:41 모델별 대화 1,000번 비용\n01:20 테스트: 로맨스 · 선 넘는 요청 · 미성년 · 위기\n01:45 결과: 여섯 상황 모두 통과, 1.4원\n\n캐릭터 채팅에 어떤 모델 쓰고 계세요? 다음엔 어떤 모델을 테스트해 볼까요? 🐶",
+   "publishAt": "2026-09-30T10:00:00Z",
+   "uploaded": "https://youtu.be/cr747zcnJjM"
   },
   {
    "id": "shorts-1",
@@ -37,14 +39,16 @@
    "file": "scenes/out/shorts-1.mp4",
    "captions": "scenes/out/shorts-1.srt",
    "title": "AI 캐릭터 채팅 1,000번, 21,000원 vs 231원 #Shorts",
-   "description": "모델만 바꿔도 90배. 싼 모델로 수위까지 지키는 법 👉 [롱폼 링크]\n#오픈라우터 #딥시크 #AI챗봇",
+   "description": "모델만 바꿔도 90배. 싼 모델로 수위까지 지키는 법 👉 https://youtu.be/cr747zcnJjM\n#오픈라우터 #딥시크 #AI챗봇",
    "tags": [
     "OpenRouter",
     "DeepSeek",
     "AI 캐릭터 채팅",
     "LLM 비용"
    ],
-   "comment": "지금 쓰시는 모델은 대화 1,000번에 얼마 나와요? 🐶 싸게 쓰면서 수위 조절하는 법은 채널 롱폼에 있어요."
+   "comment": "지금 쓰시는 모델은 대화 1,000번에 얼마 나와요? 🐶 싸게 쓰면서 수위 조절하는 법은 채널 롱폼에 있어요.",
+   "publishAt": "2026-09-30T10:00:00Z",
+   "uploaded": "https://youtu.be/al_4DKn7QxY"
   },
   {
    "id": "shorts-2",
@@ -53,14 +57,16 @@
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "싼 AI도 선을 지킬까? (DeepSeek 수위 테스트) #Shorts",
-   "description": "선 넘는 요청 · 미성년 · 위기 신호에 DeepSeek은 어떻게 반응할까. 수위 규칙 템플릿 👉 [롱폼 링크]\n#딥시크 #AI챗봇 #모더레이션",
+   "description": "선 넘는 요청 · 미성년 · 위기 신호에 DeepSeek은 어떻게 반응할까. 수위 규칙 템플릿 👉 https://youtu.be/cr747zcnJjM\n#딥시크 #AI챗봇 #모더레이션",
    "tags": [
     "DeepSeek",
     "AI 캐릭터 채팅",
     "수위 조절",
     "모더레이션"
    ],
-   "comment": "수위 규칙은 캐릭터 설정에 4줄만 적었어요. 템플릿은 채널 롱폼 설명란에 있어요 🐶"
+   "comment": "수위 규칙은 캐릭터 설정에 4줄만 적었어요. 템플릿은 채널 롱폼 설명란에 있어요 🐶",
+   "publishAt": "2026-10-01T10:00:00Z",
+   "uploaded": "https://youtu.be/8TJGHC1Zsik"
   },
   {
    "id": "thread",
@@ -74,8 +80,10 @@
    "replies": [
     "캐릭터 설정에 수위 규칙을 4줄 적었다.\n설렘은 가볍게까지, 선 넘으면 캐릭터 말투로 돌리기, 미성년·위기 신호는 무조건 멈춤.",
     "딥시크가 여섯 상황을 다 지켰다.\n검사도 같은 모델로 한 번 더 돌렸는데 분류까지 다 맞음. 6번 대화+검사 합쳐서 1.4원.",
-    "옥에 티 하나. 위기 상황에서 사용자를 캐릭터 이름으로 불렀다. 결국 사람이 한 번씩은 봐야 한다.\n영상 정리 👉 [롱폼 링크]"
-   ]
+    "옥에 티 하나. 위기 상황에서 사용자를 캐릭터 이름으로 불렀다. 결국 사람이 한 번씩은 봐야 한다.\n영상 정리 👉 https://youtu.be/cr747zcnJjM"
+   ],
+   "dueAt": "2026-09-30T10:05:00.000Z",
+   "uploaded": "buffer post 6ab90cb21bf030e330a6d75a (예약 2026-09-30 19:05 KST)"
   }
  ]
 }
