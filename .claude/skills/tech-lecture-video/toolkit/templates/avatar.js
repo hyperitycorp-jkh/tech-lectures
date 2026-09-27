@@ -10,8 +10,8 @@ const AVATAR_SVG = `
     <path d="M130 52 C200 52 226 104 226 152 C226 208 186 238 130 238 C74 238 34 208 34 152 C34 104 60 52 130 52 Z" fill="#fff" stroke="${AV_INK}" stroke-width="6"/>
     <path d="M147 108 C175 102 193 121 191 147 C189 167 169 171 155 161 C141 149 135 117 147 108 Z" fill="#8a5530" opacity=".92"/>
     <ellipse cx="130" cy="180" rx="46" ry="33" fill="#fbf3e6"/>
-    <path d="M64 64 C35 70 25 122 35 167 C41 190 64 190 72 171 C84 143 88 102 84 77 Z" fill="#8a5530" stroke="${AV_INK}" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M196 64 C225 70 235 122 225 167 C219 190 196 190 188 171 C176 143 172 102 176 77 Z" fill="#8a5530" stroke="${AV_INK}" stroke-width="5" stroke-linejoin="round"/>
+    <g class="earL"><path d="M66 58 C28 62 12 130 22 190 C28 222 62 226 74 200 C88 162 92 104 88 72 Z" fill="#8a5530" stroke="${AV_INK}" stroke-width="5" stroke-linejoin="round"/></g>
+    <g class="earR"><path d="M194 58 C232 62 248 130 238 190 C232 222 198 226 186 200 C172 162 168 104 172 72 Z" fill="#8a5530" stroke="${AV_INK}" stroke-width="5" stroke-linejoin="round"/></g>
     <g class="eyeL" transform="translate(100 140)"><ellipse rx="9.5" ry="12.5" fill="${AV_INK}"/><circle cx="-3" cy="-5" r="3.6" fill="#fff"/></g>
     <g class="eyeR" transform="translate(160 140)"><ellipse rx="9.5" ry="12.5" fill="${AV_INK}"/><circle cx="-3" cy="-5" r="3.6" fill="#fff"/></g>
     <ellipse cx="130" cy="161" rx="15" ry="11" fill="${AV_INK}"/><ellipse cx="125" cy="157" rx="4.5" ry="2.6" fill="#fff" opacity=".6"/>
@@ -32,7 +32,7 @@ function mountAvatar(parent, { left, top, size }) {
   el.innerHTML = AVATAR_SVG;
   parent.appendChild(el);
   const q = c => el.querySelector('.' + c);
-  AV = { el, body: q('avBody'), eyes: [q('eyeL'), q('eyeR')], closed: q('mouthClosed'), open: q('mouthOpen'), mo: q('mo'), tongue: q('tongue') };
+  AV = { el, ears: [q('earL'), q('earR')], body: q('avBody'), eyes: [q('eyeL'), q('eyeR')], closed: q('mouthClosed'), open: q('mouthOpen'), mo: q('mo'), tongue: q('tongue') };
   return el;
 }
 function avatarFrame(t, a, talking) {
@@ -43,6 +43,9 @@ function avatarFrame(t, a, talking) {
   AV.tongue.setAttribute('cy', 1 + a * 8); AV.tongue.setAttribute('ry', 2 + a * 5);
   const cyc = t % 3.7, blink = cyc > 3.55 || (Math.floor(t / 3.7) % 3 === 1 && cyc > 3.3 && cyc < 3.42);
   AV.eyes.forEach((e, k) => e.setAttribute('transform', `translate(${k ? 160 : 100} 140) scale(1 ${blink ? .1 : 1})`));
+  // 귀: 붙은 자리를 축으로 살랑살랑 (말할 때 더 크게)
+  const sw = (talking ? 5 : 1.8) * Math.sin(t * 5.2);
+  AV.ears[0].setAttribute('transform', `rotate(${(sw).toFixed(2)} 80 66)`); AV.ears[1].setAttribute('transform', `rotate(${(-sw).toFixed(2)} 180 66)`);
   AV.body.setAttribute('transform',
     `translate(0 ${(-7 * a - 2 * Math.sin(t * 2.4)).toFixed(2)}) rotate(${((talking ? 1 : 0) * 2.5 * Math.sin(t * 3.1)).toFixed(2)} 130 240)`);
 }

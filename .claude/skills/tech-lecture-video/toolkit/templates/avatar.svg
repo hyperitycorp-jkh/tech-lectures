@@ -4,8 +4,8 @@
   <path d="M130 52 C200 52 226 104 226 152 C226 208 186 238 130 238 C74 238 34 208 34 152 C34 104 60 52 130 52 Z" fill="#fff" stroke="#26232b" stroke-width="6"/>
   <path d="M147 108 C175 102 193 121 191 147 C189 167 169 171 155 161 C141 149 135 117 147 108 Z" fill="#8a5530" opacity=".92"/>
   <ellipse cx="130" cy="180" rx="46" ry="33" fill="#fbf3e6"/>
-  <path d="M64 64 C35 70 25 122 35 167 C41 190 64 190 72 171 C84 143 88 102 84 77 Z" fill="#8a5530" stroke="#26232b" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M196 64 C225 70 235 122 225 167 C219 190 196 190 188 171 C176 143 172 102 176 77 Z" fill="#8a5530" stroke="#26232b" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M66 58 C28 62 12 130 22 190 C28 222 62 226 74 200 C88 162 92 104 88 72 Z" fill="#8a5530" stroke="#26232b" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M194 58 C232 62 248 130 238 190 C232 222 198 226 186 200 C172 162 168 104 172 72 Z" fill="#8a5530" stroke="#26232b" stroke-width="5" stroke-linejoin="round"/>
   <g transform="translate(100 140)"><ellipse rx="9.5" ry="12.5" fill="#26232b"/><circle cx="-3" cy="-5" r="3.6" fill="#fff"/></g>
   <g transform="translate(160 140)"><ellipse rx="9.5" ry="12.5" fill="#26232b"/><circle cx="-3" cy="-5" r="3.6" fill="#fff"/></g>
   <ellipse cx="130" cy="161" rx="15" ry="11" fill="#26232b"/><ellipse cx="125" cy="157" rx="4.5" ry="2.6" fill="#fff" opacity=".6"/>

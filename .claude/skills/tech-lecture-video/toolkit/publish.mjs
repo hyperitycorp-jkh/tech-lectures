@@ -8,6 +8,8 @@
 //   Threads·인스타 예약: 항목에 dueAt: 'ISO 시각' → Buffer customScheduled (롱폼이 공개된 뒤로 잡는다)
 //   일정 자동: publish.json 에 "schedule": { "start": "YYYY-MM-DD", "time": "19:00" } → 첫날 롱폼+쇼츠①, 이후 하루 한 편, Threads 는 롱폼 5분 뒤. 한 줄: --go
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
+//   node toolkit/publish.mjs comment youtube <publish.json> [--go]  ← 공개된 영상에 항목의 comment 달기(고정은 스튜디오에서 한 번 탭)
+//   node toolkit/publish.mjs stats youtube <publish.json>  ← 조회수·좋아요·댓글
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
 //   youtube.json         { refresh_token }  ← auth youtube 가 만든다
@@ -129,6 +131,24 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
       thumb = t.ok ? ' · 썸네일 ✓' : ` · 썸네일 ✗ ${t.status}`;
     }
     console.log(j.id ? `✓ ${it.id} ${j.status.privacyStatus}${j.status.publishAt ? ` → ${j.status.publishAt} 자동 공개` : ''} "${j.snippet.title}"${thumb}` : `✗ ${it.id} ${JSON.stringify(j.error?.message || j)}`);
+  }
+} else if (args[0] === 'comment' && args[1] === 'youtube') {
+  // 고정 댓글: 공개된 영상(uploaded)에 항목의 comment 를 채널 이름으로 단다(한 번만 — commentId 기록). --go 없으면 미리보기
+  // 유튜브 API 는 '고정'을 지원하지 않는다 → 출력되는 스튜디오 링크에서 댓글 ⋮ → 고정 (영상당 한 번 탭)
+  // 쇼츠 댓글·설명의 링크는 눌리지 않는다 → 쇼츠는 질문형 댓글 + 스튜디오에서 '관련 동영상'을 롱폼으로 지정
+  const path = resolve(args[2] || ''), pub = JSON.parse(readFileSync(path, 'utf8')), GO = args.includes('--go'), tok = await youtubeToken();
+  for (const it of pub.items.filter(x => x.target === 'youtube' && x.uploaded && x.comment && !x.commentId)) {
+    const id = it.uploaded.split('/').pop();
+    const st = (await (await fetch(`https://www.googleapis.com/youtube/v3/videos?part=status&id=${id}`, { headers: { Authorization: `Bearer ${tok}` } })).json()).items?.[0]?.status;
+    if (st?.privacyStatus !== 'public') { console.log(`- ${it.id} 아직 비공개(${st?.privacyStatus}${st?.publishAt ? ` → ${st.publishAt}` : ''}) — 공개 후에 다시 실행`); continue; }
+    if (!GO) { console.log(`▷ ${it.id}: ${it.comment.split('\n')[0]}…`); continue; }
+    const r = await fetch('https://www.googleapis.com/youtube/v3/commentThreads?part=snippet', { method: 'POST',
+      headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ snippet: { videoId: id, topLevelComment: { snippet: { textOriginal: it.comment } } } }) });
+    const j = await r.json();
+    if (!j.id) { console.log(`✗ ${it.id} ${JSON.stringify(j.error?.message || j)}`); continue; }
+    const cur = JSON.parse(readFileSync(path, 'utf8')); cur.items.find(y => y.id === it.id).commentId = j.id; writeFileSync(path, JSON.stringify(cur, null, 1));
+    console.log(`✓ ${it.id} 댓글 달림 → 고정: https://studio.youtube.com/video/${id}/comments`);
   }
 } else if (args[0] === 'stats' && args[1] === 'youtube') {
   // 올린 영상(uploaded)의 조회수·좋아요·댓글·공개 상태 (조회만)
