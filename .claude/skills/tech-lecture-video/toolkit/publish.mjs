@@ -6,6 +6,7 @@
 //   node toolkit/publish.mjs sync youtube <publish.json>  ← 올린 영상(uploaded)의 제목·설명·공개 여부·썸네일을 json 에 맞춤
 //   예약 공개: 항목에 publishAt: '2026-09-28T19:00:00+09:00' → 비공개로 두었다가 그 시각에 자동 공개 (올릴 때·sync 둘 다)
 //   Threads·인스타 예약: 항목에 dueAt: 'ISO 시각' → Buffer customScheduled (롱폼이 공개된 뒤로 잡는다)
+//   일정 자동: publish.json 에 "schedule": { "start": "YYYY-MM-DD", "time": "19:00" } → 첫날 롱폼+쇼츠①, 이후 하루 한 편, Threads 는 롱폼 5분 뒤. 한 줄: --go
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
@@ -143,6 +144,21 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
   if (!path.endsWith('.json')) { console.error('usage: node toolkit/publish.mjs <publish.json> [--go] [--only id,id] | auth youtube | buffer-channels'); process.exit(1); }
   const pub = JSON.parse(readFileSync(path, 'utf8')), only = opt('only')?.split(',');
   const items = pub.items.filter(it => !only || only.includes(it.id)), GO = args.includes('--go');
+  // 공개 일정 자동: publish.json 에 "schedule": { "start": "2026-10-04", "time": "19:00", "tz": "+09:00" } 가 있으면
+  //   publishAt 이 없는 유튜브 항목에 순서대로 날짜를 붙인다 — 첫날 롱폼 + 첫 쇼츠, 그다음 하루 한 편. Threads·인스타는 롱폼 공개 5분 뒤(dueAt)
+  if (pub.schedule) {
+    const { start, time = '19:00', tz = '+09:00' } = pub.schedule, day0 = new Date(`${start}T${time}:00${tz}`);
+    const at = d => new Date(day0.getTime() + d * 864e5).toISOString().replace('.000Z', 'Z');
+    let d = 0, first = true;
+    for (const it of pub.items.filter(x => x.target === 'youtube')) {
+      if (!it.publishAt && !it.uploaded) { it.publishAt = at(it.id === 'longform' ? 0 : (first ? 0 : d)); }
+      if (it.id !== 'longform') { if (first) first = false; d++; }
+    }
+    const lf = pub.items.find(x => x.id === 'longform');
+    for (const it of pub.items.filter(x => x.target !== 'youtube')) if (!it.dueAt && lf?.publishAt) it.dueAt = new Date(new Date(lf.publishAt).getTime() + 5 * 6e4).toISOString();
+    writeFileSync(path, JSON.stringify(pub, null, 1));
+    console.log('공개 일정: ' + pub.items.map(x => `${x.id} ${(x.publishAt || x.dueAt || '-').slice(0, 16)}`).join(' · '));
+  }
   console.log(GO ? '▶ 업로드 시작' : '▷ dry-run (올리지 않음 — 실제로 올리려면 --go)');
   for (const it of items) {
     const files = [it.file, it.thumbnail, it.captions].filter(Boolean).map(f => resolve(dir, f));
