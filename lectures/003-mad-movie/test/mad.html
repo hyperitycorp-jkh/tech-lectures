@@ -53,7 +53,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000;co
 const FPS = 30, BPM = 128, B = 60 / BPM, BEATS = 32;
 window.META = { W: 1920, H: 1080, FPS, DURATION: +(BEATS * B).toFixed(3), AUDIO: 'teaser', BPM, DROP_BEAT: 8, END_BEAT: 28,
   STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
-const C = { smoke: 'clips/smoke', plaid: 'clips/plaid', plaidCut: 'clips/plaid-cut', court: 'clips/court', courtCut: 'clips/court-cut', hall: 'clips/hall' };
+const C = { smoke: '../scenes/clips/smoke', plaid: '../scenes/clips/plaid', plaidCut: '../scenes/clips/plaid-cut', court: '../scenes/clips/court', courtCut: '../scenes/clips/court-cut', hall: '../scenes/clips/hall' };
 const COLORS = ['#ff2d6f', '#16e0bd', '#ffd400', '#7c4dff'];
 const CAPS = [[12, '멈추지 마'], [14, '끝까지'], [20, '지금'], [22, '이 순간']];
 const hide = (...ids) => ids.forEach(id => { $(id).style.display = 'none'; });
