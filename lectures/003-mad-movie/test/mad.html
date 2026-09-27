@@ -1,0 +1,168 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 003 테스트 — 15초 매드무비 (16:9 1920×1080, 128 BPM 32박). 영상: Mixkit 무료 스톡(Stock Video Free License), 음악: render.mjs 'teaser' 합성.
+     소스 프레임: node toolkit/clip.mjs media/<id>.mp4 test/clips/<이름> --w 1920 --ext jpg
+     누끼: toolkit/cutout.swift (macOS Vision) → test/clips/<이름>-cut (투명 PNG)
+     렌더: node toolkit/render.mjs lectures/003-mad-movie/test/mad.html
+     구간: 0~3박 인트로(붐마다 글자) · 4~7 라이저(글자가 사람 뒤로, 줌·RGB 분리가 점점) · 8~27 드롭(색 배경 누끼·잔상·글리치 컷·레터박스) · 28~31 엔딩 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&display=block">
+<style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000;color:#fff}
+.abs{position:absolute}
+.full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#stage{position:absolute;inset:0;overflow:hidden;transform-origin:50% 50%}
+.layer{position:absolute;inset:0}
+/* RGB 분리: 같은 프레임 3장을 채널별로 걸러 screen 으로 겹친다 */
+.rgb{position:absolute;inset:0;background:#000;isolation:isolate}
+.rgb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen}
+.big{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-family:Anton;line-height:.9;letter-spacing:6px}
+.outline{color:transparent;-webkit-text-stroke:4px rgba(255,255,255,.9)}
+#marquee{position:absolute;inset:0;overflow:hidden}
+#marquee div{position:absolute;left:0;white-space:nowrap;font-family:Anton;font-size:260px;line-height:1;color:transparent;-webkit-text-stroke:3px rgba(255,255,255,.55)}
+.cut{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stroke{filter:drop-shadow(6px 0 0 #fff) drop-shadow(-6px 0 0 #fff) drop-shadow(0 6px 0 #fff) drop-shadow(0 -6px 0 #fff) drop-shadow(0 20px 40px rgba(0,0,0,.45))}
+.slice{position:absolute;inset:0;overflow:hidden}
+#cap{position:absolute;left:0;right:0;bottom:120px;text-align:center;font-family:"Black Han Sans";font-size:120px;-webkit-text-stroke:3px #000;paint-order:stroke fill;text-shadow:0 8px 0 #000,0 0 40px rgba(0,0,0,.6)}
+#cap span{display:inline-block}
+.bar{position:absolute;left:0;right:0;height:0;background:#000}
+#flash{position:absolute;inset:0;background:#fff;pointer-events:none}
+#credit{position:absolute;right:48px;bottom:36px;font:600 22px "SF Mono",Menlo,monospace;color:rgba(255,255,255,.7)}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="fr"><feColorMatrix values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter>
+  <filter id="fg"><feColorMatrix values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter>
+  <filter id="fb"><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"/></filter>
+</svg>
+<div id="stage">
+  <div class="layer" id="colorBg"></div>
+  <div class="rgb" id="bgRGB"><img id="bgR" style="filter:url(#fr)"><img id="bgG" style="filter:url(#fg)"><img id="bgB" style="filter:url(#fb)"></div>
+  <div class="layer" id="slices"></div>
+  <div id="marquee"></div>
+  <div class="big" id="behind"></div>
+  <img class="cut" id="echo3"><img class="cut" id="echo2"><img class="cut" id="echo1">
+  <img class="cut" id="cutImg">
+  <div class="big" id="front"></div>
+  <div id="cap"></div>
+</div>
+<div class="bar" id="barT" style="top:0"></div><div class="bar" id="barB" style="bottom:0"></div>
+<div id="flash"></div>
+<div id="credit"></div>
+<script>
+const FPS = 30, BPM = 128, B = 60 / BPM, BEATS = 32;
+window.META = { W: 1920, H: 1080, FPS, DURATION: +(BEATS * B).toFixed(3), AUDIO: 'teaser', BPM, DROP_BEAT: 8, END_BEAT: 28,
+  STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
+const C = { smoke: 'clips/smoke', plaid: 'clips/plaid', plaidCut: 'clips/plaid-cut', court: 'clips/court', courtCut: 'clips/court-cut', hall: 'clips/hall' };
+const COLORS = ['#ff2d6f', '#16e0bd', '#ffd400', '#7c4dff'];
+const CAPS = [[12, '멈추지 마'], [14, '끝까지'], [20, '지금'], [22, '이 순간']];
+const hide = (...ids) => ids.forEach(id => { $(id).style.display = 'none'; });
+const on = id => { const e = $(id); e.style.display = ''; return e; };
+const punch = bt => 1 + .07 * Math.exp(-bt * 9);             // 킥마다 줌
+const shake = (f, amp) => `translate(${(Math.sin(f * 1.9) * amp).toFixed(1)}px, ${(Math.cos(f * 2.7) * amp).toFixed(1)}px)`;
+
+// 배경: RGB 분리 양(px)만큼 채널을 어긋나게
+async function bg(dir, idx, split = 0, style = '') {
+  on('bgRGB');
+  for (const [id, dx] of [['bgR', -split], ['bgG', 0], ['bgB', split]]) {
+    await CLIP.show($(id), dir, idx);
+    $(id).style.transform = `translateX(${dx}px)`;
+  }
+  $('bgRGB').style.filter = style;
+}
+async function cutout(dir, idx, cls = '') { const e = on('cutImg'); e.className = 'cut ' + cls; await CLIP.show(e, dir, idx); }
+// 글리치: 배경을 가로 띠 4개로 잘라 서로 다르게 민다
+async function slices(dir, idx, amt, f) {
+  const s = on('slices');
+  if (!s.children.length) s.innerHTML = [0, 1, 2, 3].map(k => `<div class="slice" style="clip-path:inset(${k * 25}% 0 ${75 - k * 25}% 0)"><img class="full"></div>`).join('');
+  for (const [k, d] of [...s.children].entries()) {
+    await CLIP.show(d.firstChild, dir, idx);
+    d.style.transform = `translateX(${(Math.sin(f * 3.1 + k * 2.3) * amp(k)).toFixed(1)}px)`;
+  }
+  function amp(k) { return amt * (k % 2 ? 1 : -.6); }
+}
+function caption(t) {
+  const c = [...CAPS].reverse().find(([b]) => t >= b * B && t < (b + 2) * B);
+  const el = $('cap');
+  if (!c) { el.innerHTML = ''; return; }
+  const lt = t - c[0] * B;
+  el.innerHTML = [...c[1]].map((ch, k) => {
+    const q = clamp(back(prog(lt, k * .04, k * .04 + .22)));
+    return `<span style="transform:translateY(${(1 - q) * 60}px) scale(${.6 + .4 * q});opacity:${clamp(q * 2)}">${ch === ' ' ? '&nbsp;' : ch}</span>`;
+  }).join('');
+}
+
+window.renderFrame = async f => {
+  const t = f / FPS, bi = Math.min(BEATS - 1, Math.floor(t / B)), bt = t - bi * B, lf = n => Math.round((t - n * B) * FPS);
+  hide('bgRGB', 'slices', 'echo1', 'echo2', 'echo3', 'cutImg');
+  $('colorBg').style.background = '#000'; $('marquee').innerHTML = ''; $('behind').innerHTML = ''; $('front').innerHTML = '';
+  $('stage').style.transform = ''; $('credit').textContent = ''; $('barT').style.height = $('barB').style.height = '0';
+  let flash = 0;
+
+  if (bi < 4) {                                   // 인트로: 붐마다 연기 속 실루엣이 번쩍 + 글자 하나씩
+    const vis = Math.exp(-bt * 5);
+    await bg(C.smoke, 40 * bi + Math.round(bt * FPS), 0, `brightness(${.35 + .9 * vis}) contrast(1.2)`);
+    const word = 'MOVE'.slice(0, bi + 1), q = back(prog(bt, 0, .18));
+    $('front').innerHTML = `<span style="font-size:${330}px;display:inline-block;transform:scale(${1.35 - .35 * clamp(q)})">${word}</span>`;
+    $('stage').style.transform = shake(f, 14 * Math.exp(-bt * 8));
+    flash = .55 * Math.exp(-bt * 14);
+  } else if (bi < 8) {                            // 라이저: 글자가 사람 뒤로, 줌·RGB 분리·흔들림이 점점
+    const p = (t - 4 * B) / (4 * B);
+    if (p > .92) { flash = 0; }                   // 마지막 반 박자는 비운다 (드롭 전 숨 고르기)
+    else {
+      const idx = 20 + lf(4);
+      await bg(C.plaid, idx, 40 * p * p, `saturate(${1 + p}) brightness(${1 - .25 * p})`);
+      $('behind').innerHTML = `<span style="font-size:${420 + 160 * p}px">MOVE</span>`;
+      await cutout(C.plaidCut, idx);
+      $('stage').style.transform = `scale(${1 + .28 * p * p}) ${shake(f, 18 * p * p)}`;
+    }
+  } else if (bi < 12) {                           // 드롭 1: 색 배경 + 흰 테두리 누끼 + 흐르는 글자
+    $('colorBg').style.background = COLORS[bi % 4];
+    $('marquee').innerHTML = [0, 1, 2].map(r => `<div style="top:${r * 300 + 60}px;transform:translateX(${(r % 2 ? -1 : 1) * ((t * 420) % 1400) - 700}px)">MOVE MOVE MOVE MOVE MOVE MOVE</div>`).join('');
+    await cutout(C.plaidCut, 60 + lf(8), 'stroke');
+    $('stage').style.transform = `scale(${punch(bt)})`;
+    flash = bi === 8 ? .9 * Math.exp(-bt * 8) : 0;
+  } else if (bi < 16) {                           // 드롭 2: 코트, 잔상 3겹 + 자막
+    const idx = 30 + lf(12);
+    await bg(C.court, idx, 0, 'saturate(1.3) contrast(1.1)');
+    for (const [id, k, hue, op] of [['echo3', 18, 280, .3], ['echo2', 12, 200, .42], ['echo1', 6, 120, .55]]) {  // 잔상: 몇 프레임 전 누끼를 색 바꿔 겹침
+      const e = on(id); await CLIP.show(e, C.courtCut, Math.max(0, idx - k));
+      e.style.opacity = op; e.style.filter = `hue-rotate(${hue}deg) saturate(3) brightness(1.3)`; e.style.mixBlendMode = 'screen';
+    }
+    await cutout(C.courtCut, idx);
+    $('stage').style.transform = `scale(${punch(bt)})`;
+    flash = bi === 12 ? .5 * Math.exp(-bt * 10) : 0;
+  } else if (bi < 20) {                           // 드롭 3: 박자마다 컷, 박수(홀수 박)에 글리치
+    const src = bi % 2 ? C.smoke : C.hall, idx = (bi % 2 ? 120 : 60) + lf(bi);
+    const g = bi % 2 ? 60 * Math.exp(-bt * 6) : 0;
+    await bg(src, idx, g * .6, bi % 2 ? 'contrast(1.3) saturate(1.4)' : 'contrast(1.15)');
+    if (g > 4) await slices(src, idx, g, f);
+    $('stage').style.transform = `scale(${punch(bt)}) ${shake(f, g * .2)}`;
+    flash = .45 * Math.exp(-bt * 16);
+  } else if (bi < 24) {                           // 드롭 4: 글자가 사람 뒤로 + 박자마다 색 보정
+    const idx = 200 + lf(20);
+    await bg(C.plaid, idx, 10 * Math.exp(-bt * 8), `hue-rotate(${[0, 40, -40, 90][bi % 4]}deg) saturate(1.3)`);
+    $('behind').innerHTML = `<span class="outline" style="font-size:560px">MOVE</span>`;
+    await cutout(C.plaidCut, idx);
+    $('stage').style.transform = `scale(${punch(bt) * 1.08})`;
+  } else if (bi < 28) {                           // 드롭 5: 넓은 홀, 레터박스 + 슬로모션
+    const idx = 120 + Math.round(lf(24) * .5);
+    await bg(C.hall, idx, 0, 'contrast(1.2) brightness(.95)');
+    $('barT').style.height = $('barB').style.height = `${130 * ease(prog(t, 24 * B, 24 * B + .4))}px`;
+    $('front').innerHTML = `<span style="font-size:150px;letter-spacing:${40 + 30 * prog(t, 24 * B, 28 * B)}px;opacity:.9">M O V E</span>`;
+    flash = bi === 27 ? .9 * Math.exp(-(B - bt) * 12) * (bt > B * .6 ? 1 : 0) : 0;
+  } else {                                        // 엔딩: 멈춘 누끼에 흰 테두리 + 제목
+    const lt = t - 28 * B;
+    $('colorBg').style.background = 'radial-gradient(circle at 50% 45%, #2a1140, #07030c 70%)';
+    $('behind').innerHTML = `<span style="font-size:${480 + 30 * lt}px;opacity:${ease(prog(lt, .1, .6))}">MOVE</span>`;
+    await cutout(C.plaidCut, 260, 'stroke');
+    $('credit').textContent = 'footage: Mixkit · edited by Claude Opus 5.5';
+    flash = .8 * Math.exp(-lt * 8);
+  }
+  caption(t);
+  $('flash').style.opacity = flash;
+  document.body.style.opacity = 1 - prog(t, META.DURATION - .5, META.DURATION);
+};
+ready(['400 100px Anton', '400 100px "Black Han Sans"']);
+</script>
+</body></html>

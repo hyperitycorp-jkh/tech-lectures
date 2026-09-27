@@ -13,7 +13,7 @@ function show(el, a, dy = 0, scale = 1, extra = '') {
 // 현재 시각에 해당하는 항목 (배열은 t 오름차순)
 const at = (list, t) => list.filter(x => x.t <= t).pop();
 
-// 결과 영상 재생: toolkit/clip.mjs 로 푼 PNG 시퀀스를 프레임 번호로 교체한다
+// 결과 영상 재생: toolkit/clip.mjs 로 푼 PNG(또는 JPG) 시퀀스를 프레임 번호로 교체한다 (clip.json 의 ext)
 const CLIP = {
   meta: {},
   async load(dir) { if (!this.meta[dir]) this.meta[dir] = await (await fetch(`${dir}/clip.json`)).json(); return this.meta[dir]; },
@@ -21,7 +21,7 @@ const CLIP = {
   async show(img, dir, local) {
     const m = await this.load(dir);
     const idx = Math.min(m.frames, Math.max(1, local + 1));
-    const src = `${dir}/${String(idx).padStart(5, '0')}.png`;
+    const src = `${dir}/${String(idx).padStart(5, '0')}.${m.ext || 'png'}`;
     if (img.getAttribute('src') !== src) { img.src = src; await img.decode(); }
   },
 };
