@@ -42,7 +42,7 @@ description: 새 기술을 직접 테스트하고 응용한 결과를 유튜브 
 9. **공유**
    - 영상: `gcloud storage cp <mp4> gs://hyperity-lecture-assets/<강의>/` → `https://storage.googleapis.com/hyperity-lecture-assets/...` (공개 버킷, 비공개 파일 금지)
    - 노션: Notion MCP로 `📚 강의` 페이지(id `3e6db7ff-b044-814c-a335-e314045d2e24`) 아래에 강좌 페이지 생성, 챕터와 같은 구조, 영상은 `<video src="버킷 URL">`
-   - **업로드 스크립트** `node toolkit/publish.mjs lectures/NNN/publish.json` — 기본 dry-run(목록·빠진 파일·`[…링크]` 자리 표시). `--go` 로 유튜브(private 로 올린 뒤 확인해 공개)·Buffer(Threads 답글 체인·인스타 릴스/캐러셀). 인증은 `~/.config/tech-lectures/`(youtube-client.json → `publish.mjs auth youtube` 로 youtube.json, buffer.json). **공개 게시는 매번 사용자 확인 후.** 다른 프로젝트(viral-engine)의 채널 인증은 쓰지 않는다
+   - **업로드 스크립트** `node toolkit/publish.mjs lectures/NNN/publish.json` — 기본 dry-run(목록·빠진 파일·`[…링크]` 자리 표시). `--go` 로 유튜브(private 로 올린 뒤 확인해 공개. 항목에 `publishAt: 'ISO 시각'`을 넣으면 그 시각에 자동 공개 — 쇼츠 여러 편은 하루 1~2편씩 나눠 공개)·Buffer(Threads 답글 체인·인스타 릴스/캐러셀). 인증은 `~/.config/tech-lectures/`(youtube-client.json → `publish.mjs auth youtube` 로 youtube.json, buffer.json). **공개 게시는 매번 사용자 확인 후.** 다른 프로젝트(viral-engine)의 채널 인증은 쓰지 않는다
    - GitHub: 레포 README 강의 목록 표에 한 줄 추가. **푸시·레포 생성은 매번 사용자에게 확인받은 뒤에만.** 실제 업로드(`--go`)는 사용자 확인 후에만 실행한다.
 
 ## 규칙

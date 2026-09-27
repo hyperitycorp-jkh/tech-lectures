@@ -1,16 +1,16 @@
 {
  "base": "https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/",
- "note": "유튜브는 '바이브코더' 채널. Threads 는 개인 채널(jkh8308)만 — 블러리 채널 금지. 캐러셀·규칙 한 장은 base 버킷에 먼저 올린다. 공개 게시는 사용자 확인 후.",
+ "note": "유튜브는 '바이브코더' 채널. Threads 는 개인 채널(jkh8308)만 — 블러리 채널 금지. 캐러셀·규칙 한 장은 base 버킷에 먼저 올린다. 공개 게시는 사용자 확인 후. 2026-09-27: 전부 비공개로 먼저 올리고 공개는 나중에(사용자 결정) — publishAt 으로 예약 가능.",
  "items": [
   {
    "id": "longform",
    "target": "youtube",
-   "privacy": "public",
+   "privacy": "private",
    "file": "scenes/out/longform.mp4",
    "thumbnail": "scenes/out/thumb-1.png",
    "captions": "scenes/out/longform.srt",
    "title": "오푸스 5.5로 매드무비 만들기 — 누끼·박자·자막까지 (클로드 코드)",
-   "description": "\"오푸스한테 매드무비 부탁하면 다 해 준다\"길래 직접 해 봤어요.\n무료 스톡 영상으로 누끼·박자·자막·효과까지, 그리고 설정 파일 하나로 앱 광고 4편까지 만들었어요.\n\n📄 매드무비 규칙 한 장: https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/mad-rules.png\n📂 코드(엔진·누끼 도구): https://github.com/hyperitycorp-jkh/tech-lectures\n\n{CHAPTERS}\n\n영상 소스: Mixkit (Stock Video Free License) · 음악: 코드로 직접 합성한 비트\n누끼: macOS Vision (설치 없음)",
+   "description": "\"오푸스한테 매드무비 부탁하면 다 해 준다\"길래 직접 해 봤어요.\n무료 스톡 영상으로 누끼·박자·자막·효과까지, 그리고 설정 파일 하나로 앱 광고 4편까지 만들었어요.\n\n📄 매드무비 규칙 한 장: https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/mad-rules.png\n📂 코드(엔진·누끼 도구): https://github.com/hyperitycorp-jkh/tech-lectures\n\n00:00 완성작 먼저\n00:22 계기: \"매드무비, 다 해 주던데?\"\n00:36 원리: 박자 + 누끼 + 글자\n00:55 소스: 무료 스톡 라이선스\n01:15 누끼: 맥에 이미 들어 있는 기능\n01:39 누끼가 안 될 때 (영역 지정 · 피사체 모드)\n01:53 박자: 15초 = 32박\n02:13 효과 사전\n02:30 설정 파일 하나로 스타일 확장\n02:52 예시 1 · 러닝 앱\n03:02 예시 2 · 소개팅 앱\n03:12 예시 3 · 알람 앱\n03:22 예시 4 · 사진 일기 앱\n03:37 따라 하기: 오푸스한테 이렇게\n03:52 정리\n\n영상 소스: Mixkit (Stock Video Free License) · 음악: 코드로 직접 합성한 비트\n누끼: macOS Vision (설치 없음)",
    "tags": [
     "Claude",
     "Claude Code",
@@ -22,36 +22,114 @@
     "AI 영상",
     "바이브코딩",
     "모션그래픽"
-   ]
+   ],
+   "uploaded": "https://youtu.be/Rw1ZngcDDco"
   },
   {
    "id": "shorts-1",
    "target": "youtube",
-   "privacy": "public",
+   "privacy": "private",
    "file": "scenes/out/shorts-1.mp4",
    "captions": "scenes/out/shorts-1.srt",
    "title": "이거 전부 AI가 편집한 매드무비 #Shorts",
-   "description": "누끼·박자·자막까지 오푸스 5.5가 편집. 앱 광고 4편은 설정 파일만 바꿨어요. 만드는 법 👉 [롱폼 링크]\n#클로드코드 #매드무비 #AI영상",
+   "description": "누끼·박자·자막까지 오푸스 5.5가 편집. 앱 광고 4편은 설정 파일만 바꿨어요. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #매드무비 #AI영상",
    "tags": [
     "Claude Code",
     "클로드 코드",
     "매드무비",
     "AI 영상"
-   ]
+   ],
+   "uploaded": "https://youtu.be/XAfFfCUj2XU"
   },
   {
    "id": "shorts-2",
    "target": "youtube",
-   "privacy": "public",
+   "privacy": "private",
    "file": "scenes/out/shorts-2.mp4",
    "captions": "scenes/out/shorts-2.srt",
    "title": "맥에 누끼 기능 숨어 있음 #Shorts",
-   "description": "사진 앱 '피사체 들어올리기'를 명령어로 — 영상도 360장 25초. 전체 과정 👉 [롱폼 링크]\n#맥 #누끼 #클로드코드",
+   "description": "사진 앱 '피사체 들어올리기'를 명령어로 — 영상도 360장 25초. 전체 과정 👉 https://youtu.be/Rw1ZngcDDco\n#맥 #누끼 #클로드코드",
    "tags": [
     "macOS",
     "누끼",
     "배경 제거",
     "Claude Code"
+   ],
+   "uploaded": "https://youtu.be/3N6nMJZV2X4"
+  },
+  {
+   "id": "shorts-3",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/dance-mad-v.mp4",
+   "title": "AI가 편집한 15초 댄스 매드무비 #Shorts",
+   "description": "무료 스톡 영상으로 누끼·박자·자막까지 전부 오푸스 5.5가 편집. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #매드무비 #AI영상",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "매드무비",
+    "AI 영상",
+    "앱 광고"
+   ]
+  },
+  {
+   "id": "shorts-4",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/runner-mad-v.mp4",
+   "title": "AI가 만든 15초 러닝 앱 광고 #Shorts",
+   "description": "지도 위 경로 + 실제 앱 화면을 박자에 맞춰. 설정 파일 하나로 만든 앱 광고. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #앱광고 #매드무비",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "매드무비",
+    "AI 영상",
+    "앱 광고"
+   ]
+  },
+  {
+   "id": "shorts-5",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/blurry-mad-v.mp4",
+   "title": "AI가 만든 15초 소개팅 앱 광고 #Shorts",
+   "description": "대화할수록 선명해지는 얼굴 — 박자마다 흐림이 걷히게. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #앱광고 #매드무비",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "매드무비",
+    "AI 영상",
+    "앱 광고"
+   ]
+  },
+  {
+   "id": "shorts-6",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/morning-mad-v.mp4",
+   "title": "AI가 만든 15초 알람 앱 광고 #Shorts",
+   "description": "목소리로 깨워 주는 알람 — 박자에 맞춰 파형이 뛴다. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #앱광고 #매드무비",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "매드무비",
+    "AI 영상",
+    "앱 광고"
+   ]
+  },
+  {
+   "id": "shorts-7",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/memory-mad-v.mp4",
+   "title": "AI가 만든 15초 사진 일기 앱 광고 #Shorts",
+   "description": "사진이 영상 일기로 — 폴라로이드가 박자마다 한 장씩. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #앱광고 #매드무비",
+   "tags": [
+    "Claude Code",
+    "클로드 코드",
+    "매드무비",
+    "AI 영상",
+    "앱 광고"
    ]
   },
   {
@@ -66,7 +144,7 @@
    "replies": [
     "비결은 프롬프트가 아니라 도구 조합.\n누끼는 맥에 원래 들어 있는 Vision 기능으로 땄다. 설치 없이 360장에 25초.",
     "편집은 박자부터 정했다.\n128 BPM 32박 = 15초. 인트로 → 라이저 → 드롭 5마디 → 엔딩, 드롭은 마디마다 효과를 바꾼다.",
-    "이 규칙을 설정 파일로 만들었더니 앱 광고 4편이 금방 나왔다.\n영상 정리 👉 [롱폼 링크]"
+    "이 규칙을 설정 파일로 만들었더니 앱 광고 4편이 금방 나왔다.\n영상 정리 👉 https://youtu.be/Rw1ZngcDDco"
    ]
   }
  ]

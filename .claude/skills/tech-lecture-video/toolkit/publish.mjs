@@ -4,6 +4,7 @@
 //   node toolkit/publish.mjs auth youtube        ← 강의 채널로 로그인해 refresh token 저장 (브라우저)
 //   node toolkit/publish.mjs whoami youtube      ← 로그인된 유튜브 채널 확인 (업로드 전에)
 //   node toolkit/publish.mjs sync youtube <publish.json>  ← 올린 영상(uploaded)의 제목·설명·공개 여부·썸네일을 json 에 맞춤
+//   예약 공개: 항목에 publishAt: '2026-09-28T19:00:00+09:00' → 비공개로 두었다가 그 시각에 자동 공개 (올릴 때·sync 둘 다)
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
@@ -34,10 +35,13 @@ async function youtubeToken() {
   if (!j.access_token) throw new Error(`유튜브 토큰 갱신 실패: ${JSON.stringify(j)}`);
   return j.access_token;
 }
+// 공개 상태: publishAt(ISO, 예 '2026-09-28T10:00:00+09:00')이 있으면 비공개로 올리고 그 시각에 자동 공개
+const ytStatus = it => it.publishAt ? { privacyStatus: 'private', publishAt: new Date(it.publishAt).toISOString(), selfDeclaredMadeForKids: false }
+  : { privacyStatus: it.privacy || 'private', selfDeclaredMadeForKids: false };
 async function youtubeUpload(it, { dir }) {
   const tok = await youtubeToken(), file = resolve(dir, it.file), size = statSync(file).size;
   const meta = { snippet: { title: it.title, description: it.description || '', tags: it.tags || [], categoryId: it.category || '27', defaultLanguage: 'ko' },
-    status: { privacyStatus: it.privacy || 'private', selfDeclaredMadeForKids: false } };
+    status: ytStatus(it) };
   const init = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
     method: 'POST', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json', 'X-Upload-Content-Type': 'video/mp4', 'X-Upload-Content-Length': String(size) },
     body: JSON.stringify(meta) });
@@ -113,7 +117,7 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
     const r = await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,status', { method: 'PUT',
       headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, snippet: { title: it.title, description: it.description || '', tags: it.tags || [], categoryId: it.category || '27', defaultLanguage: 'ko' },
-        status: { privacyStatus: it.privacy || 'private', selfDeclaredMadeForKids: false } }) });
+        status: ytStatus(it) }) });
     const j = await r.json();
     let thumb = '';
     if (it.thumbnail) {
@@ -121,7 +125,7 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
         method: 'POST', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'image/png' }, body: readFileSync(resolve(dir, it.thumbnail)) });
       thumb = t.ok ? ' · 썸네일 ✓' : ` · 썸네일 ✗ ${t.status}`;
     }
-    console.log(j.id ? `✓ ${it.id} ${j.status.privacyStatus} "${j.snippet.title}"${thumb}` : `✗ ${it.id} ${JSON.stringify(j.error?.message || j)}`);
+    console.log(j.id ? `✓ ${it.id} ${j.status.privacyStatus}${j.status.publishAt ? ` → ${j.status.publishAt} 자동 공개` : ''} "${j.snippet.title}"${thumb}` : `✗ ${it.id} ${JSON.stringify(j.error?.message || j)}`);
   }
 } else if (args[0] === 'whoami' && args[1] === 'youtube') {
   // 로그인된 채널 확인 (조회만). 업로드 전에 강의 채널이 맞는지 본다
@@ -151,7 +155,12 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
     if (holes) console.log(`  ✗ 채울 자리 남음: ${[...new Set(holes)].join(', ')}`);
     if (!GO) continue;
     if (missing.length || holes) { console.log('  ✗ 건너뜀 (파일 없음 또는 채울 자리)'); continue; }
-    try { console.log(`  ✓ ${await TARGETS[it.target](it, { dir, pub })}`); }
-    catch (e) { console.log(`  ✗ ${e.message}`); }
+    try {
+      const res = await TARGETS[it.target](it, { dir, pub });
+      console.log(`  ✓ ${res}`);
+      if (it.target === 'youtube' && res.startsWith('https://')) {  // 올린 주소를 publish.json 에 기록
+        const cur = JSON.parse(readFileSync(path, 'utf8')); const x = cur.items.find(y => y.id === it.id); x.uploaded = res; writeFileSync(path, JSON.stringify(cur, null, 1));
+      }
+    } catch (e) { console.log(`  ✗ ${e.message}`); }
   }
 }

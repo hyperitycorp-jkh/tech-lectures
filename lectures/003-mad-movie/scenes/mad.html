@@ -43,7 +43,7 @@ html,body{margin:0;overflow:hidden;background:#000;color:#fff}
 #cap span{display:inline-block}
 .bar{position:absolute;left:0;right:0;height:0;background:#000}
 #flash{position:absolute;inset:0;background:#fff;pointer-events:none}
-#credit{position:absolute;right:48px;bottom:36px;font:600 22px "SF Mono",Menlo,monospace;color:rgba(255,255,255,.7)}
+#credit{position:absolute;right:48px;bottom:36px;z-index:3;font:600 22px "SF Mono",Menlo,monospace;color:rgba(255,255,255,.7)}
 /* 앱 효과 */
 #phone{position:absolute;left:50%;top:50%;border-radius:7%/3.3%;border:14px solid #111;background:#111;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55)}
 #phone img{width:100%;height:100%;object-fit:cover;display:block}
@@ -96,6 +96,7 @@ const hide = (...ids) => ids.forEach(id => { $(id).style.display = 'none'; });
 const on = id => { const e = $(id); e.style.display = ''; return e; };
 const punch = bt => 1 + .07 * Math.exp(-bt * 9);
 const shake = (f, amp) => `translate(${(Math.sin(f * 1.9) * amp).toFixed(1)}px, ${(Math.cos(f * 2.7) * amp).toFixed(1)}px)`;
+const fit = (txt, size) => Math.min(size, (W * 1.02) / (.47 * Math.max(1, String(txt).length)) / U);  // 세로 화면에서 긴 제목이 넘치지 않게
 const disp = (txt, size, extra = '') => `<span style="font-family:${TH.display};font-size:${px(size)};display:inline-block;${extra}">${txt}</span>`;
 
 async function bg(dir, idx, split = 0, style = '') {
@@ -133,7 +134,7 @@ const FX = {
     const { bar, bb, bt, f } = ctx, s = src(ctx), vis = Math.exp(-bt * 5), word = bar.title || MAD.title || 'MOVE';
     if (s.dir) await bg(s.dir, s.idx + bb * 30, 0, `brightness(${.35 + .9 * vis}) contrast(1.2)`);
     const n = Math.ceil(word.length * (bb + 1) / 4), q = back(prog(bt, 0, .18));
-    $('front').innerHTML = disp(word.slice(0, n), V ? 250 : 330, `transform:scale(${1.35 - .35 * clamp(q)});color:${TH.ink}`);
+    $('front').innerHTML = disp(word.slice(0, n), fit(word, V ? 250 : 330), `transform:scale(${1.35 - .35 * clamp(q)});color:${TH.ink}`);
     $('stage').style.transform = shake(f, 14 * Math.exp(-bt * 8));
     return .55 * Math.exp(-bt * 14);
   },
@@ -150,7 +151,7 @@ const FX = {
     const { bar, t, t0, f } = ctx, p = (t - t0) / (4 * B), s = src(ctx);
     if (p > .92) return 0;
     await bg(s.dir, s.idx, 40 * p * p, `saturate(${1 + p}) brightness(${1 - .25 * p})`);
-    $('behind').innerHTML = disp(bar.text || MAD.title, (V ? 300 : 420) + 160 * p, `color:${TH.ink}`);
+    const rw = bar.text || MAD.title; $('behind').innerHTML = disp(rw, fit(rw, (V ? 300 : 420) + 160 * p), `color:${TH.ink}`);
     if (s.cut) await cutout(s.cut, s.idx);
     $('stage').style.transform = `scale(${1 + .28 * p * p}) ${shake(f, 18 * p * p)}`;
     return 0;
@@ -186,7 +187,7 @@ const FX = {
   async behind(ctx) {            // 글자가 사람 뒤로 + 박마다 색 보정
     const { bar, bb, bt } = ctx, s = src(ctx);
     await bg(s.dir, s.idx, 10 * Math.exp(-bt * 8), `hue-rotate(${(bar.hues || [0, 40, -40, 90])[bb]}deg) saturate(1.3)`);
-    $('behind').innerHTML = disp(bar.text || MAD.title, V ? 380 : 560, bar.solid ? `color:${TH.ink}` : '').replace('<span', `<span class="${bar.solid ? '' : 'outline'}"`);
+    const bw = bar.text || MAD.title; $('behind').innerHTML = disp(bw, fit(bw, V ? 380 : 560), bar.solid ? `color:${TH.ink}` : '').replace('<span', `<span class="${bar.solid ? '' : 'outline'}"`);
     await cutout(s.cut, s.idx);
     $('stage').style.transform = `scale(${punch(bt) * 1.08})`;
     return 0;
@@ -195,7 +196,8 @@ const FX = {
     const { bar, t, t0, bb, bt } = ctx, s = src(ctx);
     await bg(s.dir, (bar.from ?? clipOf(bar.clip).from ?? 0) + Math.round(ctx.lf * (bar.speed ?? .5)), 0, 'contrast(1.2) brightness(.95)');
     $('barT').style.height = $('barB').style.height = `${Math.round((V ? 260 : 130) * ease(prog(t, t0, t0 + .4)))}px`;
-    $('front').innerHTML = disp(bar.text || [...MAD.title].join(' '), V ? 110 : 150, `letter-spacing:${40 + 30 * prog(t, t0, t0 + 4 * B)}px;opacity:.9;color:${TH.ink}`);
+    const lw = bar.text || [...MAD.title].join(' ');
+    $('front').innerHTML = disp(lw, V ? Math.min(110, 1700 / lw.length) : 150, `letter-spacing:${(V ? 12 : 40) + (V ? 10 : 30) * prog(t, t0, t0 + 4 * B)}px;opacity:.9;color:${TH.ink}`);
     return bb === 3 && bt > B * .6 ? .9 * Math.exp(-(B - bt) * 12) : 0;
   },
   async phone(ctx) {             // 앱 화면: 폰 틀 안에서 박마다 화면이 바뀜, 뒤는 흐린 영상 또는 색
@@ -241,7 +243,7 @@ const FX = {
     m.innerHTML += `<circle cx="${head.x}" cy="${head.y}" r="${22 * U}" fill="${TH.accent}" stroke="#fff" stroke-width="${6 * U}"/><circle cx="${head.x}" cy="${head.y}" r="${(30 + 40 * ((t * 1.5) % 1)) * U}" fill="none" stroke="${TH.accent}" stroke-width="3" opacity="${1 - ((t * 1.5) % 1)}"/>`;
     if (s.cut) { const e = await cutout(s.cut, s.idx, 'stroke'); e.style.transform = `translateX(${(bar.cutX ?? .25) * W}px) scale(.9)`; }
     const km = (bar.km || 3.2) * p;
-    $('front').innerHTML = `<span style="position:absolute;left:${V ? 60 : 110}px;top:${-H * .36}px;font-family:${TH.display};font-size:${px(170)};color:${TH.dark || '#16301f'}">${km.toFixed(1)}<small style="font-size:.45em"> KM</small></span>`;
+    $('front').innerHTML = `<span style="position:absolute;left:${V ? 60 : 110}px;top:${-H * (V ? .3 : .36)}px;font-family:${TH.display};font-size:${px(170)};color:${TH.dark || '#16301f'}">${km.toFixed(1)}<small style="font-size:.45em"> KM</small></span>`;
     $('stage').style.transform = `scale(${punch(bt) * .98 + .02})`;
     return 0;
   },
@@ -279,14 +281,14 @@ const FX = {
     const { bar, t, t0 } = ctx, lt = t - t0, c = clipOf(bar.clip);
     $('colorBg').style.background = bar.bg || `radial-gradient(circle at 50% 45%, ${TH.outroGlow || '#2a1140'}, ${TH.bg} 70%)`;
     const ink = bar.ink || TH.ink;  // 밝은 엔딩 배경이면 ink 를 어둡게
-    if (bar.title !== false) $('behind').innerHTML = disp(bar.title || MAD.title, (V ? 330 : 480) + 30 * lt, `opacity:${ease(prog(lt, .1, .6))};color:${ink}`);
+    const ow = bar.title || MAD.title; if (bar.title !== false) $('behind').innerHTML = disp(ow, fit(ow, (V ? 330 : 480) + 30 * lt), `opacity:${ease(prog(lt, .1, .6))};color:${ink}`);
     if (c.cut && bar.frame != null) { const e = await cutout(c.cut, bar.frame, 'stroke'); if (bar.logo) e.style.transform = `translateX(${(V ? 0 : -.2) * W}px) scale(.92)`; }
     if (bar.logo) {
       const lg = on('logo'), q = back(prog(lt, .15, .6));
       Object.assign(lg.style, { width: px(bar.logoSize || 260), top: `${H * (V ? .56 : .24)}px`, left: V ? '50%' : `${W * (c.cut && bar.frame != null ? .68 : .5)}px`, transform: `translateX(-50%) scale(${clamp(q)})`, borderRadius: '22%' });
       if (lg.getAttribute('src') !== bar.logo) { lg.src = bar.logo; await lg.decode(); }
       const x = V ? 0 : (c.cut && bar.frame != null ? .18 : 0) * W;
-      Object.assign(on('line').style, { top: `${H * (V ? .56 : .24) + (bar.logoSize || 260) * U + 40 * U}px`, transform: `translateX(${x}px)`, fontFamily: `'${TH.lineFont || TH.kr}'`, fontSize: px(V ? 74 : 84), color: ink, opacity: ease(prog(lt, .4, .8)) });
+      Object.assign(on('line').style, { top: `${H * (V ? .56 : .24) + (bar.logoSize || 260) * U + 40 * U}px`, transform: `translateX(${x}px)`, fontFamily: `'${TH.lineFont || TH.kr}'`, fontSize: px(Math.min(V ? 74 : 84, W * .9 / Math.max(1, (bar.line || '').length) / U)), color: ink, opacity: ease(prog(lt, .4, .8)) });  // 긴 한 줄은 폭에 맞춰 줄임
       $('line').textContent = bar.line || '';
       Object.assign(on('sub').style, { top: `${H * (V ? .56 : .24) + (bar.logoSize || 260) * U + 150 * U}px`, transform: `translateX(${x}px)`, font: `600 ${px(38)} "Pretendard", sans-serif`, color: ink, opacity: .85 * ease(prog(lt, .6, 1)) });
       $('sub').textContent = bar.sub || '';
