@@ -1,0 +1,95 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- App Store 앱 미리보기(App Preview) 템플릿 — 886×1920 세로, 30fps, 15~30초.
+     애플 규칙: 앱 화면 캡처만(손·기기 틀·실사 금지), 모든 연령에 맞는 장면, 가격 문구 금지. 글자·터치 표시·음악·나레이션은 된다.
+     같은 폴더의 preview.json 을 읽는다. 샷 준비·렌더·스토어 규격 변환은 한 줄:
+       node toolkit/app-preview.mjs lectures/NNN/private/<앱>/preview.json -->
+<style>
+:root{--acc:#ff6b8a;--ink:#fff}
+html,body{margin:0;width:886px;height:1920px;overflow:hidden;background:#000;color:var(--ink);font-family:"Pretendard",sans-serif}
+.scr{position:absolute;left:0;top:0;width:886px;height:1920px;object-fit:cover}
+/* 앱 화면의 글자(시계·헤더)가 자막 뒤로 비치지 않게 자막 줄까지는 불투명하게(흰 화면의 큰 제목은 .9 로도 비친다) */
+.scrim{position:absolute;left:0;right:0;height:640px;pointer-events:none}
+#scrimTop{top:0;background:linear-gradient(to bottom,#000,#000 56%,rgba(0,0,0,.55) 76%,rgba(0,0,0,0))}
+/* 상단 상태바·앱 헤더(≈240px)는 통째로 가린다 — 헤더의 남은 횟수·번역 안 된 배지 같은 글자가 비치지 않게 */
+#hdr{position:absolute;left:0;right:0;top:0;height:290px;background:linear-gradient(to bottom,#000,#000 85%,rgba(0,0,0,0));pointer-events:none}
+#scrimBot{bottom:0;background:linear-gradient(to top,#000,#000 56%,rgba(0,0,0,.55) 76%,rgba(0,0,0,0))}
+.cap{position:absolute;left:52px;right:52px;text-align:center;font-weight:900;font-size:68px;line-height:1.2;letter-spacing:-1.5px;text-shadow:0 4px 20px rgba(0,0,0,.5);word-break:keep-all}
+.cap em{font-style:normal;color:var(--acc)}
+#capTop{top:170px}
+#capHdr{top:58px}
+#capBot{bottom:190px}
+#end{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.8)}
+#endTitle{font-size:92px;font-weight:900;letter-spacing:-2px;text-align:center;line-height:1.15;word-break:keep-all}
+#endSub{margin-top:34px;font-size:46px;font-weight:700;opacity:.92;text-align:center;line-height:1.35;word-break:keep-all;padding:0 60px}
+#endSub em{font-style:normal;color:var(--acc)}
+.tap{position:absolute;width:132px;height:132px;margin:-66px 0 0 -66px;border-radius:50%;border:7px solid rgba(255,255,255,.95);box-shadow:0 0 0 3px rgba(0,0,0,.28),inset 0 0 0 3px rgba(0,0,0,.18)}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<img class="scr" id="a"><img class="scr" id="b">
+<div class="scrim" id="scrimTop"></div><div id="hdr"></div><div class="scrim" id="scrimBot"></div>
+<div class="tap" id="tap"></div>
+<div class="cap" id="capTop"></div><div class="cap" id="capHdr"></div><div class="cap" id="capBot"></div>
+<div id="end"><div id="endTitle"></div><div id="endSub"></div></div>
+<script>
+// preview.json 계약 (app-preview.mjs 가 raw 영상에서 샷마다 clips/sNN 을 만든다)
+// { name, audio: 'bright'|'calm'|'beat', accent: '#hex', font?: 'Pretendard',
+//   shots: [{ src, start, dur, caption: '한 줄<br><em>강조</em>', pos: 'top'|'bottom'|'header', tap?: [{ t, x, y }] (샷 안 초, 화면 비율 0~1),
+//             pos 'header' = 상태바·앱 헤더 자리에 자막(헤더를 가리고 인물 얼굴은 남긴다 — 채팅 화면처럼 인물이 위쪽에 있을 때),
+//             mask?: 'header' (자막이 아래일 때 상단 상태바·헤더만 어둡게 — 앱 헤더의 버그·개인 정보 가리기) }],
+//   end?: { title, sub, dur } }   ← end 는 마지막 샷 끝부분 dur 초 위에 앱 이름·한 줄을 얹는다(앱 화면 위, 별도 카드 아님)
+const FADE = .3, CAP_IN = .35, CAP_OUT = .25;
+(async () => {
+  const C = await (await fetch('preview.json')).json();
+  if (C.accent) document.documentElement.style.setProperty('--acc', C.accent);
+  if (C.font) document.body.style.fontFamily = `"${C.font}",sans-serif`;
+  let t0 = 0;
+  const shots = C.shots.map((s, i) => { const o = { ...s, i, t0, clip: `clips/s${String(i + 1).padStart(2, '0')}` }; t0 += s.dur; return o; });
+  const DUR = t0;
+  window.META = { W: 886, H: 1920, FPS: 30, DURATION: DUR, AUDIO: C.audio || 'bright', ...(C.music ? { MUSIC_FILE: C.music } : {}) };
+  const shotAt = t => shots.filter(s => s.t0 <= t).pop() || shots[0];
+  // 캡션: 다음 샷과 글·위치가 같으면 이어서 띄운다(깜빡임 없음)
+  const same = (x, y) => x && y && x.caption === y.caption && (x.pos || 'top') === (y.pos || 'top');
+  function capAlpha(s, t) {
+    if (!s.caption) return 0;
+    const prev = shots[s.i - 1], next = shots[s.i + 1];
+    const a = s.i === 0 || same(prev, s) ? 1 : ease(prog(t, s.t0 + .05, s.t0 + .05 + CAP_IN));
+    const z = next && !same(s, next) ? 1 - ease(prog(t, s.t0 + s.dur - CAP_OUT, s.t0 + s.dur)) : 1;
+    return Math.min(a, z);
+  }
+  async function frameOf(img, s, t) { await CLIP.show(img, s.clip, Math.round((t - s.t0) * 30)); }
+  window.renderFrame = async f => {
+    const t = f / 30, s = shotAt(t), next = shots[s.i + 1];
+    await frameOf($('a'), s, t);
+    // 다음 샷이 FADE 초 동안 위로 겹쳐 들어온다
+    const x = next ? prog(t, next.t0 - FADE, next.t0) : 0;
+    if (x > 0) { await CLIP.show($('b'), next.clip, 0); show($('b'), x); } else show($('b'), 0);
+    const al = capAlpha(s, t), pos = s.pos || 'top', dy = s.i === 0 ? 0 : (1 - ease(prog(t, s.t0 + .05, s.t0 + .05 + CAP_IN))) * 26;
+    for (const [id, p] of [['capTop', 'top'], ['capHdr', 'header'], ['capBot', 'bottom']]) {
+      $(id).innerHTML = pos === p ? s.caption || '' : '';
+      show($(id), pos === p ? al : 0, same(shots[s.i - 1], s) ? 0 : dy);
+    }
+    // 배경 막은 글자와 달리 컷이 바뀌어도 켜 둔다(글자만 바뀌는 순간 앱 글자가 비치지 않게). 겹쳐 들어오는 동안은 두 샷의 막을 섞고,
+    // 헤더 막은 두 샷 중 하나라도 필요하면 끝까지 켠다(섞는 도중 헤더 글자가 새지 않게)
+    const need = sh => ({ top: (sh.pos || 'top') === 'top' && sh.caption ? 1 : 0, bot: sh.pos === 'bottom' && sh.caption ? 1 : 0,
+                          hdr: sh.mask === 'header' || sh.pos === 'header' ? 1 : 0 });
+    const cn = need(s), nn = next ? need(next) : cn;
+    show($('scrimTop'), cn.top * (1 - x) + nn.top * x);
+    show($('scrimBot'), cn.bot * (1 - x) + nn.bot * x);
+    show($('hdr'), Math.max(cn.hdr, x > 0 ? nn.hdr : 0));
+    // 터치 표시: 누르는 순간 링이 커지며 사라진다
+    const tp = (s.tap || []).find(p => t - s.t0 >= p.t && t - s.t0 < p.t + .55);
+    if (tp) { const k = prog(t - s.t0, tp.t, tp.t + .55); Object.assign($('tap').style, { left: `${tp.x * 886}px`, top: `${tp.y * 1920}px` }); show($('tap'), 1 - k, 0, .55 + .65 * ease(k)); }
+    else show($('tap'), 0);
+    // 엔딩: 마지막 샷 위에 앱 이름·한 줄
+    const E = C.end, es = DUR - (E?.dur || 0);
+    const ea = E ? ease(prog(t, es, es + .45)) : 0;
+    show($('end'), ea, (1 - ea) * 20);
+    document.body.style.opacity = 1 - prog(t, DUR - .25, DUR);
+  };
+  if (C.end) { $('endTitle').innerHTML = C.end.title || ''; $('endSub').innerHTML = C.end.sub || ''; }
+  ready([`900 68px ${C.font || 'Pretendard'}`]);
+})();
+</script>
+</body></html>

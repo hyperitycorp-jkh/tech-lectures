@@ -1,8 +1,9 @@
 // 누끼(배경 제거) — macOS 내장 Vision 으로 PNG 프레임마다 사람(또는 피사체)만 남긴 투명 PNG 를 만든다. 모델 다운로드 없음.
-//   swiftc -O toolkit/cutout.swift -o /tmp/cutout && /tmp/cutout <프레임 폴더> <출력 폴더> [--mode person|subject] [--feather 1.5] [--roi x,y,w,h]
+//   swiftc -O toolkit/cutout.swift -o /tmp/cutout && /tmp/cutout <프레임 폴더> <출력 폴더> [--mode person|subject|both] [--feather 1.5] [--roi x,y,w,h]
 //   --roi: 이 영역(0~1, 왼쪽 위 기준) 밖은 버린다 — 벽화·포스터 속 사람까지 잡힐 때
 //   person : VNGeneratePersonSegmentationRequest(.accurate) — 사람 전용, 머리카락 경계가 좋고 영상용으로 빠르다 (기본)
 //   subject: VNGenerateForegroundInstanceMaskRequest — 사진 앱 '피사체 들어올리기'와 같은 방식, 사람 외 물체도
+//   both   : 둘을 합친다(밝은 쪽) — 단체 원경에서 사람 분할이 멤버를 흐리게·비게 잡을 때 (세븐틴 13명 원경에서 0% → 14%)
 // 입력은 toolkit/clip.mjs 가 푼 00001.png… 출력도 같은 이름. 장면에서는 원본 프레임 위에 이 PNG 를 겹쳐 '글자가 사람 뒤로' 같은 효과를 만든다.
 import Foundation
 import Vision
@@ -23,18 +24,30 @@ let personReq = VNGeneratePersonSegmentationRequest()
 personReq.qualityLevel = .accurate
 personReq.outputPixelFormat = kCVPixelFormatType_OneComponent8
 
-func mask(for cg: CGImage) throws -> CIImage? {
-  let handler = VNImageRequestHandler(cgImage: cg, options: [:])
-  if mode == "subject" {
-    let req = VNGenerateForegroundInstanceMaskRequest()
-    try handler.perform([req])
-    guard let r = req.results?.first else { return nil }
-    let buf = try r.generateScaledMaskForImage(forInstances: r.allInstances, from: handler)
-    return CIImage(cvPixelBuffer: buf)
-  }
+func personMask(_ handler: VNImageRequestHandler) throws -> CIImage? {
   try handler.perform([personReq])
   guard let buf = personReq.results?.first?.pixelBuffer else { return nil }
   return CIImage(cvPixelBuffer: buf)
+}
+func subjectMask(_ handler: VNImageRequestHandler) throws -> CIImage? {
+  let req = VNGenerateForegroundInstanceMaskRequest()
+  try handler.perform([req])
+  guard let r = req.results?.first else { return nil }
+  return CIImage(cvPixelBuffer: try r.generateScaledMaskForImage(forInstances: r.allInstances, from: handler))
+}
+// 마스크를 원본 크기로 늘린다
+func fit(_ m: CIImage, _ W: CGFloat, _ H: CGFloat) -> CIImage { m.transformed(by: CGAffineTransform(scaleX: W / m.extent.width, y: H / m.extent.height)) }
+func mask(for cg: CGImage, _ W: CGFloat, _ H: CGFloat) throws -> CIImage? {
+  let handler = VNImageRequestHandler(cgImage: cg, options: [:])
+  switch mode {
+  case "subject": return try subjectMask(handler).map { fit($0, W, H) }
+  case "both":  // 단체 원경: 사람 분할이 흐리거나 비는 멤버를 피사체 마스크로 채운다(두 마스크 중 밝은 쪽)
+    let p = try personMask(handler).map { fit($0, W, H) }, s = (try? subjectMask(handler)).map { fit($0, W, H) }
+    guard let a = p ?? s else { return nil }
+    guard p != nil, let b = s else { return a }
+    return a.applyingFilter("CIMaximumCompositing", parameters: [kCIInputBackgroundImageKey: b])
+  default: return try personMask(handler).map { fit($0, W, H) }
+  }
 }
 
 let t0 = Date()
@@ -42,14 +55,13 @@ for (n, f) in files.enumerated() {
   let src = inDir.appendingPathComponent(f)
   guard let isrc = CGImageSourceCreateWithURL(src as CFURL, nil), let cg = CGImageSourceCreateImageAtIndex(isrc, 0, nil) else { continue }
   let img = CIImage(cgImage: cg), W = img.extent.width, H = img.extent.height
-  var m = (try? mask(for: cg)) ?? CIImage(color: .black).cropped(to: img.extent)
-  // 마스크를 원본 크기로 늘리고 경계를 살짝 부드럽게
-  m = m.transformed(by: CGAffineTransform(scaleX: W / m.extent.width, y: H / m.extent.height))
+  var m = (try? mask(for: cg, W, H)) ?? CIImage(color: .black).cropped(to: img.extent)
   if roi.count == 4 {  // 영역 밖 마스크 제거 (CoreImage 는 왼쪽 아래 원점)
     let r = CGRect(x: roi[0] * W, y: H - (roi[1] + roi[3]) * H, width: roi[2] * W, height: roi[3] * H)
     let keep = CIImage(color: .white).cropped(to: r).composited(over: CIImage(color: .black).cropped(to: img.extent))
     m = m.applyingFilter("CIMultiplyCompositing", parameters: [kCIInputBackgroundImageKey: keep])
   }
+  // 경계를 살짝 부드럽게
   if feather > 0 { m = m.clampedToExtent().applyingGaussianBlur(sigma: feather).cropped(to: img.extent) }
   let out = img.applyingFilter("CIBlendWithMask", parameters: ["inputBackgroundImage": CIImage(color: .clear).cropped(to: img.extent), "inputMaskImage": m])
   guard let outCG = ctx.createCGImage(out, from: img.extent, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) else { continue }
