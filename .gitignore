@@ -4,6 +4,7 @@ node_modules/
 # 렌더 산출물 — 영상은 git 대신 gs://hyperity-lecture-assets 에 올리고 링크만 README에 둔다
 **/frames/
 **/clips/
+**/clips-*/
 **/out/
 *.mp4
 *.webm
@@ -12,9 +13,15 @@ node_modules/
 *.aiff
 *.m4a
 
+# 내려받은 소스 영상·스틸 — 출처마다 라이선스가 달라 올리지 않는다(받는 법은 README·prompt.md)
+lectures/*/media/
+
 # 회사 앱 에셋·내부 문서·그걸 쓴 장면 (공개 레포에 올리지 않음)
 **/private/
 
 .DS_Store
 **/tts-cache/
 lectures/004-openrouter/models.json
+
+# midnight-vibe 하네스 상태(진행 중 PRD·off 스위치)
+.midnight/
