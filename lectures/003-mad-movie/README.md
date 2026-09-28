@@ -9,6 +9,7 @@
 - 롱폼: https://youtu.be/Rw1ZngcDDco (2026-09-27 19:00 공개)
 - 쇼츠 7편: 결과 몽타주 · 맥 누끼 꼼수 · 댄스 · 러닝 앱 · 소개팅 앱 · 알람 앱 · 사진 일기 앱 — 9/27~10/3 매일 19:00 공개 (주소는 publish.json)
 - 매드무비 규칙 한 장: https://storage.googleapis.com/hyperity-lecture-assets/mad-movie/mad-rules.png
+- 프롬프트 한 장(클로드 코드에 그대로 붙여 넣기): [`prompt.md`](prompt.md)
 
 ## 방법 요약
 1. **소스**
