@@ -19,6 +19,7 @@ description: 새 기술을 직접 테스트하고 응용한 결과를 유튜브 
    - 웹페이지·공식 문서·GitHub: `node toolkit/capture.mjs shot <url> lectures/NNN/captures/x.png` — 화면에 **출처 표기**, 남의 글은 짧게
    - 데모 웹앱 실행 화면: `node toolkit/capture.mjs record <url> lectures/NNN/captures/demo.webm --seconds 10`
    - 영상 결과물을 장면 안에서 재생: `node toolkit/clip.mjs <video> lectures/NNN/clips/<name> --w 1280`
+   - 실시간 웹 게임·3D 앱: 페이지의 `requestAnimationFrame`·`performance.now`를 가상 시간으로 바꿔 한 프레임씩 진행하며 찍는다. 렌더가 느려도 정확히 30fps로 나온다. 헤드리스 크롬도 맥 GPU(Metal)를 쓴다. 예: `lectures/006-web-fps/demo/capture-game.mjs` (봇이 내 캐릭터를 조종하게 하고 1인칭으로 촬영). 다른 세션이 작업 중인 레포는 `cp -cR`로 사본을 떠서 그 사본으로 개발 서버를 띄운다
    - 모바일 앱: iOS 시뮬레이터 스크린샷
    - 터미널·코드: 실제 출력을 복사해 템플릿의 `code` 챕터로 (가짜 출력 금지)
 6. **장면 작성** — `toolkit/templates/*.html`을 `lectures/NNN/scenes/`로 복사하고 `CONTENT`만 고친다.

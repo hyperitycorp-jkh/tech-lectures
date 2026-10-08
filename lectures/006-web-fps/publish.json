@@ -1,0 +1,102 @@
+{
+ "base": "https://raw.githubusercontent.com/hyperitycorp-jkh/tech-lectures/main/lectures/006-web-fps/captures/",
+ "note": "유튜브 '바이브코더'. 전부 비공개로 먼저 올리고, 공개 일정은 사용자 확인 뒤 schedule/publishAt 로 건다. Threads 는 개인(jkh8308), 캐러셀 첨부 — 롱폼 공개 뒤. 인스타 안 함. gcloud 인증이 만료돼 캐러셀은 GitHub raw 로 건다.",
+ "items": [
+  {
+   "id": "longform",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/longform.mp4",
+   "thumbnail": "scenes/out/thumb-1.png",
+   "captions": "scenes/out/longform.srt",
+   "title": "클로드 코드로 하루 만에 멀티플레이 FPS 게임 만들기 — 게임 서버비 0원 (WebRTC P2P)",
+   "description": "요즘 다들 AI로 혼자 게임 만들길래, 저도 클로드 코드로 브라우저·폰에서 바로 되는 멀티플레이 FPS를 만들어 봤어요. 14시간, 커밋 150개 넘게, 자동 테스트 255개.\n게임 서버 없이 WebRTC P2P로 서버비를 0원으로 만든 구조, AI 에이전트 팀으로 일한 방식, 막혔던 4가지와 이 게임으로 돈 버는 계획까지 정리했어요.\n\n🎮 직접 해 보기: https://gunfight-hyperity.web.app\n📄 시작 프롬프트(전문): https://github.com/hyperitycorp-jkh/tech-lectures/blob/main/lectures/006-web-fps/prompt.md\n📂 강의 자료: https://github.com/hyperitycorp-jkh/tech-lectures/tree/main/lectures/006-web-fps\n\n00:00 하루 만에 만든 멀티플레이 FPS\n00:28 진짜 판교역에서 총싸움 — 실제 지도 데이터\n00:53 14시간 · 커밋 150개 · 테스트 255개\n01:04 핵심 요구사항 세 줄\n01:18 P2P FPS는 이렇게 돌아가요\n01:42 브라우저 두 개 → 같은 판\n01:56 방장만 유리하지 않게\n02:13 대기 0초 빠른 시작\n02:27 병과 · 밤 맵 · 폰\n02:53 PM 1명 + AI 에이전트 6개\n03:22 자동 검사 255개\n03:40 막혔던 4가지\n04:22 서버비는 얼마?\n04:36 돈 버는 계획\n05:06 시작 프롬프트\n\n※ 게임 화면은 전부 실제 플레이 녹화예요. 적은 가상의 침투조예요.\n※ 지도: © OpenStreetMap contributors (ODbL) · 모델: Quaternius · Kenney · KayKit (CC0)\n※ TURN 가격: Cloudflare Realtime 가격표(2026-10-09) · 수익은 계획 단계라 실제 데이터는 아직 없어요.",
+   "tags": [
+    "클로드 코드",
+    "Claude Code",
+    "FPS 게임 만들기",
+    "웹게임",
+    "WebRTC",
+    "P2P",
+    "Three.js",
+    "바이브코딩",
+    "AI 에이전트",
+    "게임 개발",
+    "1인 개발",
+    "멀티플레이"
+   ],
+   "comment": "🎮 직접 해 보기: https://gunfight-hyperity.web.app\n📄 시작 프롬프트 전문은 설명란에 있어요.\n\n⏱ 바로 보기\n01:18 P2P FPS는 이렇게 돌아가요\n02:53 PM 1명 + AI 에이전트 6개\n03:40 막혔던 4가지\n\n다음엔 어떤 게임을 AI로 만들어 볼까요? 🐶",
+   "uploaded": "https://youtu.be/7mHp6IDRYRM"
+  },
+  {
+   "id": "shorts-1",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-1.mp4",
+   "captions": "scenes/out/shorts-1.srt",
+   "title": "AI로 하루 만에 만든 FPS — 진짜 판교역에서 총싸움 #Shorts",
+   "description": "브라우저·폰에서 바로 하는 멀티플레이 FPS. 만든 과정 👉 https://youtu.be/7mHp6IDRYRM\n지도: © OpenStreetMap contributors\n#FPS #웹게임 #클로드코드",
+   "tags": [
+    "FPS 게임 만들기",
+    "웹게임",
+    "클로드 코드",
+    "판교역"
+   ],
+   "comment": "판교역 다음엔 어느 동네를 맵으로 만들어 볼까요? 🐶 게임 주소는 채널 롱폼 설명란에 있어요.",
+   "uploaded": "https://youtu.be/HolOdzpcrKY"
+  },
+  {
+   "id": "shorts-2",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-2.mp4",
+   "captions": "scenes/out/shorts-2.srt",
+   "title": "FPS 게임 서버비 0원? (WebRTC P2P) #Shorts",
+   "description": "게임 서버 대신 방장 브라우저가 판정해요. 공정하게 판정하는 법 👉 https://youtu.be/7mHp6IDRYRM\n#WebRTC #P2P #웹게임",
+   "tags": [
+    "WebRTC",
+    "P2P",
+    "웹게임",
+    "FPS"
+   ],
+   "comment": "TURN 무료 한도(월 1,000GB)는 Cloudflare 가격표 기준이에요. P2P 게임에서 궁금한 거 있으면 물어봐 주세요 🐶",
+   "uploaded": "https://youtu.be/1UR1tkxJKOw"
+  },
+  {
+   "id": "shorts-3",
+   "target": "youtube",
+   "privacy": "private",
+   "file": "scenes/out/shorts-3.mp4",
+   "captions": "scenes/out/shorts-3.srt",
+   "title": "AI로 게임 만들면 꼭 막히는 4가지 #Shorts",
+   "description": "빠른 시작해도 늘 혼자, 배포 직후 화면이 안 뜸, 폰 버튼 13개, 늘어지는 판. 해결법 👉 https://youtu.be/7mHp6IDRYRM\n#클로드코드 #게임개발 #바이브코딩",
+   "tags": [
+    "클로드 코드",
+    "게임 개발",
+    "바이브코딩",
+    "AI 에이전트"
+   ],
+   "comment": "AI로 게임 만들다가 막힌 거 있으면 댓글로 알려 주세요. 다음 영상에서 같이 풀어 볼게요 🐶",
+   "uploaded": "https://youtu.be/bmqC5VrXT9Y"
+  },
+  {
+   "id": "thread",
+   "target": "threads",
+   "media": [
+    "carousel-slide1.png",
+    "carousel-slide2.png",
+    "carousel-slide3.png",
+    "carousel-slide4.png",
+    "carousel-slide5.png"
+   ],
+   "text": "다들 혼자서 게임을 만들길래, 저도 클로드 코드로 웹 FPS 게임을 만들었습니다.\n브라우저·폰에서 설치 없이 하는 멀티플레이 총싸움이고, 14시간 · 커밋 150개 남짓 걸렸습니다.\n만든 방식을 4가지로 정리했습니다🧵",
+   "replies": [
+    "1/ 게임 서버 없이 WebRTC P2P로 브라우저끼리 직접 연결했습니다.\n방장 브라우저가 판정하고, Firebase는 방 목록과 연결 신호만 맡습니다. 막힌 망만 Cloudflare TURN 중계를 쓰는데 월 1,000GB까지 무료입니다.\n💬 직접 해 보니 공정성이 제일 어려웠습니다. 쏜 순간으로 되감아(최대 0.25초) 판정하고, 방장이 나가면 다른 사람이 이어받게 했습니다.",
+    "2/ 맵은 OpenStreetMap 건물 자료로 만든 실제 장소입니다.\n판교역·강남역·광화문·부산역을 건물 배치와 높이 그대로 옮겼고, 맵마다 낮·해질녘·밤을 고를 수 있습니다. (© OpenStreetMap contributors)",
+    "3/ 일은 PM 세션 하나에게만 말하고, PM이 에이전트 6개(엔진·총게임·병과·맵·서버·출시)에 나눴습니다.\n에이전트는 각자 git worktree에서 동시에 작업하고, 자동 테스트 255개를 통과한 것만 합쳤습니다.\n💬 병과 담당 하나가 81만 토큰, 도구 216번, 1시간 반을 썼습니다.",
+    "4/ 막혔던 것은 4가지였습니다.\n빠른 시작해도 늘 혼자 AI 판(연결 전에 보낸 요청이 사라짐), 배포 직후 404, 폰 버튼 13개, 병과를 넣으니 늘어지는 판. 해결은 영상에 정리했습니다.\n🎮 https://gunfight-hyperity.web.app\n영상 👉 https://youtu.be/7mHp6IDRYRM",
+    "시작 프롬프트 전문입니다. 클로드 코드에 그대로 붙여 넣으면 됩니다 👇\nhttps://github.com/hyperitycorp-jkh/tech-lectures/blob/main/lectures/006-web-fps/prompt.md"
+   ]
+  }
+ ]
+}

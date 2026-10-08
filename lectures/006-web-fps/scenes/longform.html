@@ -1,0 +1,269 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 006 롱폼 (16:9 1920×1080). 대본·구성·음성 설정은 longform.script.js,
+     나레이션 길이·입 모양은 longform.timing.js (timing.mjs 가 생성). 004 롱폼 장면에 full·duo·stat3·net·team·fixes 를 더했다.
+     렌더: node toolkit/render.mjs lectures/006-web-fps/scenes/longform.html
+     특정 프레임 확인: --still --query f=1234 -->
+<style>
+:root{--bg:#0e0e10;--ink:#f4efe6;--dim:#8a8580;--acc:#d97757;--panel:#17161a;--ok:#9fe0b0}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#bg{inset:0;background:#000}
+#bg img{width:100%;height:100%;object-fit:cover;filter:blur(6px) brightness(.35) saturate(.8)}
+#kicker{left:120px;top:84px;font:600 30px "SF Mono",Menlo,monospace;color:var(--acc)}
+#title{left:120px;top:126px;right:300px;font-size:62px;font-weight:800;letter-spacing:-1.5px}
+#cover{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 200px}
+#cover h1{font-size:100px;font-weight:900;letter-spacing:-3px;margin:0;line-height:1.15;white-space:pre-line;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+#cover p{font-size:38px;color:#c9c3ba;margin-top:30px}
+#points{left:120px;top:290px;right:300px}
+#points div{font-size:52px;font-weight:700;margin-bottom:42px;display:flex;gap:28px}
+#points i{font-style:normal;color:var(--acc);width:56px;flex:none}
+#code{left:120px;top:270px;width:1560px;height:600px;border-radius:24px;background:var(--panel);padding:56px 64px;box-sizing:border-box;font:500 38px/1.6 "SF Mono",Menlo,monospace;white-space:pre;overflow:hidden}
+#source{left:120px;top:212px;font-size:24px;color:var(--dim)}
+/* full: 실제 플레이 화면을 꽉 채우고 위·아래만 어둡게 */
+#full{inset:0;background:#000;overflow:hidden}
+#full img{width:100%;height:100%;object-fit:cover}
+#fullShade{inset:0;background:linear-gradient(180deg,rgba(0,0,0,.78) 0,rgba(0,0,0,.35) 200px,rgba(0,0,0,0) 300px),linear-gradient(0deg,rgba(0,0,0,.6) 0,rgba(0,0,0,0) 240px)}
+/* 몽타주: 결과 컷을 빠르게, 큰 훅 문구 */
+#mont{inset:0;background:#000;overflow:hidden}
+#montFull{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#hook{left:0;right:0;bottom:0;height:560px;background:linear-gradient(transparent,rgba(0,0,0,.85) 55%);display:flex;align-items:flex-end;padding:0 120px 150px;box-sizing:border-box}
+#hook h1{margin:0;font-size:120px;font-weight:900;letter-spacing:-4px;line-height:1.06;white-space:pre-line;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+#hook h1 b{color:var(--acc)}
+#endcard{inset:0;display:flex;flex-direction:column;align-items:center;padding-top:130px;text-align:center}
+#endcard h1{font-size:88px;font-weight:900;letter-spacing:-3px;margin:0}
+#endcard p{font:500 30px "SF Mono",Menlo,monospace;color:#c9c3ba;margin-top:22px}
+/* 자막 */
+#caption{left:120px;right:320px;bottom:58px;display:flex;justify-content:center}
+#caption span{display:inline-block;max-width:1300px;text-align:center;text-wrap:balance;word-break:keep-all;padding:16px 34px;border-radius:18px;background:#f4efe6;color:#141316;font-size:38px;font-weight:700;line-height:1.4;letter-spacing:-.5px;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+/* duo: 두 화면 나란히 */
+.duo{top:262px;width:800px;height:520px;border-radius:22px;overflow:hidden;background:#000;border:4px solid #2a2930}
+.duo img{width:100%;height:100%;object-fit:cover}
+.dlabel{top:800px;width:800px;text-align:center;font:700 36px "SF Mono",Menlo,monospace}
+/* stat3: 큰 숫자 셋 */
+#stat3{left:120px;right:120px;top:330px;display:flex;justify-content:space-around}
+#stat3 > div{text-align:center;width:480px}
+#stat3 .n{font-size:200px;font-weight:900;letter-spacing:-8px;line-height:1;color:var(--acc)}
+#stat3 .n small{font-size:80px;letter-spacing:-2px;color:var(--ink);margin-left:6px}
+#stat3 .l{font:600 36px "SF Mono",Menlo,monospace;color:#c9c3ba;margin-top:28px}
+/* 그림(net·team): SVG 판 */
+#diagram{left:120px;top:260px;width:1560px;height:640px}
+#diagram text{font-family:Pretendard,sans-serif}
+/* fixes: 문제 → 원인 → 해결 */
+#fixes{left:120px;top:262px;width:1560px}
+.fx{display:grid;grid-template-columns:70px 440px 430px 620px;align-items:center;height:132px;margin-bottom:16px;border-radius:22px;background:#17161a;padding:0 24px;box-sizing:border-box}
+.fx i{font-style:normal;font-size:46px;font-weight:900;color:var(--acc)}
+.fx .p{font-size:36px;font-weight:800;line-height:1.25;word-break:keep-all}
+.fx .w{font-size:30px;font-weight:600;color:#9a958c;line-height:1.3;word-break:keep-all;padding-right:20px}
+.fx .w::before{content:'원인 · ';color:#6d6862}
+.fx .f{font-size:32px;font-weight:800;color:var(--ok);line-height:1.3;word-break:keep-all}
+.fx .f::before{content:'→ ';color:var(--ok)}
+#bar{left:0;right:0;bottom:0;height:8px;background:#222}
+#barFill{height:100%;background:var(--acc)}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+<script src="/toolkit/templates/avatar.js"></script>
+<script src="voice.js"></script>
+<script src="longform.script.js"></script>
+<script src="longform.timing.js"></script>
+</head><body>
+<div class="abs" id="bg"><img id="bgImg"></div>
+<div class="abs" id="full"><img id="fullImg"></div><div class="abs" id="fullShade"></div>
+<div class="abs" id="mont"><img id="montFull"></div>
+<div class="abs" id="hook"><h1 id="hookText"></h1></div>
+<div class="abs" id="cover"><h1 id="coverTitle"></h1><p id="coverSub"></p></div>
+<div class="abs" id="endcard"><h1 id="endTitle"></h1><p id="endSub"></p></div>
+<div class="abs" id="kicker"></div><div class="abs" id="title"></div>
+<div class="abs" id="points"></div>
+<div class="abs" id="code"></div>
+<div class="abs duo" id="duoL" style="left:120px"><img id="imgDL"></div><div class="abs duo" id="duoR" style="left:1000px"><img id="imgDR"></div>
+<div class="abs dlabel" id="dlL" style="left:120px"></div><div class="abs dlabel" id="dlR" style="left:1000px;color:var(--acc)"></div>
+<div class="abs" id="stat3"></div>
+<svg class="abs" id="diagram" viewBox="0 0 1560 640"></svg>
+<div class="abs" id="fixes"></div>
+<div class="abs" id="source"></div>
+<div class="abs" id="caption"><span id="capText"></span></div>
+<div class="abs" id="bar"><div id="barFill"></div></div>
+<script>
+const FPS = 30, LEAD = .5, GAP = .3, TAIL = .7;
+// 나레이션 길이로 챕터 시작 시각과 줄 시각을 계산한다 (hold: 말이 끝난 뒤 남길 시간)
+const CH = [], NARR = [];
+let T = 0;
+SCRIPT.chapters.forEach((c, ci) => {
+  const ch = { ...c, t: T, ci };
+  let x = T + LEAD;
+  c.say.forEach((text, li) => {
+    NARR.push({ t: +x.toFixed(2), end: x + TIMING[ci][li] + .25, ci, li, text, say: SCRIPT.toSay(text) });
+    x += TIMING[ci][li] + GAP;
+  });
+  T = x - GAP + (c.hold ?? TAIL);
+  CH.push(ch);
+});
+const DURATION = Math.ceil(T);
+window.META = { W: 1920, H: 1080, FPS, DURATION, AUDIO: 'calm', ...SCRIPT.voice,
+  STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
+window.NARRATION = NARR;
+window.CHAPTERS = CH.map(c => ({ t: c.t, title: c.title }));  // publish.md 타임스탬프용
+const chEnd = i => (CH[i + 1]?.t ?? DURATION);
+const lineT = (ci, li) => NARR.find(l => l.ci === ci && l.li === li)?.t;  // 그 챕터 k번째 줄이 시작하는 시각
+
+// 클립: from 초부터, len 초 구간을 반복 (pp 면 앞뒤로). image 면 그림 한 장
+async function clip(img, spec, local) {
+  if (spec.image) { if (img.getAttribute('src') !== spec.image) { img.src = spec.image; await img.decode(); } return; }
+  const L = Math.round((spec.len || 0) * FPS);
+  let n = L ? local % (spec.pp ? 2 * L : L) : local;
+  if (spec.pp && n >= L) n = 2 * L - 1 - n;
+  await CLIP.show(img, spec.clip, Math.round((spec.from || 0) * FPS) + n);
+}
+const list = (items, s, t, a) => items.map((p, k) => {
+  const pa = Math.min(ease(prog(t, s + .4 + k * .5, s + .9 + k * .5)), a);
+  return `<div style="opacity:${pa};transform:translateX(${(1 - pa) * -40}px)"><i>${String(k + 1).padStart(2, '0')}</i>${p}</div>`;
+}).join('');
+const ALL = ['bg', 'full', 'fullShade', 'mont', 'hook', 'cover', 'endcard', 'kicker', 'title', 'points', 'code', 'duoL', 'duoR', 'dlL', 'dlR', 'stat3', 'diagram', 'fixes', 'source'];
+
+// ── 그림: P2P 구조 (방장 판정 · 직접 연결 · 신호만 Firebase · 막힌 망만 TURN) ──
+function netSVG(t, s1, s2, s3) {
+  const q1 = ease(prog(t, s1, s1 + .8)), q2 = ease(prog(t, s2, s2 + .8)), q3 = ease(prog(t, s3, s3 + .8));
+  const H = { x: 760, y: 320 }, P = [{ x: 1290, y: 120 }, { x: 1390, y: 320 }, { x: 1260, y: 520 }];
+  const acc = '#d97757', ink = '#f4efe6', dim = '#6d6862';
+  let g = '';
+  // 없는 게임 서버(흐리게, 줄 그음)
+  g += `<g opacity="${(1 - q2 * .55) * q1}"><rect x="600" y="0" width="320" height="90" rx="18" fill="none" stroke="${dim}" stroke-width="3" stroke-dasharray="10 8"/>
+    <text x="760" y="56" text-anchor="middle" font-size="34" font-weight="800" fill="${dim}">게임 서버 0대</text>
+    <line x1="618" y1="45" x2="902" y2="45" stroke="${acc}" stroke-width="5"/></g>`;
+  // 직접 연결 선 + 오가는 상태(초당 30번 — 점이 흐른다)
+  P.forEach((p, k) => {
+    const qk = Math.min(1, Math.max(0, q1 * 1.6 - k * .25));
+    g += `<line x1="${H.x}" y1="${H.y}" x2="${p.x}" y2="${p.y}" stroke="${acc}" stroke-width="6" opacity="${qk}" stroke-dasharray="${qk * 700} 700"/>`;
+    for (let d = 0; d < 3; d++) {
+      const u = ((t * .9 + d / 3 + k * .17) % 1), back = d % 2;
+      const x = back ? p.x + (H.x - p.x) * u : H.x + (p.x - H.x) * u, y = back ? p.y + (H.y - p.y) * u : H.y + (p.y - H.y) * u;
+      g += `<circle cx="${x}" cy="${y}" r="9" fill="${ink}" opacity="${q3 * .95}"/>`;
+    }
+    g += `<g opacity="${qk}"><circle cx="${p.x}" cy="${p.y}" r="74" fill="#1d1c21" stroke="${ink}" stroke-width="4"/>
+      <text x="${p.x}" y="${p.y + 12}" text-anchor="middle" font-size="32" font-weight="800" fill="${ink}">참가자</text></g>`;
+  });
+  g += `<text x="1060" y="${H.y - 70}" text-anchor="middle" font-size="28" font-weight="700" fill="${acc}" opacity="${q1}" transform="rotate(-16 1060 ${H.y - 70})">직접 연결 (WebRTC)</text>`;
+  g += `<g opacity="${q1}"><circle cx="${H.x}" cy="${H.y}" r="112" fill="${acc}"/>
+    <text x="${H.x}" y="${H.y - 6}" text-anchor="middle" font-size="44" font-weight="900" fill="#fff">방장</text>
+    <text x="${H.x}" y="${H.y + 40}" text-anchor="middle" font-size="28" font-weight="700" fill="#fff">판정 · 시뮬레이션</text></g>`;
+  // Firebase(신호만) · TURN(막힌 망만)
+  g += `<g opacity="${q2}"><rect x="0" y="40" width="420" height="140" rx="22" fill="#17161a" stroke="#ffca28" stroke-width="3"/>
+    <text x="210" y="100" text-anchor="middle" font-size="36" font-weight="900" fill="#ffca28">Firebase</text>
+    <text x="210" y="146" text-anchor="middle" font-size="27" font-weight="700" fill="#c9c3ba">방 목록 · 처음 연결 신호만</text>
+    <path d="M420 120 C 540 140, 600 200, ${H.x - 110} ${H.y - 40}" fill="none" stroke="#ffca28" stroke-width="3" stroke-dasharray="8 8"/>
+    <rect x="0" y="470" width="420" height="140" rx="22" fill="#17161a" stroke="#7aa7ff" stroke-width="3"/>
+    <text x="210" y="530" text-anchor="middle" font-size="36" font-weight="900" fill="#7aa7ff">TURN 중계</text>
+    <text x="210" y="576" text-anchor="middle" font-size="27" font-weight="700" fill="#c9c3ba">막힌 망에서만 (Cloudflare)</text>
+    <path d="M420 540 C 560 520, 620 470, ${H.x - 100} ${H.y + 60}" fill="none" stroke="#7aa7ff" stroke-width="3" stroke-dasharray="8 8"/></g>`;
+  g += `<text x="470" y="628" text-anchor="start" font-size="30" font-weight="800" fill="${ink}" opacity="${q3}">상태 초당 30번 · 화면은 0.1초 늦게 그려 부드럽게</text>`;
+  return g;
+}
+
+// ── 그림: AI 에이전트 팀 (PM 하나에게만 말한다 → 에이전트 6개가 각자 작업 폴더에서 → 테스트 통과하면 합쳐 배포) ──
+function teamSVG(t, s1, s2, s3) {
+  const q1 = ease(prog(t, s1, s1 + .7)), q3 = ease(prog(t, s3, s3 + .8));
+  const acc = '#d97757', ink = '#f4efe6';
+  const A = [['엔진', 'engine'], ['총게임', 'gunfight'], ['병과', 'classes'], ['맵', 'maps'], ['서버', 'backend'], ['출시', 'release']];
+  let g = `<g opacity="${q1}"><circle cx="300" cy="90" r="62" fill="#f4efe6"/><text x="300" y="103" text-anchor="middle" font-size="38" font-weight="900" fill="#141316">나</text>
+    <line x1="366" y1="90" x2="590" y2="90" stroke="${ink}" stroke-width="4"/><polygon points="590,78 612,90 590,102" fill="${ink}"/>
+    <rect x="620" y="20" width="420" height="140" rx="24" fill="${acc}"/>
+    <text x="830" y="82" text-anchor="middle" font-size="44" font-weight="900" fill="#fff">PM 세션</text>
+    <text x="830" y="128" text-anchor="middle" font-size="27" font-weight="700" fill="#fff">일 쪼개기 · 합치기 · 배포</text></g>`;
+  A.forEach(([name, br], k) => {
+    const x = 30 + k * 252, qa = ease(prog(t, s2 + k * .18, s2 + .5 + k * .18));
+    g += `<g opacity="${qa}" transform="translate(0 ${(1 - qa) * 30})">
+      <path d="M830 160 C 830 220, ${x + 110} 220, ${x + 110} 270" fill="none" stroke="#5a5650" stroke-width="3"/>
+      <rect x="${x}" y="270" width="220" height="150" rx="20" fill="#17161a" stroke="#3a3842" stroke-width="3"/>
+      <text x="${x + 110}" y="336" text-anchor="middle" font-size="40" font-weight="900" fill="${ink}">${name}</text>
+      <text x="${x + 110}" y="384" text-anchor="middle" font-size="22" font-weight="600" fill="#9a958c" font-family="Menlo,monospace">worktree · ${br}</text></g>`;
+  });
+  g += `<g opacity="${q3}"><rect x="30" y="480" width="1480" height="110" rx="24" fill="#1f3a2a"/>
+    <text x="770" y="548" text-anchor="middle" font-size="38" font-weight="900" fill="#9fe0b0">동시에 작업 → 테스트 통과 → PM이 main에 합치고 배포</text></g>`;
+  return g;
+}
+
+// 아바타: 현재 줄의 음량(0~9)으로 입, 결정적 깜빡임
+function avatar(t, line) {
+  let a = 0;
+  if (line && t < line.end) {
+    const env = ENV[line.ci][line.li], k = Math.round((t - line.t) * FPS);
+    const v = i => (+env[i] || 0) / 9;
+    a = (v(k) + v(k - 1)) / 2;
+  }
+  avatarFrame(t, a, !!(line && t < line.end));
+}
+mountAvatar(document.body, { left: 1650, top: 808, size: 250 });
+
+window.renderFrame = async f => {
+  const t = f / FPS, i = CH.indexOf(at(CH, t)), c = CH[i], s = c.t, e = chEnd(i);
+  const a = inOut(t, s, e, .35);
+  const local = Math.max(0, f - Math.round(s * FPS));
+  const rise = (1 - ease(prog(t, s, s + .6))) * 30;
+  ALL.forEach(id => show($(id), 0));
+
+  if (c.type === 'montage') {
+    const k = Math.floor((t - s) / c.cutLen), cut = c.cuts[k % c.cuts.length];
+    const inCut = Math.round(((t - s) % c.cutLen) * FPS);
+    await clip($('montFull'), cut, inCut);
+    show($('mont'), 1 - ease(prog(t, e - .35, e)));
+    $('hookText').innerHTML = c.title.replace(c.hl, `<b>${c.hl}</b>`);
+    show($('hook'), Math.min(ease(prog(t, s + .3, s + .8)), 1 - ease(prog(t, e - .35, e))), (1 - ease(prog(t, s + .3, s + .9))) * 40);
+  } else if (c.type === 'cover') {
+    $('coverTitle').textContent = c.title; $('coverSub').textContent = c.sub || '';
+    show($('cover'), a, rise);
+    if (c.bg) { await clip($('bgImg'), c.bg, local); show($('bg'), a); }
+  } else if (c.type === 'endcard') {
+    $('endTitle').textContent = c.title; $('endSub').textContent = c.sub || '';
+    show($('endcard'), a, rise);
+  } else {
+    $('kicker').textContent = c.kicker || ''; $('title').textContent = c.title || '';
+    show($('kicker'), a); show($('title'), a, rise);
+  }
+  if (c.type === 'full') {
+    $('fullImg').style.objectFit = c.media.fit || 'cover';  // 폰 화면처럼 비율이 다르면 contain(양옆 버튼이 잘리지 않게)
+    await clip($('fullImg'), c.media, local); show($('full'), a); show($('fullShade'), a);
+  }
+  if (c.type === 'points') { $('points').innerHTML = list(c.points, s, t, a); show($('points'), 1); }
+  if (c.type === 'code') {
+    const n = Math.floor(prog(t, s + .4, s + (c.typeSeconds || 3)) * c.code.length);
+    $('code').textContent = c.code.slice(0, n); show($('code'), a);
+  }
+  if (c.type === 'duo') {
+    for (const [side, spec, box, lab, d] of [['L', c.left, 'duoL', 'dlL', 0], ['R', c.right, 'duoR', 'dlR', .5]]) {
+      await clip($('imgD' + side), spec, local); $(lab).textContent = spec.label;
+      const q = Math.min(a, ease(prog(t, s + .3 + d, s + .9 + d)));
+      show($(box), q, (1 - q) * 40); show($(lab), q);
+    }
+  }
+  if (c.type === 'stat3') {
+    $('stat3').innerHTML = c.stats.map((x, k) => {
+      const q = clamp(back(prog(t, s + .4 + k * .45, s + 1 + k * .45)));
+      return `<div style="opacity:${Math.min(a, clamp(q * 1.5))};transform:scale(${.7 + .3 * q})"><div class="n">${x.n}<small>${x.u}</small></div><div class="l">${x.l}</div></div>`;
+    }).join('');
+    show($('stat3'), 1);
+  }
+  if (c.type === 'net') { $('diagram').innerHTML = netSVG(t, lineT(c.ci, 0), lineT(c.ci, 1), lineT(c.ci, 2)); show($('diagram'), a); }
+  if (c.type === 'team') { $('diagram').innerHTML = teamSVG(t, lineT(c.ci, 0), lineT(c.ci, 1), lineT(c.ci, 2)); show($('diagram'), a); }
+  if (c.type === 'fixes') {
+    $('fixes').innerHTML = c.rows.map((r, k) => {
+      const st = lineT(c.ci, k) ?? s, q = Math.min(a, ease(prog(t, st - .2, st + .3)));
+      return `<div class="fx" style="opacity:${.08 + .92 * q};transform:translateX(${(1 - q) * -30}px)"><i>${k + 1}</i><div class="p">${r.p}</div><div class="w">${r.w}</div><div class="f">${r.f}</div></div>`;
+    }).join('');
+    show($('fixes'), 1);
+  }
+  if (c.source) { $('source').textContent = '출처: ' + c.source; show($('source'), a); }
+
+  const line = at(NARR, t);
+  // 같은 챕터 안에서는 다음 줄까지 유지, 챕터 마지막 줄은 읽기가 끝나면 내린다 (다음 장면에 안 남게)
+  const next = NARR[NARR.indexOf(line) + 1];
+  const capEnd = line && next && next.ci === line.ci ? next.t : line?.end;
+  $('capText').textContent = line?.text || '';
+  show($('caption'), line ? inOut(t, line.t, capEnd, .15) : 0);
+  avatar(t, line);
+  $('barFill').style.width = `${(t / DURATION) * 100}%`;
+  document.body.style.opacity = 1 - prog(t, DURATION - .5, DURATION);
+};
+ready(['900 100px Pretendard', '500 25px Menlo']);
+</script>
+</body></html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 006 유튜브 썸네일 (1280×720). 첫 장면 훅과 같은 약속: "하루 만에 만든 멀티플레이 FPS"
+     배경은 실제 플레이 녹화 한 프레임(판교역 맵, 수류탄 폭발). v=2 는 '진짜 판교역' 각도(지도 삽입)
+     렌더: node toolkit/render.mjs lectures/006-web-fps/scenes/thumbnail.html --still --query v=1 --name thumb-1   (v=1|2) -->
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0e0e10;color:#f4efe6;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#bg{inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+#shade{inset:0;background:linear-gradient(90deg,rgba(10,10,12,.94) 0,rgba(10,10,12,.8) 40%,rgba(10,10,12,.1) 72%,rgba(10,10,12,0) 100%)}
+.tag{left:58px;top:50px;font:700 28px "SF Mono",Menlo,monospace;color:#d97757}
+h1{position:absolute;left:54px;top:96px;margin:0;font-size:104px;font-weight:900;letter-spacing:-5px;line-height:1.02;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+h1 em{font-style:normal;color:#d97757}
+.big{position:absolute;left:52px;top:352px;font-size:128px;font-weight:900;letter-spacing:-6px;line-height:1;color:#fff;background:#d97757;padding:6px 26px 14px;border-radius:22px;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.chip{position:absolute;left:58px;bottom:56px;display:flex;gap:12px}
+.chip b{padding:10px 20px;border-radius:14px;background:#f4efe6;color:#141316;font-size:30px;font-weight:900}
+#map{right:44px;top:44px;width:330px;height:250px;border-radius:18px;border:5px solid #f4efe6;object-fit:cover;box-shadow:0 14px 40px rgba(0,0,0,.5);display:none}
+#mapTag{right:58px;top:262px;padding:4px 12px;border-radius:10px;background:#141316;font:700 20px "SF Mono",Menlo,monospace;display:none}
+.dog{position:absolute;right:30px;bottom:0;width:230px}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<img class="abs" id="bg" src="/lectures/006-web-fps/captures/thumb-bg2.jpg">
+<div class="abs" id="shade"></div>
+<img class="abs" id="map" src="/lectures/006-web-fps/captures/osm-pangyo-crop.png"><div class="abs" id="mapTag">© OpenStreetMap</div>
+<div class="abs tag">Claude Code · WebRTC P2P</div>
+<h1 id="h1"></h1>
+<div class="big" id="big"></div>
+<div class="chip" id="chips"></div>
+<img class="dog" src="/toolkit/templates/avatar.svg">
+<script>
+const v = +(new URLSearchParams(location.search).get('v') || 1);
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1 };
+$('h1').innerHTML = v === 1 ? '하루 만에 만든<br>멀티플레이 <em>FPS</em>' : '진짜 <em>판교역</em>에서<br>총싸움 FPS';
+$('big').textContent = v === 1 ? '서버비 0원' : '하루 만에';
+$('chips').innerHTML = (v === 1 ? ['브라우저 · 폰', '실제 장소 맵', 'AI 에이전트 팀'] : ['서버비 0원', '브라우저 · 폰', 'AI 에이전트 팀']).map(x => `<b>${x}</b>`).join('');
+if (v === 2) { $('map').style.display = 'block'; $('mapTag').style.display = 'block'; }
+window.renderFrame = async () => {};
+ready(['900 104px Pretendard']);
+</script>
+</body></html>
