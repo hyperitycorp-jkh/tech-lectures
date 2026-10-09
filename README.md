@@ -10,7 +10,7 @@
 | 002 | 클로드 코드 effort 제대로 정리 — 언제 low, 언제 max? | [유튜브](https://youtu.be/0E-1a-WjYiA) · 쇼츠 [①](https://youtu.be/XyBIN_QmpNs) [②](https://youtu.be/DitkF8XEOy4) | — | [lectures/002-claude-code-effort](lectures/002-claude-code-effort) |
 | 003 | 오푸스 5.5로 매드무비 만들기 — 누끼·박자·자막까지 | [유튜브](https://youtu.be/Rw1ZngcDDco) · 쇼츠 [①](https://youtu.be/XAfFfCUj2XU) [②](https://youtu.be/3N6nMJZV2X4) 외 5편 (10/3까지 매일 공개) | — | [lectures/003-mad-movie](lectures/003-mad-movie) |
 | 004 | 오픈라우터로 AI 캐릭터 채팅 90배 싸게 만들기 — 수위 조절까지 | [유튜브](https://youtu.be/cr747zcnJjM) · 쇼츠 [①](https://youtu.be/al_4DKn7QxY) [②](https://youtu.be/8TJGHC1Zsik) (9/30~10/1 공개) | — | [lectures/004-openrouter](lectures/004-openrouter) |
-| 006 | 클로드 코드로 하루 만에 멀티플레이 FPS 게임 만들기 — 게임 서버비 0원 | [유튜브](https://youtu.be/7mHp6IDRYRM) · 쇼츠 [①](https://youtu.be/HolOdzpcrKY) [②](https://youtu.be/1UR1tkxJKOw) [③](https://youtu.be/bmqC5VrXT9Y) (비공개 · 공개 일정 확정 전) | — | [lectures/006-web-fps](lectures/006-web-fps) |
+| 006 | 클로드 코드로 하루 만에 멀티플레이 FPS 게임 만들기 — 게임 서버비 0원 | [유튜브](https://youtu.be/7mHp6IDRYRM) · 쇼츠 [①](https://youtu.be/HolOdzpcrKY) [②](https://youtu.be/1UR1tkxJKOw) [③](https://youtu.be/bmqC5VrXT9Y) (10/9~10/11 19:00 공개 예약) | — | [lectures/006-web-fps](lectures/006-web-fps) |
 
 ## 한 강의가 만들어지는 흐름
 ```
