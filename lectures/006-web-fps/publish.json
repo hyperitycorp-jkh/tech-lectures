@@ -1,11 +1,11 @@
 {
  "base": "https://raw.githubusercontent.com/hyperitycorp-jkh/tech-lectures/main/lectures/006-web-fps/captures/",
- "note": "유튜브 '바이브코더'. 전부 비공개로 먼저 올리고, 사용자 확인(10/9 \"올려\") → 롱폼+쇼츠① 10/9 19:00, ② 10/10, ③ 10/11, Threads 10/9 19:05. Threads 는 개인(jkh8308), 캐러셀 첨부 — 롱폼 공개 뒤. 인스타 안 함. gcloud 인증이 만료돼 캐러셀은 GitHub raw 로 건다.",
+ "note": "유튜브 '바이브코더'. 전부 비공개로 먼저 올리고, 사용자 \"올려지금\"(10/9 09:07) → 롱폼·쇼츠① 바로 공개, Threads 바로 게시. 쇼츠② 10/10 19:00, ③ 10/11 19:00 예약 유지. Threads 는 개인(jkh8308), 캐러셀 첨부 — 롱폼 공개 뒤. 인스타 안 함. gcloud 인증이 만료돼 캐러셀은 GitHub raw 로 건다.",
  "items": [
   {
    "id": "longform",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/longform.mp4",
    "thumbnail": "scenes/out/thumb-1.png",
    "captions": "scenes/out/longform.srt",
@@ -27,12 +27,12 @@
    ],
    "comment": "🎮 직접 해 보기: https://gunfight-hyperity.web.app\n📄 시작 프롬프트 전문은 설명란에 있어요.\n\n⏱ 바로 보기\n01:18 P2P FPS는 이렇게 돌아가요\n02:53 PM 1명 + AI 에이전트 6개\n03:40 막혔던 4가지\n\n다음엔 어떤 게임을 AI로 만들어 볼까요? 🐶",
    "uploaded": "https://youtu.be/7mHp6IDRYRM",
-   "publishAt": "2026-10-09T19:00:00+09:00"
+   "commentId": "UgxeEcG5wc_FN68O--B4AaABAg"
   },
   {
    "id": "shorts-1",
    "target": "youtube",
-   "privacy": "private",
+   "privacy": "public",
    "file": "scenes/out/shorts-1.mp4",
    "captions": "scenes/out/shorts-1.srt",
    "title": "AI로 하루 만에 만든 FPS — 진짜 판교역에서 총싸움 #Shorts",
@@ -45,7 +45,7 @@
    ],
    "comment": "판교역 다음엔 어느 동네를 맵으로 만들어 볼까요? 🐶 게임 주소는 채널 롱폼 설명란에 있어요.",
    "uploaded": "https://youtu.be/HolOdzpcrKY",
-   "publishAt": "2026-10-09T19:00:00+09:00"
+   "commentId": "UgyDXFgQqPaVQ0cPm0d4AaABAg"
   },
   {
    "id": "shorts-2",
@@ -101,8 +101,7 @@
     "4/ 막혔던 것은 4가지였습니다.\n빠른 시작해도 늘 혼자 AI 판(연결 전에 보낸 요청이 사라짐), 배포 직후 404, 폰 버튼 13개, 병과를 넣으니 늘어지는 판. 해결은 영상에 정리했습니다.\n🎮 https://gunfight-hyperity.web.app\n영상 👉 https://youtu.be/7mHp6IDRYRM",
     "시작 프롬프트 전문입니다. 클로드 코드에 그대로 붙여 넣으면 됩니다 👇\nhttps://github.com/hyperitycorp-jkh/tech-lectures/blob/main/lectures/006-web-fps/prompt.md"
    ],
-   "dueAt": "2026-10-09T19:05:00+09:00",
-   "uploaded": "buffer post 6ac82ead9db755aaaabb1e8a (예약 2026-10-09 19:05 KST)"
+   "uploaded": "https://www.threads.com/@jkh8308/post/DeQL3tlGFil (buffer 6ac82ead9db755aaaabb1e8a, 2026-10-09 09:09 KST 게시)"
   }
  ]
 }

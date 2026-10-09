@@ -3,7 +3,7 @@
 클로드 코드로 브라우저·폰에서 바로 하는 멀티플레이 FPS를 만들었다. 첫 커밋부터 약 14시간, 커밋 150개 넘게, 자동 테스트 255개가 통과했다.
 게임 서버 없이 WebRTC P2P로 브라우저끼리 직접 연결해서, 사람이 늘어도 서버비가 거의 늘지 않는다.
 
-- 영상: [롱폼](https://youtu.be/7mHp6IDRYRM) · 쇼츠 [①](https://youtu.be/HolOdzpcrKY) [②](https://youtu.be/1UR1tkxJKOw) [③](https://youtu.be/bmqC5VrXT9Y) (롱폼·쇼츠① 10/9 19:00, ② 10/10, ③ 10/11 공개 예약 · 쓰레드 10/9 19:05)
+- 영상: [롱폼](https://youtu.be/7mHp6IDRYRM) · 쇼츠 [①](https://youtu.be/HolOdzpcrKY) [②](https://youtu.be/1UR1tkxJKOw) [③](https://youtu.be/bmqC5VrXT9Y) (롱폼·쇼츠① 10/9 공개, ② 10/10 · ③ 10/11 19:00 예약)
 - 게임: https://gunfight-hyperity.web.app
 - 시작 프롬프트 전문: [`prompt.md`](prompt.md)
 - 게임 코드는 비공개 레포다. 이 폴더에는 원리 설명, 실행 결과, 영상 장면만 둔다.
