@@ -12,6 +12,7 @@
 | 004 | 오픈라우터로 AI 캐릭터 채팅 90배 싸게 만들기 — 수위 조절까지 | [유튜브](https://youtu.be/cr747zcnJjM) · 쇼츠 [①](https://youtu.be/al_4DKn7QxY) [②](https://youtu.be/8TJGHC1Zsik) (9/30~10/1 공개) | — | [lectures/004-openrouter](lectures/004-openrouter) |
 | 006 | 클로드 코드로 하루 만에 멀티플레이 FPS 게임 만들기 — 게임 서버비 0원 | [유튜브](https://youtu.be/7mHp6IDRYRM) · 쇼츠 [①](https://youtu.be/HolOdzpcrKY) [②](https://youtu.be/1UR1tkxJKOw) [③](https://youtu.be/bmqC5VrXT9Y) (10/9 공개 · ② 10/10 · ③ 10/11 19:00) | — | [lectures/006-web-fps](lectures/006-web-fps) |
 | 007 | 클로드 무료 마케팅 플러그인 3종으로 유튜브 채널 진단하기 — 직접 비교 | [유튜브](https://youtu.be/gSq07LCARTo) · 쇼츠 [①](https://youtu.be/V2uhuYueFyI) [②](https://youtu.be/_STbxzi_85A) [③](https://youtu.be/RNM_mSWj0NU) (10/17~10/19 19:00 공개) | — | [lectures/007-marketing-plugins](lectures/007-marketing-plugins) |
+| 008 | (실험) 007 처방대로 다시 만든 쇼츠 2편 — 결과는 후기 2탄으로 | 쇼츠 [①](https://youtu.be/t1pvK1_27V4) [②](https://youtu.be/MSwK1WIENIY) (10/20·10/21 19:00 공개) | — | [lectures/008-prescription-remake](lectures/008-prescription-remake) |
 
 ## 한 강의가 만들어지는 흐름
 ```

@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 008 처방대로 다시 만든 쇼츠 ② — 003 앱 광고 쇼츠 4편(52~195회, 같은 틀 반복)을 처방대로 한 편으로 묶은 판
+     바꾼 것(세 도구 공통 처방): "이거 전부 ~" 묶음형 · 첫 1초에 주장 문구 · 끝에 고르는 질문(댓글 유도)
+     그대로 둔 것: 광고 4편 자체(003 private/*-v.mad.js 재렌더), 음악(각 광고의 같은 128 BPM 곡)
+     만들기: node lectures/008-prescription-remake/demo/build-ads4.mjs → 렌더: node toolkit/render.mjs lectures/008-prescription-remake/scenes/ads4.html --name remake-003-ads4 -->
+<style>
+:root{--acc:#ff6b8a}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000;color:#fff;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#v{inset:0;width:100%;height:100%;object-fit:cover}
+#shade{inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.05) 40%,rgba(0,0,0,.05) 70%,rgba(0,0,0,.45))}
+#hook{left:60px;right:60px;top:560px;text-align:center;font-size:132px;font-weight:900;line-height:1.08;letter-spacing:-5px;text-shadow:0 8px 40px rgba(0,0,0,.7)}
+#hook em{font-style:normal;color:#ffd84d}
+#chip{left:0;right:0;top:330px;text-align:center}
+#chip b{display:inline-block;padding:16px 34px;border-radius:999px;background:rgba(0,0,0,.72);font-size:52px;font-weight:900;letter-spacing:-1px}
+#chip i{font-style:normal;color:#ffd84d;margin-right:14px}
+#endBg{inset:0;background:rgba(10,10,12,.82)}
+#end{left:60px;right:60px;top:600px;text-align:center}
+#end h1{margin:0;font-size:118px;font-weight:900;letter-spacing:-4px;line-height:1.1;text-shadow:0 8px 40px rgba(0,0,0,.7)}
+#end p{margin:30px 0 0;font-size:46px;font-weight:800;opacity:.9}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+<script src="ads4.timing.js"></script>
+</head><body>
+<img class="abs" id="v"><div class="abs" id="shade"></div>
+<div class="abs" id="chip"></div>
+<div class="abs" id="hook">이거 전부<br><em>AI가 만든</em><br>앱 광고 4편</div>
+<div class="abs" id="endBg"></div>
+<div class="abs" id="end"><h1>어느 게<br>제일 나아요?</h1><p>댓글로 번호만 ✍️</p></div>
+<script>
+// ads4.timing.js(build-ads4.mjs 가 생성): CLIPDIR(이어 붙인 영상의 프레임), SEG([{label, t, dur, src}]), DUR
+const FPS = 30, BEAT = 60 / 128;
+window.META = { W: 1080, H: 1920, FPS, DURATION: DUR, AUDIO: 'none', MUSIC_FILE: 'ads4.m4a', STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
+window.renderFrame = async f => {
+  const t = f / FPS, hookEnd = SEG[0].t, endT = SEG[SEG.length - 1].t + SEG[SEG.length - 1].dur;
+  let idx = f;
+  if (t < hookEnd) {  // 첫 1마디: 박마다 네 광고의 가장 센 장면을 번갈아(소리는 첫 광고의 라이저 그대로)
+    const k = Math.min(3, Math.floor(t / BEAT)), s = SEG[k];
+    idx = Math.round((s.t + .4 + (t - k * BEAT)) * FPS);
+  }
+  await CLIP.show($('v'), CLIPDIR, idx);
+  const seg = SEG.find(s => t >= s.t && t < s.t + s.dur);
+  show($('hook'), t < hookEnd ? 1 : 0, 0, 1 + .05 * (1 - ease(prog(t, 0, .35))));
+  if (seg) { $('chip').innerHTML = `<b><i>${SEG.indexOf(seg) + 1}</i>${seg.label}</b>`; show($('chip'), inOut(t, seg.t, seg.t + seg.dur, .15)); }
+  else show($('chip'), 0);
+  const qe = t >= endT ? ease(prog(t, endT, endT + .3)) : 0;
+  show($('endBg'), qe); show($('end'), qe);
+  document.body.style.opacity = 1 - prog(t, DUR - .25, DUR);
+};
+ready(['900 132px Pretendard']);
+</script>
+</body></html>

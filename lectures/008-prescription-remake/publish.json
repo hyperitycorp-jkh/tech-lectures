@@ -1,0 +1,43 @@
+{
+ "base": "https://raw.githubusercontent.com/hyperitycorp-jkh/tech-lectures/main/lectures/008-prescription-remake/captures/",
+ "note": "007 진단의 처방대로 다시 만든 쇼츠 2편(사용자: '진단에 따라 추가로 다시 만들어', 후기 2탄으로 비교). 기존 영상은 그대로 두고 새로 올린다. 비교: 공개 후 48시간 조회·쇼츠 피드 비율·참여 조회(publish.mjs analytics). 007 쇼츠와 겹치지 않게 10/20·10/21.",
+ "items": [
+  {
+   "id": "remake-004",
+   "target": "youtube",
+   "privacy": "private",
+   "publishAt": "2026-10-20T19:00:00+09:00",
+   "file": "scenes/out/remake-004.mp4",
+   "captions": "scenes/out/remake-004.srt",
+   "remakeOf": "https://youtu.be/8TJGHC1Zsik",
+   "title": "대화 1,000번에 231원 AI, 선 넘는 요청 해 봤다 (DeepSeek) #Shorts",
+   "description": "231원짜리 AI가 캐릭터를 지키면서 선을 그을까? 전체 테스트 👉 https://youtu.be/cr747zcnJjM\n#딥시크 #AI챗봇 #캐릭터채팅",
+   "tags": [
+    "DeepSeek",
+    "딥시크",
+    "AI 캐릭터 채팅",
+    "AI 챗봇"
+   ],
+   "comment": "캐릭터 규칙은 4줄만 적었어요. 템플릿은 채널 롱폼 설명란에 있어요 🐶",
+   "uploaded": "https://youtu.be/t1pvK1_27V4"
+  },
+  {
+   "id": "remake-003-ads4",
+   "target": "youtube",
+   "privacy": "private",
+   "publishAt": "2026-10-21T19:00:00+09:00",
+   "file": "scenes/out/remake-003-ads4.mp4",
+   "remakeOf": "https://youtu.be/-TANT0WAMTc https://youtu.be/DPHV2gVQgDI https://youtu.be/1Ci_Cqu9_Ag https://youtu.be/Z2Xjfaf6AsU (003 쇼츠④~⑦)",
+   "title": "이거 전부 AI가 만든 앱 광고 4편 #Shorts",
+   "description": "러닝 · 소개팅 · 알람 · 사진 일기 앱 광고, 전부 클로드 코드로 만들었어요. 만드는 법 👉 https://youtu.be/Rw1ZngcDDco\n#클로드코드 #앱광고 #AI영상",
+   "tags": [
+    "클로드 코드",
+    "앱 광고",
+    "AI 영상",
+    "매드무비"
+   ],
+   "comment": "몇 번이 제일 나아요? 번호만 남겨 주세요 🐶",
+   "uploaded": "https://youtu.be/MSwK1WIENIY"
+  }
+ ]
+}
