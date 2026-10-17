@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 007 유튜브 썸네일 (1280×720). 첫 장면 훅과 같은 약속: "무료 마케팅 플러그인 3개, 내 유튜브로 직접 비교"
+     이번 테스트에서 나온 썸네일 규칙을 우리 썸네일에도 적용: 큰 글자 한 덩어리 · 폰 크기에서도 읽히게 · 오른쪽 아래(재생 시간 자리) 비움 · 강아지는 왼쪽
+     렌더: node toolkit/render.mjs lectures/007-marketing-plugins/scenes/thumbnail.html --still --query v=1 --name thumb-1   (v=1|2) -->
+<style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0e0e10;color:#f4efe6;font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+.tag{left:300px;top:56px;font:700 30px "SF Mono",Menlo,monospace;color:#d97757}
+h1{position:absolute;left:296px;top:100px;margin:0;font-size:118px;font-weight:900;letter-spacing:-5px;line-height:1.02}
+h1 em{font-style:normal;color:#d97757}
+.sub{position:absolute;left:300px;top:400px;font-size:58px;font-weight:800;letter-spacing:-1.5px;color:#c9c3ba}
+.cards{position:absolute;left:300px;top:478px;display:flex;gap:16px}
+.cards b{padding:14px 22px;border-radius:16px;background:#f4efe6;color:#141316;font-size:32px;font-weight:900}
+.cards b.hi{background:#d97757;color:#fff}
+.big{position:absolute;left:296px;top:300px;font-size:150px;font-weight:900;letter-spacing:-7px;line-height:1;color:#d97757}
+.big small{font-size:64px;letter-spacing:-2px;color:#f4efe6;margin-left:10px}
+.dog{position:absolute;left:18px;bottom:24px;width:260px}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+</head><body>
+<div class="abs tag" id="tag">Claude Code · 무료 플러그인</div>
+<h1 id="h1"></h1>
+<div class="big" id="big"></div>
+<div class="sub" id="sub"></div>
+<div class="cards" id="cards"></div>
+<img class="dog" src="/toolkit/templates/avatar.svg">
+<script>
+const v = +(new URLSearchParams(location.search).get('v') || 1);
+window.META = { W: 1280, H: 720, FPS: 30, DURATION: 1 };
+if (v === 1) {
+  $('h1').innerHTML = '마케팅 플러그인<br><em>3개</em> 직접 비교';
+  $('sub').textContent = '내 유튜브로 진단';
+} else {
+  $('tag').textContent = 'AI 마케팅 플러그인 진단 · 실제 데이터';
+  $('h1').innerHTML = '조회수 1,200회<br>실제로 본 건';
+  $('big').innerHTML = '26<small>%</small>';
+  $('big').style.top = '330px';
+  $('sub').style.display = 'none';
+
+}
+window.renderFrame = async () => {};
+ready(['900 118px Pretendard']);
+</script>
+</body></html>

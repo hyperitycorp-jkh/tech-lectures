@@ -1,0 +1,106 @@
+{
+ "base": "https://raw.githubusercontent.com/hyperitycorp-jkh/tech-lectures/main/lectures/007-marketing-plugins/captures/",
+ "note": "유튜브 '바이브코더'. 사용자 '그냥 만들어서 올려'(10/17) → 비공개 업로드 + 예약: 롱폼·쇼츠① 10/17 19:00, ② 10/18, ③ 10/19 (KST). Threads 10/17 19:05. 인스타 안 함. 유료 도구는 다루지 않음.",
+ "items": [
+  {
+   "id": "longform",
+   "target": "youtube",
+   "privacy": "private",
+   "publishAt": "2026-10-17T19:00:00+09:00",
+   "file": "scenes/out/longform.mp4",
+   "thumbnail": "scenes/out/thumb-1.png",
+   "captions": "scenes/out/longform.srt",
+   "title": "클로드 무료 마케팅 플러그인 3종으로 유튜브 채널 진단하기 — 직접 비교 (Claude Code)",
+   "description": "클로드에 무료 마케팅 플러그인 3개를 깔고, 제 유튜브 채널 실제 데이터(영상 23편)로 같은 진단을 시켜 봤어요. 플러그인 없는 클로드까지 네 번 비교했고, AI가 추측한 것들은 유튜브 분석 데이터로 확인했어요.\n\n🧩 설치 명령어\n① 앤트로픽 공식 Marketing\nclaude plugin marketplace add anthropics/knowledge-work-plugins\nclaude plugin install marketing@knowledge-work-plugins\n② Social Media Skills (클로드 코드 안에서)\n/plugin marketplace add social-media-skills/skills\n/plugin install social-media-skills@social-media-skills\n③ marketingskills (필요한 스킬만)\nnpx skills add coreyhaines31/marketingskills --skill copywriting\n\n📂 네 가지 결과 원문 · 과제 · 데이터: https://github.com/hyperitycorp-jkh/tech-lectures/tree/main/lectures/007-marketing-plugins\n\n00:00 마케팅 플러그인 3개로 내 유튜브 진단\n00:22 무료 플러그인 3종 소개\n00:54 설치 명령어\n01:01 깔기 전에: 스킬 파일 먼저 읽기\n01:19 같은 과제를 네 번\n01:37 걸린 시간 비교\n01:45 넷 다 같은 결론\n01:55 플러그인이 더해 준 것\n02:41 AI 추측, 실제 데이터로 확인\n03:07 그래서 뭘 깔까\n03:22 통째로 깔면 생기는 일\n03:37 다음 영상: 처방대로 바꿔 보기\n\n※ 같은 모델(Opus 5.5) · 같은 과제 · 2026-10-17 기준. 채널 수치는 YouTube Analytics(9/25~10/16).\n※ 세 플러그인 모두 무료 오픈소스예요(Apache-2.0 · MIT).",
+   "tags": [
+    "클로드 코드",
+    "Claude Code",
+    "클로드 플러그인",
+    "Claude Skills",
+    "AI 마케팅",
+    "유튜브 분석",
+    "유튜브 조회수",
+    "유튜브 썸네일",
+    "마케팅 자동화",
+    "바이브코딩"
+   ],
+   "comment": "📂 네 가지 결과 원문과 설치 명령어는 설명란에 있어요.\n\n⏱ 바로 보기\n01:37 걸린 시간 비교\n02:41 AI 추측, 실제 데이터로 확인\n03:07 그래서 뭘 깔까\n\n어떤 플러그인부터 써 보고 싶으세요? 다음 영상에서는 처방대로 바꾼 결과를 보여 드릴게요 🐶",
+   "uploaded": "https://youtu.be/gSq07LCARTo"
+  },
+  {
+   "id": "shorts-1",
+   "target": "youtube",
+   "privacy": "private",
+   "publishAt": "2026-10-17T19:00:00+09:00",
+   "file": "scenes/out/shorts-1.mp4",
+   "captions": "scenes/out/shorts-1.srt",
+   "title": "클로드 무료 마케팅 플러그인 3개, 이렇게 고르세요 #Shorts",
+   "description": "유튜브·쓰레드 / 카피·앱스토어 / 보고서 — 직접 비교한 결과 👉 https://youtu.be/gSq07LCARTo\n#클로드코드 #AI마케팅 #ClaudeCode",
+   "tags": [
+    "클로드 코드",
+    "클로드 플러그인",
+    "AI 마케팅",
+    "Claude Skills"
+   ],
+   "comment": "이 중에 뭐부터 깔아 보실 거예요? 🐶 설치 명령어는 채널 롱폼 설명란에 있어요.",
+   "uploaded": "https://youtu.be/V2uhuYueFyI"
+  },
+  {
+   "id": "shorts-2",
+   "target": "youtube",
+   "privacy": "private",
+   "publishAt": "2026-10-18T19:00:00+09:00",
+   "file": "scenes/out/shorts-2.mp4",
+   "captions": "scenes/out/shorts-2.srt",
+   "title": "조회수 1,200회, 실제로 본 사람은 26% #Shorts",
+   "description": "AI 마케팅 플러그인이 짚고, 유튜브 분석으로 확인했어요 👉 https://youtu.be/gSq07LCARTo\n#유튜브분석 #쇼츠 #클로드코드",
+   "tags": [
+    "유튜브 분석",
+    "유튜브 조회수",
+    "쇼츠",
+    "클로드 코드"
+   ],
+   "comment": "스튜디오 '참여 조회수'에서 바로 확인할 수 있어요. 제 쇼츠는 26%였는데, 다른 채널은 몇 %쯤 나오는지 궁금해요 🐶",
+   "uploaded": "https://youtu.be/_STbxzi_85A"
+  },
+  {
+   "id": "shorts-3",
+   "target": "youtube",
+   "privacy": "private",
+   "publishAt": "2026-10-19T19:00:00+09:00",
+   "file": "scenes/out/shorts-3.mp4",
+   "captions": "scenes/out/shorts-3.srt",
+   "title": "AI한테 썸네일 검사 맡겼더니 #Shorts",
+   "description": "폰 화면 크기로 줄이면 글자가 4픽셀 👉 https://youtu.be/gSq07LCARTo\n#유튜브썸네일 #클로드코드 #AI마케팅",
+   "tags": [
+    "유튜브 썸네일",
+    "클로드 코드",
+    "AI 마케팅",
+    "Claude Skills"
+   ],
+   "comment": "고친 썸네일로 조회수가 달라지는지, 다음 영상에서 보여 드릴게요 🐶",
+   "uploaded": "https://youtu.be/RNM_mSWj0NU"
+  },
+  {
+   "id": "thread",
+   "target": "threads",
+   "dueAt": "2026-10-17T19:05:00+09:00",
+   "media": [
+    "carousel-slide1.png",
+    "carousel-slide2.png",
+    "carousel-slide3.png",
+    "carousel-slide4.png",
+    "carousel-slide5.png",
+    "carousel-slide6.png"
+   ],
+   "text": "클로드에 무료 마케팅 플러그인 3개를 깔고, 제 유튜브 채널 실제 데이터로 진단을 맡겨 봤습니다.\n플러그인 없는 클로드까지 같은 과제로 비교한 결과를 4가지로 정리했습니다🧵",
+   "replies": [
+    "1/ 세 개 모두 무료 오픈소스입니다.\n앤트로픽 공식 Marketing(스킬 8개), Social Media Skills(106개), marketingskills(50개)이고, 설치는 명령어 한두 줄입니다.\n💬 남이 만든 스킬은 파일을 먼저 읽어 보라는 게 공식 문서 권고라, 세 저장소를 다 열어 봤습니다. 위험한 명령은 없었습니다.",
+    "2/ 핵심 결론은 플러그인이 있든 없든 넷 다 같았습니다.\n쇼츠 1,200회 벽, 39회 쇼츠의 노출 문제, 롱폼 2편 제목·썸네일 교체, 쇼츠→롱폼 연결. 플러그인을 쓰면 시간은 1.2~1.5배, 토큰은 약 1.5배 더 들었습니다.\n💬 차이는 형식이었습니다. 공식은 보고서, Social Media Skills는 썸네일을 폰 크기로 줄여서 검사, marketingskills는 심리학으로 이유를 붙였습니다.",
+    "3/ AI가 '추측'이라고 적은 4가지를 유튜브 분석 데이터로 확인했더니 모두 맞아떨어졌습니다.\n1,200회 쇼츠 8편은 조회의 98~100%가 첫 이틀이었고, 실제로 본 건(참여 조회) 26%였습니다. 39회 쇼츠는 쇼츠 피드 유입이 0회, 잘 된 롱폼은 91%가 검색이었습니다.",
+    "4/ 유튜브·쓰레드는 Social Media Skills, 카피·앱스토어는 marketingskills, 보고서는 공식 Marketing이 맞았습니다.\n💬 106개를 통째로 깔면 스킬 설명만 약 10만 자가 대화마다 들어갑니다. 필요한 것만 골라 까는 걸 추천합니다.\n영상 👉 https://youtu.be/gSq07LCARTo",
+    "설치 명령어와 네 가지 결과 원문입니다 👇\nhttps://github.com/hyperitycorp-jkh/tech-lectures/tree/main/lectures/007-marketing-plugins"
+   ]
+  }
+ ]
+}

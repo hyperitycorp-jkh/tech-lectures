@@ -11,6 +11,7 @@
 | 003 | 오푸스 5.5로 매드무비 만들기 — 누끼·박자·자막까지 | [유튜브](https://youtu.be/Rw1ZngcDDco) · 쇼츠 [①](https://youtu.be/XAfFfCUj2XU) [②](https://youtu.be/3N6nMJZV2X4) 외 5편 (10/3까지 매일 공개) | — | [lectures/003-mad-movie](lectures/003-mad-movie) |
 | 004 | 오픈라우터로 AI 캐릭터 채팅 90배 싸게 만들기 — 수위 조절까지 | [유튜브](https://youtu.be/cr747zcnJjM) · 쇼츠 [①](https://youtu.be/al_4DKn7QxY) [②](https://youtu.be/8TJGHC1Zsik) (9/30~10/1 공개) | — | [lectures/004-openrouter](lectures/004-openrouter) |
 | 006 | 클로드 코드로 하루 만에 멀티플레이 FPS 게임 만들기 — 게임 서버비 0원 | [유튜브](https://youtu.be/7mHp6IDRYRM) · 쇼츠 [①](https://youtu.be/HolOdzpcrKY) [②](https://youtu.be/1UR1tkxJKOw) [③](https://youtu.be/bmqC5VrXT9Y) (10/9 공개 · ② 10/10 · ③ 10/11 19:00) | — | [lectures/006-web-fps](lectures/006-web-fps) |
+| 007 | 클로드 무료 마케팅 플러그인 3종으로 유튜브 채널 진단하기 — 직접 비교 | [유튜브](https://youtu.be/gSq07LCARTo) · 쇼츠 [①](https://youtu.be/V2uhuYueFyI) [②](https://youtu.be/_STbxzi_85A) [③](https://youtu.be/RNM_mSWj0NU) (10/17~10/19 19:00 공개) | — | [lectures/007-marketing-plugins](lectures/007-marketing-plugins) |
 
 ## 한 강의가 만들어지는 흐름
 ```

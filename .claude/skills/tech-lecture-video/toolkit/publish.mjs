@@ -10,6 +10,7 @@
 //   node toolkit/publish.mjs buffer-channels     ← Buffer 채널 id 목록 (buffer.json 채우기용)
 //   node toolkit/publish.mjs comment youtube <publish.json> [--go]  ← 공개된 영상에 항목의 comment 달기(고정은 스튜디오에서 한 번 탭)
 //   node toolkit/publish.mjs stats youtube <publish.json>  ← 조회수·좋아요·댓글
+//   node toolkit/publish.mjs analytics youtube <publish.json> [시작] [끝]  ← 날짜별 조회·평균 시청 시간 (분석 권한 필요: auth youtube 한 번 더)
 // 인증 파일 (레포 밖, ~/.config/tech-lectures/):
 //   youtube-client.json  Google OAuth 클라이언트 (GCP 콘솔 → 사용자 인증 정보 → 데스크톱 앱, JSON 다운로드)
 //   youtube.json         { refresh_token }  ← auth youtube 가 만든다
@@ -39,11 +40,21 @@ async function youtubeToken() {
   if (!j.access_token) throw new Error(`유튜브 토큰 갱신 실패: ${JSON.stringify(j)}`);
   return j.access_token;
 }
+// 채널 확인: 로그인 때 계정 선택 화면에서 다른 채널(브랜드 계정)을 고르면 그 채널로 올라간다(2026-10-17 실제로 겪음).
+// 쓰기(업로드·sync·댓글) 전에 로그인된 채널이 강의 채널인지 확인한다. 다른 채널을 쓰려면 YT_CHANNEL=@핸들
+const YT_CHANNEL = process.env.YT_CHANNEL || '@aiautotradingfabio';  // 바이브코더
+async function youtubeWriteToken() {
+  const tok = await youtubeToken();
+  const c = (await (await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true', { headers: { Authorization: `Bearer ${tok}` } })).json()).items?.[0];
+  if (c?.snippet?.customUrl?.toLowerCase() !== YT_CHANNEL.toLowerCase())
+    throw new Error(`로그인된 채널이 ${c ? `${c.snippet.title}(${c.snippet.customUrl})` : '없음'} 입니다 — ${YT_CHANNEL} 로 다시 로그인하세요: node toolkit/publish.mjs auth youtube (계정 선택 화면에서 채널을 고름)`);
+  return tok;
+}
 // 공개 상태: publishAt(ISO, 예 '2026-09-28T10:00:00+09:00')이 있으면 비공개로 올리고 그 시각에 자동 공개
 const ytStatus = it => it.publishAt ? { privacyStatus: 'private', publishAt: new Date(it.publishAt).toISOString(), selfDeclaredMadeForKids: false }
   : { privacyStatus: it.privacy || 'private', selfDeclaredMadeForKids: false };
 async function youtubeUpload(it, { dir }) {
-  const tok = await youtubeToken(), file = resolve(dir, it.file), size = statSync(file).size;
+  const tok = await youtubeWriteToken(), file = resolve(dir, it.file), size = statSync(file).size;
   const meta = { snippet: { title: it.title, description: it.description || '', tags: it.tags || [], categoryId: it.category || '27', defaultLanguage: 'ko' },
     status: ytStatus(it) };
   const init = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
@@ -104,19 +115,25 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
   const c = readCfg('youtube-client.json'), cl = c.installed || c.web;
   const port = 53682, redirect = `http://localhost:${port}`;
   const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({ client_id: cl.client_id, redirect_uri: redirect, response_type: 'code',
-    access_type: 'offline', prompt: 'consent', scope: 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.force-ssl' });
+    access_type: 'offline', prompt: 'select_account consent', scope: 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/yt-analytics.readonly' });
   console.log('브라우저에서 강의 채널 계정으로 로그인하세요 (채널 선택 화면에서 강의 채널을 고르기):\n' + url);
   try { execFileSync('open', [url]); } catch {}
   const code = await new Promise(ok => { const s = createServer((req, res) => { const c = new URL(req.url, redirect).searchParams.get('code'); res.end('완료 — 터미널로 돌아가세요'); s.close(); ok(c); }).listen(port); });
   const r = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', body: new URLSearchParams({ code, client_id: cl.client_id, client_secret: cl.client_secret, redirect_uri: redirect, grant_type: 'authorization_code' }) });
   const j = await r.json();
   if (!j.refresh_token) throw new Error(`토큰 발급 실패: ${JSON.stringify(j)}`);
+  // 고른 채널 확인 — 다른 채널(브랜드 계정)이면 저장하지 않는다
+  const ch = (await (await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true', { headers: { Authorization: `Bearer ${j.access_token}` } })).json()).items?.[0];
+  if (ch?.snippet?.customUrl?.toLowerCase() !== YT_CHANNEL.toLowerCase()) {
+    console.log(`✗ 고른 채널: ${ch ? `${ch.snippet.title}(${ch.snippet.customUrl})` : '없음'} — ${YT_CHANNEL} 가 아니라서 저장하지 않았습니다. 다시 실행해서 계정 선택 → 채널 선택에서 ${YT_CHANNEL} 를 고르세요.`);
+    process.exit(1);
+  }
   mkdirSync(CFG, { recursive: true });
   writeFileSync(join(CFG, 'youtube.json'), JSON.stringify({ refresh_token: j.refresh_token }), { mode: 0o600 });
-  console.log(`저장 → ${join(CFG, 'youtube.json')}`);
+  console.log(`✓ ${ch.snippet.title}(${ch.snippet.customUrl}) 저장 → ${join(CFG, 'youtube.json')}`);
 } else if (args[0] === 'sync' && args[1] === 'youtube') {
   // 이미 올린 영상(uploaded)의 제목·설명·태그·공개 여부·썸네일을 publish.json 에 맞춘다
-  const path = resolve(args[2] || ''), dir = dirname(path), pub = JSON.parse(readFileSync(path, 'utf8')), tok = await youtubeToken();
+  const path = resolve(args[2] || ''), dir = dirname(path), pub = JSON.parse(readFileSync(path, 'utf8')), tok = await youtubeWriteToken();
   for (const it of pub.items.filter(x => x.target === 'youtube' && x.uploaded)) {
     const id = it.uploaded.split('/').pop();
     const r = await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,status', { method: 'PUT',
@@ -136,7 +153,7 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
   // 고정 댓글: 공개된 영상(uploaded)에 항목의 comment 를 채널 이름으로 단다(한 번만 — commentId 기록). --go 없으면 미리보기
   // 유튜브 API 는 '고정'을 지원하지 않는다 → 출력되는 스튜디오 링크에서 댓글 ⋮ → 고정 (영상당 한 번 탭)
   // 쇼츠 댓글·설명의 링크는 눌리지 않는다 → 쇼츠는 질문형 댓글 + 스튜디오에서 '관련 동영상'을 롱폼으로 지정
-  const path = resolve(args[2] || ''), pub = JSON.parse(readFileSync(path, 'utf8')), GO = args.includes('--go'), tok = await youtubeToken();
+  const path = resolve(args[2] || ''), pub = JSON.parse(readFileSync(path, 'utf8')), GO = args.includes('--go'), tok = await youtubeWriteToken();
   for (const it of pub.items.filter(x => x.target === 'youtube' && x.uploaded && x.comment && !x.commentId)) {
     const id = it.uploaded.split('/').pop();
     const st = (await (await fetch(`https://www.googleapis.com/youtube/v3/videos?part=status&id=${id}`, { headers: { Authorization: `Bearer ${tok}` } })).json()).items?.[0]?.status;
@@ -157,6 +174,21 @@ if (args[0] === 'auth' && args[1] === 'youtube') {
   const j = await (await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,status&id=${ids.join(',')}`, { headers: { Authorization: `Bearer ${tok}` } })).json();
   for (const v of j.items || []) { const it = its[ids.indexOf(v.id)], st = v.statistics;
     console.log(`${it.id.padEnd(9)} ${v.status.privacyStatus.padEnd(8)} 조회 ${String(st.viewCount).padStart(5)} · 좋아요 ${st.likeCount || 0} · 댓글 ${st.commentCount || 0}  ${it.title}`); }
+} else if (args[0] === 'analytics' && args[1] === 'youtube') {
+  // 영상별 하루 조회수·평균 시청 시간 (조회만, YouTube Analytics — auth youtube 를 yt-analytics.readonly 포함해 한 번 다시 해야 함)
+  //   node toolkit/publish.mjs analytics youtube <publish.json> [시작 YYYY-MM-DD] [끝 YYYY-MM-DD]  → 영상마다 날짜별 조회, 기간 합계, 평균 시청 시간·비율
+  const path = resolve(args[2] || ''), pub = JSON.parse(readFileSync(path, 'utf8')), tok = await youtubeToken();
+  const end = args[4] || new Date(Date.now() - 864e5).toISOString().slice(0, 10), start = args[3] || new Date(Date.now() - 15 * 864e5).toISOString().slice(0, 10);
+  const q = async params => { const u = new URL('https://youtubeanalytics.googleapis.com/v2/reports');
+    for (const [k, v] of Object.entries({ ids: 'channel==MINE', startDate: start, endDate: end, ...params })) u.searchParams.set(k, v);
+    const j = await (await fetch(u, { headers: { Authorization: `Bearer ${tok}` } })).json(); if (j.error) throw new Error(`${j.error.code} ${j.error.message} (auth youtube 를 다시 해 분석 권한을 주세요)`); return j; };
+  for (const it of pub.items.filter(x => x.target === 'youtube' && x.uploaded)) {
+    const id = it.uploaded.split('/').pop();
+    const day = await q({ metrics: 'views', dimensions: 'day', filters: `video==${id}`, sort: 'day' });
+    const sum = await q({ metrics: 'views,averageViewDuration,averageViewPercentage', filters: `video==${id}` });
+    const [v, avd, avp] = sum.rows?.[0] || [0, 0, 0];
+    console.log(`${it.id.padEnd(9)} ${start}~${end} 조회 ${v} · 평균 시청 ${avd}초(${(+avp).toFixed(0)}%)  ${(day.rows || []).map(r => `${r[0].slice(5)}:${r[1]}`).join(' ')}`);
+  }
 } else if (args[0] === 'whoami' && args[1] === 'youtube') {
   // 로그인된 채널 확인 (조회만). 업로드 전에 강의 채널이 맞는지 본다
   const tok = await youtubeToken();

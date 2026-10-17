@@ -1,0 +1,194 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- 007 롱폼 (16:9 1920×1080). 대본·구성은 longform.script.js, 나레이션 길이·입 모양은 longform.timing.js (timing.mjs 가 생성).
+     장면 종류: hook(큰 제목 + 흐린 배경) · points · shot(왼쪽 요점 + 오른쪽 캡처) · code · bars(막대) · thumbs(원래 크기 vs 폰 크기)
+              · verify(추측 → 실제 데이터) · cover · endcard
+     렌더: node toolkit/render.mjs lectures/007-marketing-plugins/scenes/longform.html  · 특정 프레임: --still --query f=1234 -->
+<style>
+:root{--bg:#0e0e10;--ink:#f4efe6;--dim:#8a8580;--acc:#d97757;--panel:#17161a;--ok:#9fe0b0}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Pretendard",sans-serif}
+.abs{position:absolute}
+#bg{inset:0;background:#000}
+#bg img{width:100%;height:100%;object-fit:cover;object-position:top;filter:blur(8px) brightness(.3) saturate(.7)}
+#kicker{left:120px;top:84px;font:600 30px "SF Mono",Menlo,monospace;color:var(--acc)}
+#title{left:120px;top:126px;right:300px;font-size:62px;font-weight:800;letter-spacing:-1.5px}
+#hook{left:120px;right:200px;top:250px}
+#hook small{display:block;font:700 34px "SF Mono",Menlo,monospace;color:var(--acc);margin-bottom:26px}
+#hook h1{margin:0;font-size:132px;font-weight:900;letter-spacing:-5px;line-height:1.06;white-space:pre-line;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+#hook h1 b{color:var(--acc)}
+#cover{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 200px}
+#cover h1{font-size:100px;font-weight:900;letter-spacing:-3px;margin:0;line-height:1.15;white-space:pre-line}
+#cover p{font-size:38px;color:#c9c3ba;margin-top:30px}
+#points{left:120px;top:290px;right:300px}
+#points div{font-size:52px;font-weight:700;margin-bottom:42px;display:flex;gap:28px;word-break:keep-all}
+#points i{font-style:normal;color:var(--acc);width:56px;flex:none}
+/* shot: 왼쪽 요점 + 오른쪽 캡처 */
+#sidePts{left:120px;top:300px;width:760px}
+#sidePts div{font-size:42px;font-weight:700;margin-bottom:38px;display:flex;gap:22px;line-height:1.3;word-break:keep-all}
+#sidePts i{font-style:normal;color:var(--acc);width:46px;flex:none}
+#shot{left:930px;top:250px;width:870px;height:620px;border-radius:22px;overflow:hidden;background:#fff;border:4px solid #2a2930;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+#shot img{width:100%;height:100%;object-fit:cover;object-position:top left}
+#code{left:120px;top:250px;width:1560px;height:640px;border-radius:24px;background:var(--panel);padding:48px 60px;box-sizing:border-box;font:500 33px/1.6 "SF Mono",Menlo,monospace;white-space:pre;overflow:hidden}
+#source{left:120px;top:212px;font-size:24px;color:var(--dim)}
+/* bars */
+#bars{left:120px;top:290px;width:1500px}
+.brow{display:flex;align-items:center;height:96px;margin-bottom:16px}
+.brow b{width:520px;flex:none;font-size:40px;font-weight:800;white-space:nowrap}
+.btrack{position:relative;flex:1;height:58px;border-radius:14px;background:#1d1c21}
+.bfill{position:absolute;left:0;top:0;bottom:0;border-radius:14px;background:var(--acc)}
+.bfill.base{background:#8a8580}
+.bval{width:250px;flex:none;text-align:right;font-size:44px;font-weight:900;font-variant-numeric:tabular-nums}
+#barNote{left:120px;top:800px;font:600 32px "SF Mono",Menlo,monospace;color:#c9c3ba}
+/* thumbs: 원래 크기 vs 폰 크기 */
+.th{top:270px;width:800px;height:450px;border-radius:18px;overflow:hidden;border:4px solid #2a2930;background:#000}
+.th img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.tlab{top:740px;width:800px;text-align:center;font:700 34px "SF Mono",Menlo,monospace}
+#thNote{left:120px;right:320px;top:806px;text-align:center;font-size:38px;font-weight:800;color:var(--acc)}
+/* verify: 추측 → 실제 데이터 */
+#verify{left:120px;top:262px;width:1560px}
+.vr{display:grid;grid-template-columns:620px 80px 860px;align-items:center;min-height:112px;margin-bottom:16px;border-radius:22px;background:#17161a;padding:0 28px;box-sizing:border-box}
+.vr .c{font-size:33px;font-weight:700;color:#c9c3ba;word-break:keep-all;line-height:1.3}
+.vr .c::before{content:'AI 추측  ';font:700 22px "SF Mono",Menlo,monospace;color:#6d6862;display:block}
+.vr .ar{font-size:44px;color:#6d6862;text-align:center}
+.vr .f{font-size:36px;font-weight:900;color:var(--ok);word-break:keep-all;line-height:1.3}
+.vr .f::before{content:'✓ 실제 데이터  ';font:700 22px "SF Mono",Menlo,monospace;color:#5f9c74;display:block}
+#endcard{inset:0;display:flex;flex-direction:column;align-items:center;padding-top:130px;text-align:center}
+#endcard h1{font-size:88px;font-weight:900;letter-spacing:-3px;margin:0}
+#endcard p{font:500 30px "SF Mono",Menlo,monospace;color:#c9c3ba;margin-top:22px}
+#caption{left:120px;right:320px;bottom:58px;display:flex;justify-content:center}
+#caption span{display:inline-block;max-width:1300px;text-align:center;text-wrap:balance;word-break:keep-all;padding:16px 34px;border-radius:18px;background:#f4efe6;color:#141316;font-size:38px;font-weight:700;line-height:1.4;letter-spacing:-.5px;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+#bar{left:0;right:0;bottom:0;height:8px;background:#222}
+#barFill{height:100%;background:var(--acc)}
+</style>
+<script src="/toolkit/templates/lib.js"></script>
+<script src="/toolkit/templates/avatar.js"></script>
+<script src="voice.js"></script>
+<script src="longform.script.js"></script>
+<script src="longform.timing.js"></script>
+</head><body>
+<div class="abs" id="bg"><img id="bgImg"></div>
+<div class="abs" id="hook"><small id="hookKick"></small><h1 id="hookText"></h1></div>
+<div class="abs" id="cover"><h1 id="coverTitle"></h1><p id="coverSub"></p></div>
+<div class="abs" id="endcard"><h1 id="endTitle"></h1><p id="endSub"></p></div>
+<div class="abs" id="kicker"></div><div class="abs" id="title"></div>
+<div class="abs" id="points"></div>
+<div class="abs" id="sidePts"></div><div class="abs" id="shot"><img id="shotImg"></div>
+<div class="abs" id="code"></div>
+<div class="abs" id="bars"></div><div class="abs" id="barNote"></div>
+<div class="abs th" id="thA" style="left:120px"><img id="thAImg"></div><div class="abs th" id="thB" style="left:1000px"><img id="thBImg"></div>
+<div class="abs tlab" id="thAL" style="left:120px"></div><div class="abs tlab" id="thBL" style="left:1000px;color:var(--acc)"></div>
+<div class="abs" id="thNote"></div>
+<div class="abs" id="verify"></div>
+<div class="abs" id="source"></div>
+<div class="abs" id="caption"><span id="capText"></span></div>
+<div class="abs" id="bar"><div id="barFill"></div></div>
+<script>
+const FPS = 30, LEAD = .5, GAP = .3, TAIL = .7;
+const CH = [], NARR = [];
+let T = 0;
+SCRIPT.chapters.forEach((c, ci) => {
+  const ch = { ...c, t: T, ci };
+  let x = T + LEAD;
+  c.say.forEach((text, li) => {
+    NARR.push({ t: +x.toFixed(2), end: x + TIMING[ci][li] + .25, ci, li, text, say: SCRIPT.toSay(text) });
+    x += TIMING[ci][li] + GAP;
+  });
+  T = x - GAP + (c.hold ?? TAIL);
+  CH.push(ch);
+});
+const DURATION = Math.ceil(T);
+window.META = { W: 1920, H: 1080, FPS, DURATION, AUDIO: 'calm', ...SCRIPT.voice,
+  STILL_FRAME: +(new URLSearchParams(location.search).get('f') || 0) };
+window.NARRATION = NARR;
+window.CHAPTERS = CH.map(c => ({ t: c.t, title: c.title }));
+const chEnd = i => (CH[i + 1]?.t ?? DURATION);
+const lineT = (ci, li) => NARR.find(l => l.ci === ci && l.li === li)?.t;
+
+async function img(el, src) { if (el.getAttribute('src') !== src) { el.src = src; await el.decode(); } }
+const list = (items, s, t, a, step = .5) => items.map((p, k) => {
+  const pa = Math.min(ease(prog(t, s + .4 + k * step, s + .9 + k * step)), a);
+  return `<div style="opacity:${pa};transform:translateX(${(1 - pa) * -40}px)"><i>${String(k + 1).padStart(2, '0')}</i><span>${p}</span></div>`;
+}).join('');
+const ALL = ['bg', 'hook', 'cover', 'endcard', 'kicker', 'title', 'points', 'sidePts', 'shot', 'code', 'bars', 'barNote', 'thA', 'thB', 'thAL', 'thBL', 'thNote', 'verify', 'source'];
+
+function avatar(t, line) {
+  let a = 0;
+  if (line && t < line.end) { const env = ENV[line.ci][line.li], k = Math.round((t - line.t) * FPS); a = ((+env[k] || 0) + (+env[k - 1] || 0)) / 18; }
+  avatarFrame(t, a, !!(line && t < line.end));
+}
+mountAvatar(document.body, { left: 1650, top: 808, size: 250 });
+
+window.renderFrame = async f => {
+  const t = f / FPS, i = CH.indexOf(at(CH, t)), c = CH[i], s = c.t, e = chEnd(i);
+  const a = inOut(t, s, e, .35);
+  const rise = (1 - ease(prog(t, s, s + .6))) * 30;
+  ALL.forEach(id => show($(id), 0));
+
+  if (c.type === 'hook') {
+    if (c.bg) { await img($('bgImg'), c.bg); show($('bg'), a); $('bgImg').style.transform = `scale(${1.08 + .06 * prog(t, s, e)})`; }
+    $('hookKick').textContent = c.kicker || '';
+    $('hookText').innerHTML = c.title.replace(c.hl, `<b>${c.hl}</b>`);
+    show($('hook'), Math.min(a, ease(prog(t, s, s + .5))), rise);
+  } else if (c.type === 'cover') {
+    $('coverTitle').textContent = c.title; $('coverSub').textContent = c.sub || '';
+    show($('cover'), a, rise);
+  } else if (c.type === 'endcard') {
+    $('endTitle').textContent = c.title; $('endSub').textContent = c.sub || '';
+    show($('endcard'), a, rise);
+  } else {
+    $('kicker').textContent = c.kicker || ''; $('title').textContent = c.title || '';
+    show($('kicker'), a); show($('title'), a, rise);
+  }
+  if (c.type === 'points') { $('points').innerHTML = list(c.points, s, t, a); show($('points'), 1); }
+  if (c.type === 'shot') {
+    $('sidePts').innerHTML = list(c.points, s, t, a, .6); show($('sidePts'), 1);
+    await img($('shotImg'), c.image);
+    const q = Math.min(a, ease(prog(t, s + .2, s + .8)));
+    show($('shot'), q, (1 - q) * 30);
+  }
+  if (c.type === 'code') {
+    const n = Math.floor(prog(t, s + .4, s + (c.typeSeconds || 3)) * c.code.length);
+    $('code').textContent = c.code.slice(0, n); show($('code'), a);
+  }
+  if (c.type === 'bars') {
+    const fmt = v => (Number.isInteger(v) ? v.toLocaleString('ko-KR') : v.toFixed(1)) + c.unit;
+    $('bars').innerHTML = c.rows.map((r, k) => {
+      const q = ease(prog(t, s + .5 + k * .25, s + 1.6 + k * .25));
+      const v = r.v * q, shown = Number.isInteger(r.v) ? Math.round(v) : +v.toFixed(1);
+      return `<div class="brow"><b>${r.label}</b><div class="btrack"><div class="bfill${k === 0 && c.rows.length === 4 ? ' base' : ''}" style="width:${Math.max(.6, r.v / c.max * 100 * q)}%"></div></div><div class="bval">${fmt(shown)}</div></div>`;
+    }).join('');
+    show($('bars'), a);
+    if (c.note) { $('barNote').textContent = c.note; show($('barNote'), Math.min(a, ease(prog(t, s + 2.4, s + 3)))); }
+  }
+  if (c.type === 'thumbs') {
+    await img($('thAImg'), c.a); await img($('thBImg'), c.b);
+    $('thAL').textContent = c.labelA; $('thBL').textContent = c.labelB;
+    const qa = Math.min(a, ease(prog(t, s + .2, s + .7))), qb = Math.min(a, ease(prog(t, s + 1.2, s + 1.7)));
+    show($('thA'), qa, (1 - qa) * 30); show($('thAL'), qa); show($('thB'), qb, (1 - qb) * 30); show($('thBL'), qb);
+    const n2 = lineT(c.ci, 1) ?? s + 3;
+    $('thNote').textContent = c.note; show($('thNote'), Math.min(a, ease(prog(t, n2, n2 + .5))));
+  }
+  if (c.type === 'verify') {
+    // 줄마다: 0번 줄 동안은 추측만, 그 뒤로 한 줄씩 실제 데이터가 켜진다
+    const at1 = lineT(c.ci, 1) ?? s + 2, at2 = lineT(c.ci, 2) ?? s + 4;
+    const factAt = [at1, at1 + 2.6, at2, at2 + 2.6];
+    $('verify').innerHTML = c.rows.map((r, k) => {
+      const qc = Math.min(a, ease(prog(t, s + .4 + k * .35, s + .9 + k * .35))), qf = Math.min(a, ease(prog(t, factAt[k], factAt[k] + .45)));
+      return `<div class="vr" style="opacity:${qc}"><div class="c">${r.claim}</div><div class="ar">→</div><div class="f" style="opacity:${qf};transform:translateX(${(1 - qf) * 30}px)">${r.fact}</div></div>`;
+    }).join('');
+    show($('verify'), 1);
+  }
+  if (c.source) { $('source').textContent = '출처: ' + c.source; show($('source'), a); }
+
+  const line = at(NARR, t);
+  const next = NARR[NARR.indexOf(line) + 1];
+  const capEnd = line && next && next.ci === line.ci ? next.t : line?.end;
+  $('capText').textContent = line?.text || '';
+  show($('caption'), line ? inOut(t, line.t, capEnd, .15) : 0);
+  avatar(t, line);
+  $('barFill').style.width = `${(t / DURATION) * 100}%`;
+  document.body.style.opacity = 1 - prog(t, DURATION - .5, DURATION);
+};
+ready(['900 100px Pretendard', '500 25px Menlo']);
+</script>
+</body></html>
